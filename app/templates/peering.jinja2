@@ -1,0 +1,19 @@
+configure terminal
+!
+router bgp 29405
+ neighbor {{ form.ipv4.data }} remote-as {{ form.asn.data }}
+ neighbor {{ form.ipv4.data }} peer-group {{ peergroup[0][0] }}
+ neighbor {{ form.ipv4.data }} description {{ form.description.data.lower() }}
+ neighbor {{ form.ipv4.data }} maximum-prefix {{ form.prefixlimipv4.data }} 90
+!
+ neighbor {{ form.ipv6.data }} remote-as {{ form.asn.data }}
+ neighbor {{ form.ipv6.data }} peer-group {{ peergroup[0][1] }}
+ neighbor {{ form.ipv6.data }} description {{ form.description.data.lower() }}
+ neighbor {{ form.ipv6.data }} maximum-prefix {{ form.prefixlimipv6.data }} 90
+!
+ address-family ipv4 unicast
+  no neighbor {{ form.ipv6.data }} activate
+ address-family ipv6 unicast
+  neighbor {{ form.ipv6.data }} activate
+!
+end

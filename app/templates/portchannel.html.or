@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3>Port channel configuration</h3>
+<span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+<hr>
+<form action="" method="post">
+  <div class="container">
+  <div class="col-sm-5">
+    {{ form.hidden_tag() }}
+    <label>Portchannel</label>
+    {{ form.portchannel(class_="form-control form-group") }}
+    <label>Datacenter</label>
+    {{ form.location(class_="form-control form-group") }}
+    <label>Vlans</label>
+    {% for error in form.vlans.errors %}
+      <span style="color: red;">[{{ error }}]</span>
+    {% endfor %}
+    {{ form.vlans(class_="form-control form-group", placeholder="vlan or vlans comma separated") }}
+    <label>Iface1</label>
+    {{ form.iface1(class_="form-control form-group") }}
+    <label>Iface2</label>
+    {{ form.iface2(class_="form-control form-group") }}
+    <label>Port type</label>
+    {{ form.porttype(class_="form-control form-group") }}
+    <label>Client id</label>
+    {% for error in form.clientid.errors %}
+      <span style="color: red;">[{{ error }}]</span>
+    {% endfor %}
+    {{ form.clientid(class_="form-control form-group", placeholder="client id") }}
+    <label>Company name</label>
+    {% for error in form.company.errors %}
+      <span style="color: red;">[{{ error }}]</span>
+    {% endfor %}
+    {{ form.company(class_="form-control form-group", placeholder="company name") }}
+     <div class="form-group form-group">
+    <button type="submit" class="btn btn-primary">Generate</button>
+  </div>
+  </div>
+  <div class="col-sm-1"></div>
+  <div class="col-sm-4">
+  <label>Your Configuration</label>
+  <div class="form-group form-group">
+  <textarea id="content" class="form-control custom-control" rows="27" style=width:450px name=configuration.data>
+  {%- if not first_request %}
+    {%- if portchannel %}
+      {%- include "portchannel.jinja2" %}
+    {%- else %}
+      {%- include "individual.jinja2" %}
+    {%- endif %}
+  {%- else %}
+  {%- endif %}
+  </textarea>
+  </div>
+  <div class="form-group form-group">
+    <button class="copy-text btn btn-primary" type="button" name="copy" data-clipboard-target="#content">Copy</button>
+  </div>
+  </div>
+
+  </div>
+</form>
+
+{% endblock %}

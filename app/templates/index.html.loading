@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<body onload="myFunction()" style="margin:0;">
+  <div id="loader"></div>
+
+  <div style="display:none;" id="myDiv" class="animate-bottom">
+<h3>VNET utilities</h3>
+  </div>
+
+<script>
+var myVar;
+
+function myFunction() {
+      myVar = setTimeout(showPage, 3000);
+}
+
+function showPage() {
+    document.getElementById("loader").style.display = "none";
+    document.getElementById("myDiv").style.display = "block";
+}
+  </script>
+
+{% endblock %}

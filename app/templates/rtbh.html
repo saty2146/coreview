@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3>RTBH</h3>
+<hr>
+<form action="" method="post" name="rtbh">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-5">
+        {{ form.hidden_tag() }}
+        <label>IPv4</label>&nbsp;(target of attack)
+        {% for error in form.ipv4.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+        {{ form.ipv4(class_="form-control form-group", placeholder="peer IPv4 address") }}
+        <label>Action</label>
+        {{ form.action(class_="form-control form-group") }}
+        <button type="submit" name="push" class="btn btn-primary">Push</button>
+      </div>
+       <div class="col-sm-1"></div>
+      <div class="col-sm-4">
+        <label>Peering status</label><br/>
+        {% if status %}
+          {% for k,v in status.items() %}
+          <h4>{{ k }}
+            {% if v == "established" %}
+              <span class="glyphicon glyphicon-ok" style="color:green" aria-hidden="true"></span>
+            {% else %}
+              <span class="glyphicon glyphicon-remove" style="color:red" aria-hidden="true"></span>
+            {% endif %}
+              {% if advertisement %}
+                {% for v in advertisement[k] %}
+                <h5>{{ v | join('') }}<h5>
+          {% endfor %}
+          {% else %}
+          <h5>no routes advertised<h5>
+              {% endif %}
+          {% endfor %}
+              {% else %}
+              {% endif %}
+      </div>
+    </div>
+</form>
+  </div>
+</div>
+
+{% endblock %}

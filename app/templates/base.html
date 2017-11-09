@@ -1,0 +1,107 @@
+{% extends "bootstrap/base.html" %}
+{% block scripts %}
+{{ super() }}
+<script src="https://cdn.jsdelivr.net/clipboard.js/1.5.12/clipboard.min.js"></script>
+<script>
+$(function(){
+    new Clipboard('.copy-text');
+});
+</script>
+
+{% endblock %}
+
+{% block navbar %}
+    <div class="container">
+      <!-- Static navbar -->
+      <nav class="navbar navbar-inverse bg-inverse">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/index">VNET</a>
+          </div>
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">IFACE <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="/port/tn3">SHC3_N5k</a></li>
+                  <li><a href="/port/tn91">SIX_N9k</a></li>
+                  <li><a href="/port/tn92">SITEL_N9k</a></li>
+                  <li><a href="/port/tn93">SHC3_N9k</a></li>
+                  <li><a href="/port/tn94">DC4_n9k</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">ARP <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="/arp/n31">SHC3_N31</a></li>
+                  <li><a href="/arp/n32">SHC3_N32</a></li>
+                  <li><a href="/arp/n911">SIX_N911</a></li>
+                  <li><a href="/arp/n912">SIX_N912</a></li>
+                  <li><a href="/arp/n921">SITEL_N921</a></li>
+                  <li><a href="/arp/n922">SITEL_N922</a></li>
+                  <li><a href="/arp/n931">SHC3_N931</a></li>
+                  <li><a href="/arp/n932">SHC3_N932</a></li>
+                  <li><a href="/arp/n941">DC4_N941</a></li>
+                  <li><a href="/arp/n942">DC4_N942</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">MAC <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="/mac/n31">SHC3_N31</a></li>
+                  <li><a href="/mac/n32">SHC3_N32</a></li>
+                  <li><a href="/mac/n911">SIX_N911</a></li>
+                  <li><a href="/mac/n912">SIX_N912</a></li>
+                  <li><a href="/mac/n921">SITEL_N921</a></li>
+                  <li><a href="/mac/n922">SITEL_N922</a></li>
+                  <li><a href="/mac/n931">SHC3_N931</a></li>
+                  <li><a href="/mac/n932">SHC3_N932</a></li>
+                  <li><a href="/mac/n941">DC4_N941</a></li>
+                  <li><a href="/mac/n942">DC4_N942</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">VLAN <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="/vlan/n31">SHC3_N31</a></li>
+                  <li><a href="/vlan/n32">SHC3_N32</a></li>
+                  <li><a href="/vlan/n911">SIX_N911</a></li>
+                  <li><a href="/vlan/n912">SIX_N912</a></li>
+                  <li><a href="/vlan/n921">SITEL_N921</a></li>
+                  <li><a href="/vlan/n922">SITEL_N922</a></li>
+                  <li><a href="/vlan/n931">SHC3_N931</a></li>
+                  <li><a href="/vlan/n932">SHC3_N932</a></li>
+                  <li><a href="/vlan/n941">DC4_N941</a></li>
+                  <li><a href="/vlan/n942">DC4_N942</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">ConfGen <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="/peering">Peering</a></li>
+                  <li><a href="/po/tn3">SHC3_N5k</a></li>
+                  <li role="separator" class="divider"></li>
+                  <li class="dropdown-header">Nav header</li>
+                  <li><a href="#">Separated link</a></li>
+                  <li><a href="#">One more separated link</a></li>
+                </ul>
+              </li>
+              <li><a href="/rtbh">RTBH</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li><a href="#">Contact</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div><!--/.container-fluid -->
+      </nav>
+{% endblock %}
+
+        {% block content %}{% endblock %}
+        </body>
+        </html>

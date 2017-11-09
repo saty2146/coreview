@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link href="static/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <!--    <link href="/static/css/bootstrap-responsive.min.css" rel="stylesheet"> -->
+    <link href="static/css/loader.css" type="text/css" rel="stylesheet">
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="static/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/clipboard.js/1.5.12/clipboard.min.js"></script>
+    <script>
+      $(function(){
+        new Clipboard('.copy-text');
+      });
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <div class="container">
+      <!-- Static navbar -->
+      <nav class="navbar navbar-default">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/index">VNET</a>
+          </div>
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">PortStatus <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="/port_status_tn3">SHC3_n5k</a></li>
+                  <li><a href="/port_status_tn91">SIX_n9k</a></li>
+                  <li><a href="/port_status_tn92">SITEL_n9k</a></li>
+                  <li><a href="/port_status_tn93">SHC3_n9k</a></li>
+                  <li><a href="/port_status_tn94">DC4_n9k</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">ConfGen <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="/peering">Peering</a></li>
+                  <li><a href="/portchannel">Portchannel</a></li>
+                  <li role="separator" class="divider"></li>
+                  <li class="dropdown-header">Nav header</li>
+                  <li><a href="#">Separated link</a></li>
+                  <li><a href="#">One more separated link</a></li>
+                </ul>
+              </li>
+              <li><a href="/peering">Peering</a></li>
+              <li><a href="#">Contact</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li class="active"><a href="./">Default <span class="sr-only">(current)</span></a></li>
+              <li><a href="../navbar-static-top/">Static top</a></li>
+              <li><a href="../navbar-fixed-top/">Fixed top</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div><!--/.container-fluid -->
+      </nav>
+  </head>
+        {% block content %}{% endblock %}
+        </body>
+        </html>

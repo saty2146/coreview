@@ -1,0 +1,68 @@
+{% block content %}
+
+<script>
+$(document).ready(function () {
+  (function ($) {
+    $('#filter').keyup(function () {
+      
+      var rex = new RegExp($(this).val(), 'i');
+      $('.searchable tr').hide();
+      $('.searchable tr').filter(function () {
+        return rex.test($(this).text());
+      }).show();
+      
+    })
+    
+  }(jQuery));
+
+});
+</script>
+
+<div class="form-group row">
+  <div class="col-md-9" style="font-size:25px">
+    {{ location }}: MAC {{ host }}
+  </div>
+  <div class="col-md-2">
+    <input id="filter" type="text" class="form-control" placeholder="What you looking for?">
+  </div>
+  <div class="col-md-1">
+    <a href="{{ url_for('mac', host=host) }}"><button class="btn btn-primary" align="left"><span class="glyphicon glyphicon-refresh "aria-hidden="true"></span></button></a>
+  </div>
+</div>
+
+  <div class="container-fluid">
+    <table class="table table-hover table-bordered table-responsive">
+      <thead>
+        <tr>
+          <th>Mac adddress</th>
+          <th>Vlan</th>
+          <th>Age</th>
+          <th>Port</th>
+        </tr>
+      </thead>
+        <tbody class="searchable">
+        {% if mac_list %}
+        {% for item in mac_list %}
+          <tr>
+            {% if item['disp_mac_addr'] is defined %}
+              <td> {{ item['disp_mac_addr'] }} </td>
+            {% else %}
+              <td><span class="glyphicon glyphicon-remove" style="color:red" aria-hidden="true"></span></td>
+            {% endif %}
+            {% if item['time-stamp'] == '-' %}
+              <td><span class="glyphicon glyphicon-king" style="color:green" aria-hidden="true"></span></td>
+              {% else %}
+            <td> {{ item['disp_vlan'] }} </td>
+            {% endif %}
+            <td> {{ item['disp_age'] }} </td>
+            <td> {{ item['disp_port'] }} </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+        {% else %}
+            <h5>MAC ADDRESS TABLE IS EMPTY</h5>
+        {% endif %}
+</div>
+
+{% endblock %}

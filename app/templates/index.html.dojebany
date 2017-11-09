@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>Port channel configuration</h3>
+<div class="container">
+  <form class="form-horizontal" name="portchannel" action="" method="post">
+  {{ form.hidden_tag() }}
+  {% for error in form.portchannel.errors %}
+  {% endfor %}
+  <div class="col-md-6">
+    <div class="form-group">
+      <div class="col-sm-10">
+        <legend style="font-size:18px">Location</legend>
+        <select class="form-control">
+          <option>
+          {% for subfield in form.location %}
+          {{ subfield }}
+          {{ subfield.label }}
+          {% endfor %}
+          </option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-10">
+        <legend style="font-size:18px">Portchannel</legend>
+        <select class="form-control">
+          <option>
+          {% for subfield in form.portchannel %}
+          {{ subfield }}
+          {{ subfield.label }}
+          {% endfor %}
+          </option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-10">
+        <legend style="font-size:18px">Port type</legend>
+        <select class="form-control">
+          <option>
+          {% for subfield in form.porttype %}
+          {{ subfield }}
+          {{ subfield.label }}
+          {% endfor %}
+          </option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-10">
+        <legend style="font-size:18px">Fex port</legend>
+        <select class="form-control">
+          <option>
+          {% for subfield in form.fexport %}
+          {{ subfield }}
+          {{ subfield.label }}
+          {% endfor %}
+          </option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-10">
+        <legend style="font-size:18px">Client id</legend>
+        <input type="text" class="form-control" placeholder="company name" value="{{ form.clientid }}">
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-10">
+        <legend style="font-size:18px">Company</legend>
+        <input type="text" class="form-control" placeholder="company name" value="{{ form.company }}">
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-10">
+        <legend style="font-size:18px">Vlans</legend>
+        <input id="dweq" class="form-control" placeholder="vlans" value="{{ form.vlans }}">
+      </div>
+    </div>
+   <button type="submit" class="btn btn-primary">Generate</button>
+  </div>
+
+   <p>
+
+  <div class="col-md-6">
+     <div class="input-group">
+        <legend style="font-size:18px">Configuration Template</legend>
+       <textarea class="form-control custom-control" rows="30" style=width:400px name=configuration.data>
+         {% if not first_request %}
+interface port-channel{{ po_number }}
+  shutdown
+  description {{ clientid }}
+  switchport mode trunk
+  lacp suspend-individual
+  switchport trunk allowed vlan 10,20,30
+  spanning-tree port type edge trunk
+  storm-control broadcast level 3.00
+  storm-control multicast level 3.00
+  no shutdown
+
+default interface {{ fexport  }}
+interface {{ fexport  }}
+  description {{ clientid }}
+  switchport mode trunk
+  switchport trunk allowed vlan 10,20,30
+  storm-control broadcast level 3.00
+  storm-control multicast level 3.00
+  channel-group {{ po_number }} mode active
+  {% else %}
+
+  {{ form.configuration.data }}
+  {% endif %}
+       
+       
+       </textarea>
+
+     </div>
+   </div>
+   </p>
+
+</form>
+{% endblock %}

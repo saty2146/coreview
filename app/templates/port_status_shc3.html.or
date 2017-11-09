@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<script>
+$(document).ready(function () {
+  (function ($) {
+    $('#filter').keyup(function () {
+      
+      var rex = new RegExp($(this).val(), 'i');
+      $('.searchable tr').hide();
+      $('.searchable tr').filter(function () {
+        return rex.test($(this).text());
+      }).show();
+      
+    })
+    
+  }(jQuery));
+
+});
+</script>
+
+<script>
+var myVar;
+
+function myFunction() {
+        myVar = setTimeout(showPage, 500);
+}
+
+function showPage() {
+      document.getElementById("loader").style.display = "none";
+      document.getElementById("myDiv").style.display = "block";
+}
+  </script>
+
+
+<body onload="myFunction()" style="margin:0;">
+  <div id="loader"></div>
+
+  <div style="display:none;" id="myDiv" class="animate-bottom">
+
+<h3>Port Status Datacenter SHC3</h3>
+<div class="form-group pull-right">
+  <input id="filter" type="text" class="search form-control" placeholder="What you looking for?">
+</div>
+  <div class="container-fluid">
+    <table class="table table-hover table-bordered table-responsive">
+      <thead>
+        <tr>
+          <th>Port</th>
+          <th>Name N31</th>
+          <th>Speed</th>
+          <th>Duplex</th>
+          <th>Status N31</th>
+          <th>Name N32</th>
+          <th>Speed</th>
+          <th>Duplex</th>
+          <th>Status N32</th>
+        </tr>
+      </thead>
+      <tbody class="searchable">
+      {% for key, value in iface_status.iteritems() %}
+        <tr>
+          <td> {{ key }} </td>
+          <td> {{ value['name_n31'] }} </td>
+          <td> {{ value['speed_n31'] }} </td>
+          <td> {{ value['duplex_n31'] }} </td>
+          {% if value['state_n31'] == 'connected' %}
+          <td><span class="glyphicon glyphicon-ok" style="color:green" aria-hidden="true"></span></td>
+          {% elif value['state_n31'] == 'notconnect' %}
+          <td><span class="glyphicon glyphicon-remove" style="color:red" aria-hidden="true"></span></td>
+          {% else %}
+          <td><span style="color: red;">{{ value['state_n31'] }}</span></td>
+          {% endif %}
+          <td> {{ value['name_n32'] }} </td>
+          <td> {{ value['speed_n32'] }} </td>
+          <td> {{ value['duplex_n32'] }} </td>
+          {% if value['state_n32'] == 'connected' %}
+          <td><span class="glyphicon glyphicon-ok" style="color:green" aria-hidden="true"></span></td>
+          {% elif value['state_n32'] == 'notconnect' %}
+          <td><span class="glyphicon glyphicon-remove" style="color:red" aria-hidden="true"></span></td>
+          {% else %}
+          <td><span style="color: red;">{{ value['state_n32'] }}</span></td>
+          {% endif %}
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+</div>
+</div>
+
+{% endblock %}

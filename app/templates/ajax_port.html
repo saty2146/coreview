@@ -1,0 +1,79 @@
+{% block content %}
+
+<script>
+$(document).ready(function () {
+  (function ($) {
+    $('#filter').keyup(function () {
+      
+      var rex = new RegExp($(this).val(), 'i');
+      $('.searchable tr').hide();
+      $('.searchable tr').filter(function () {
+        return rex.test($(this).text());
+      }).show();
+      
+    })
+    
+  }(jQuery));
+
+});
+</script>
+
+<div class="form-group row">
+  <div class="col-md-9" style="font-size:25px">
+    {{ location }}: Port Status {{ hosts[0] }} {{ hosts[1] }}
+  </div>
+  <div class="col-md-2">
+    <input id="filter" type="text" class="form-control" placeholder="What you looking for?">
+  </div>
+  <div class="col-md-1">
+    <a href="{{ url_for('port', twins=twins) }}"><button class="btn btn-primary" align="left"><span class="glyphicon glyphicon-refresh "aria-hidden="true"></span></button></a>
+  </div>
+</div>
+
+  <div class="container-fluid">
+    <table class="table table-hover table-bordered table-responsive">
+      <thead>
+        <tr>
+          <th>Port</th>
+          <th>Name {{ hosts[0] }}</th>
+          <th>Speed</th>
+          <th>Duplex</th>
+          <th>Status {{ hosts[0] }}</th>
+          <th>Name {{ hosts[1] }}</th>
+          <th>Speed</th>
+          <th>Duplex</th>
+          <th>Status {{ hosts[1] }}</th>
+        </tr>
+      </thead>
+      <tbody class="searchable">
+      {% for key, value in iface_status.iteritems() %}
+        <tr>
+          <td> {{ key }} </td>
+          <td> {{ value['name1'] }} </td>
+          <td> {{ value['speed1'] }} </td>
+          <td> {{ value['duplex1'] }} </td>
+          {% if value['state1'] == 'connected' %}
+          <td><span class="glyphicon glyphicon-ok" style="color:green" aria-hidden="true"></span></td>
+          {% elif value['state1'] == 'notconnect' %}
+          <td><span class="glyphicon glyphicon-remove" style="color:red" aria-hidden="true"></span></td>
+          {% else %}
+          <td><span style="color: red;">{{ value['state1'] }}</span></td>
+          {% endif %}
+          <td> {{ value['name2'] }} </td>
+          <td> {{ value['speed2'] }} </td>
+          <td> {{ value['duplex2'] }} </td>
+          {% if value['state2'] == 'connected' %}
+          <td><span class="glyphicon glyphicon-ok" style="color:green" aria-hidden="true"></span></td>
+          {% elif value['state2'] == 'notconnect' %}
+          <td><span class="glyphicon glyphicon-remove" style="color:red" aria-hidden="true"></span></td>
+          {% else %}
+          <td><span style="color: red;">{{ value['state2'] }}</span></td>
+          {% endif %}
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+</div>
+</div>
+
+{% endblock %}

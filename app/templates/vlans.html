@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="media">
+  <h3 class="media-heading pull-left">VLANs</h3>
+  <h5 class="media-heading pull-right">Last update: {{update}}</h5>
+</div>
+
+<div class="media">
+  <form class="form-search" action="" method="post" name="post">
+    {{ form.hidden_tag() }}
+      {{ form.post(size=30, maxlength=140) }}
+      {% for error in form.post.errors %}
+    {% endfor %}
+    <button type="submit" class="btn btn-primary">Search</button>
+    <a class="btn pull-right" align="right" href="{{ url_for('show_vlans', unused_vlans=True) }}">{{unused}}</a>
+    <a class="btn pull-right" align="right" href="{{ url_for('show_vlans', l2_circuit=True) }}">{{circuit}}</a>
+</div>
+    <h5 class="media-heading pull-right">°&nbsp; <small>vlan in db</small>&nbsp;</h5>
+    <h5 class="media-heading pull-right">-&nbsp; <small>vlan not in db,</small>&nbsp;</h5>
+    <h5 class="media-heading pull-right">IF&nbsp; <small>vlan iface,</small>&nbsp;</h5>
+  </form>
+    {{ table|safe }}
+{% endblock %}
