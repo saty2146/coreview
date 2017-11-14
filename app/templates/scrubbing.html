@@ -1,18 +1,18 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h3>RTBH</h3>
+<h3>SCRUBBING</h3>
 <hr>
 <form action="" method="post" name="rtbh">
   <div class="container">
     <div class="row">
       <div class="col-sm-5">
         {{ form.hidden_tag() }}
-        <label>IPv4</label>
-        {% for error in form.ipv4.errors %}
+        <label>Network</label>&nbsp;(target of attack)
+        {% for error in form.network.errors %}
         <span style="color: red;">[{{ error }}]</span>
         {% endfor %}
-        {{ form.ipv4(class_="form-control form-group", placeholder="target of attack") }}
+        {{ form.network(class_="form-control form-group") }}
         <label>Action</label>
         {{ form.action(class_="form-control form-group") }}
         <button type="submit" name="push" class="btn btn-primary">Push</button>
