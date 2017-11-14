@@ -1,6 +1,6 @@
 from flask import render_template, request
 from app import app
-from forms import PortchannelForm, PeeringForm, RtbhForm
+from forms import PortchannelForm, PeeringForm, RtbhForm, ScrubbingForm
 from mycreds import *
 from nxapi_light import *
 import json, requests, re, threading
@@ -90,6 +90,24 @@ def convert_mac(raw_list, mac_key):
 
     return raw_list
 
+def peering_status():
+    data = {'command':'show neighbor summary'}
+    r = requests.post('http://192.168.8.3:5001/show_neighbor_summary', data=data)
+    status  = json.loads(r.text)
+    return status
+
+def route_advertisement():
+    data = {'command':'show adj-rib-out'}
+    r = requests.post('http://192.168.8.3:5001/show_adj_rib_out', data=data)
+    advertisement  = json.loads(r.text)
+    return advertisement
+
+def last_log():
+    data = {'command':''}
+    r = requests.post('http://192.168.8.3:5001/show_full_log', data=data)
+    log  = json.loads(r.text)
+    return log
+
 @app.route('/',methods=['POST','GET'])
 @app.route('/index', methods=['POST','GET'])
 def index():
@@ -148,7 +166,6 @@ def mac(host):
 @app.route('/mac/ajax_<host>', methods=['POST','GET'])
 def ajax_mac(host):
 
-
     location = boxes[host]['location']
     title = str(location) + " " + str(boxes[host])
     ip = boxes[host]['ip']
@@ -162,19 +179,6 @@ def ajax_mac(host):
 def rtbh():
     form = RtbhForm()
     
-    def peering_status():
-
-        data = {'command':'show neighbor summary'}
-        r = requests.post('http://192.168.8.3:5001/show_neighbor_summary', data=data)
-        status  = json.loads(r.text)
-        return status
-
-    def route_advertisement():
-        data = {'command':'show adj-rib-out'}
-        r = requests.post('http://192.168.8.3:5001/show_adj_rib_out', data=data)
-        advertisement  = json.loads(r.text)
-        return advertisement
-    
     if form.validate_on_submit():
         print "validated"
         first_request = False
@@ -183,28 +187,65 @@ def rtbh():
         
         try:
             if action:
-                payload = "announce route " + ipv4 + "/32 next-hop 1.1.1.1 community [29405:666]"
+                payload = "neighbor 109.74.150.18 announce route " + ipv4 + "/32 next-hop 1.1.1.1 community [29405:666]"
             else: 
-                payload = "withdraw route " + ipv4 + "/32 next-hop 1.1.1.1 community [29405:666]"
+                payload = "neighbor 109.74.150.18 withdraw route " + ipv4 + "/32 next-hop 1.1.1.1 community [29405:666]"
 
             data = {'command':payload}
             r = requests.post('http://192.168.8.3:5001/announce', data=data)
             response  = json.loads(r.text)
             status = peering_status()
             advertisement = route_advertisement()
+            log = last_log()
 
         except:
             response = "Could not connect to API"
 
-        return render_template('rtbh.html', title='RTBH', form=form, status=status, advertisement=advertisement)
+        return render_template('rtbh.html', title='RTBH', form=form, status=status, advertisement=advertisement, log=log)
     else:
 
         advertisement = route_advertisement()
         status = peering_status()
+        log = last_log()
 
+    return render_template('rtbh.html', title='RTBH', form=form, status=status, advertisement=advertisement, log=log)
 
+@app.route('/scrubbing', methods=['POST','GET'])
+def scrubbing():
+    form = ScrubbingForm()
     
-    return render_template('rtbh.html', title='RTBH', form=form, status=status, advertisement=advertisement)
+    if form.validate_on_submit():
+        print "validated"
+        first_request = False
+        action = form.action.data
+        network_id = form.network.data
+        network = [f[1] for f in form.network.choices if f[0] == network_id]
+        network = network[0]
+
+        if action:
+            payload = "neighbor 109.74.147.190 announce route " + network + " next-hop 1.1.1.1 community [29405:778]"
+        else: 
+            payload = "neighbor 109.74.147.190 withdraw route " + network + " next-hop 1.1.1.1 community [29405:778]"
+
+        try:
+            data = {'command':payload}
+            r = requests.post('http://192.168.8.3:5001/announce', data=data)
+            response  = json.loads(r.text)
+            status = peering_status()
+            advertisement = route_advertisement()
+            log = last_log()
+
+        except:
+            response = "Could not connect to API"
+
+        return render_template('scrubbing.html', title='Scrubbing', form=form, status=status, advertisement=advertisement, log=log)
+    else:
+
+        advertisement = route_advertisement()
+        status = peering_status()
+        log = last_log()
+
+    return render_template('scrubbing.html', title='Scrubbing', form=form, status=status, advertisement=advertisement,log=log)
 
 @app.route('/peering', methods=['POST','GET'])
 def peering():
