@@ -23,11 +23,11 @@
         {% if status %}
           {% for k,v in status.items() %}
             {% if k == '109.74.147.190' %}
-            <label>SCRUBING:</label><br/>
-              NIX: {{ k }}
+            <label>SCRUBING: </label>
+              {{ k }}
             {% else %}
-            <label>RTBH:</label></br>
-              SIT2: {{ k }}
+            <label>RTBH: </label>
+              {{ k }}
             {% endif %}
             {% if v == "established" %}
               <span class="glyphicon glyphicon-ok" style="color:green" aria-hidden="true"></span>

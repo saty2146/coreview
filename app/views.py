@@ -14,6 +14,15 @@ requests.packages.urllib3.disable_warnings()
 ifaces = []
 po_number = 1000
 
+ip_whitelist = ['81.89.63.129', '81.89.63.130', '81.89.63.131', '81.89.63.132', '81.89.63.133', '81.89.63.134', '81.89.63.135', '81.89.63.136', '81.89.63.137', '81.89.63.138', '81.89.63.139', '81.89.63.140', '81.89.63.141', '81.89.63.142', '81.89.63.143', '81.89.63.144', '81.89.63.145', '81.89.63.146', '81.89.63.147', '81.89.63.148', '81.89.63.149', '81.89.63.150', '127.0.0.1']
+
+
+def valid_ip():
+    client = request.remote_addr
+    if client in ip_whitelist:
+        return True
+    else:
+        return False
 
 @app.before_first_request
 def get_ifs_pos_shc3():
@@ -112,7 +121,10 @@ def last_log():
 @app.route('/index', methods=['POST','GET'])
 def index():
 
-    return render_template('index.html', title='Home')
+    if valid_ip():
+        return render_template('index.html', title='Home')
+    else:
+        return render_template('404.html', title = 'Not Found')
 
 @app.route('/port_status_tn3', methods=['POST','GET'])
 def port_status_tn3():
@@ -319,3 +331,13 @@ def ajax_portchannel(twins):
     return render_template('ajax_portchannel.html', title='Portchannel', form=form, twins = twins, first_request=first_request)
 
 
+@app.route('/ifsw/<host>/<path:iface>', methods=['POST','GET'])
+
+def ifsw(host, iface):
+
+    ip = boxes[host]['ip']
+    box = NXAPIClient(hostname=ip, username = creds['user'], password = creds['passwd'])
+    ifsw = box.get_iface_switchport(box.nxapi_call("show interface " + iface + " switchport" ))
+    
+
+    return render_template('iface_switchport.html', title='Interface switchport configuration', iface=iface, host=host, ifsw=ifsw) 

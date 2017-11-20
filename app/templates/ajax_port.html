@@ -19,8 +19,12 @@ $(document).ready(function () {
 </script>
 
 <div class="form-group row">
-  <div class="col-md-9" style="font-size:25px">
+  <div class="col-md-6" style="font-size:25px">
     {{ location }}: Port Status {{ hosts[0] }} {{ hosts[1] }}
+  </div>
+  <div class="col-md-3">
+    <button class="btn btn-primary btn-xs" title="switchport">S</button>&nbsp;switchport
+      <button class="btn btn-black btn-xs" title="routed port">R</button>&nbsp;routed port
   </div>
   <div class="col-md-2">
     <input id="filter" type="text" class="form-control" placeholder="What you looking for?">
@@ -38,11 +42,13 @@ $(document).ready(function () {
           <th>Name {{ hosts[0] }}</th>
           <th>Speed</th>
           <th>Duplex</th>
-          <th>Status {{ hosts[0] }}</th>
+          <th>Status</th>
+          <th>r/s</th>
           <th>Name {{ hosts[1] }}</th>
           <th>Speed</th>
           <th>Duplex</th>
-          <th>Status {{ hosts[1] }}</th>
+          <th>Status</th>
+          <th>r/s</th>
         </tr>
       </thead>
       <tbody class="searchable">
@@ -59,6 +65,11 @@ $(document).ready(function () {
           {% else %}
           <td><span style="color: red;">{{ value['state1'] }}</span></td>
           {% endif %}
+          {% if value['vlan2'] != 'routed' %}
+          <td><a href="{{ url_for('ifsw', iface=key, host=hosts[1]) }}"><button class="btn btn-primary btn-xs" title="switchport">S</button></span></a></td>
+          {% else %}
+          <td><button class="btn btn-black btn-xs" title="routed port">R</button></td>
+          {% endif %}
           <td> {{ value['name2'] }} </td>
           <td> {{ value['speed2'] }} </td>
           <td> {{ value['duplex2'] }} </td>
@@ -68,6 +79,11 @@ $(document).ready(function () {
           <td><span class="glyphicon glyphicon-remove" style="color:red" aria-hidden="true"></span></td>
           {% else %}
           <td><span style="color: red;">{{ value['state2'] }}</span></td>
+          {% endif %}
+          {% if value['vlan2'] != 'routed' %}
+          <td><a href="{{ url_for('ifsw', iface=key, host=hosts[1]) }}"><button class="btn btn-primary btn-xs" title="switchport">S</button></span></a></td>
+          {% else %}
+          <td><button class="btn btn-black btn-xs" title="routed port">R</button></td>
           {% endif %}
         </tr>
       {% endfor %}
