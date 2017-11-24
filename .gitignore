@@ -96,3 +96,4 @@ mycreds.py
 *.swp
 app/cookie/*
 .config.py
+.run.py
