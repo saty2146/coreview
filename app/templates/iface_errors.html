@@ -4,16 +4,16 @@
 
 <div class="form-group row">
   <div class="col-md-9" style="font-size:25px">
-    {{ host }} {{ iface }} configuration
+    {{ host }} {{ iface }} errors
   </div>
    <div class="col-md-2">
   </div>
   <div class="col-md-1">
-    <a href="{{ url_for('ifsw', host=host, iface=iface) }}"><button class="btn btn-primary" align="left"><span class="glyphicon glyphicon-refresh "aria-hidden="true"></span></button></a>
+    <a href="{{ url_for('iferr', host=host, iface=iface) }}"><button class="btn btn-primary" align="left"><span class="glyphicon glyphicon-refresh "aria-hidden="true"></span></button></a>
   </div>
 </div>
 
-{% for key, value in ifsw.iteritems() %}
+{% for key, value in iferr.iteritems() %}
   {{ key }}:{{ value }}<br/>
 {% endfor %}
 {% endblock %}

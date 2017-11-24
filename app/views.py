@@ -332,7 +332,6 @@ def ajax_portchannel(twins):
 
 
 @app.route('/ifsw/<host>/<path:iface>', methods=['POST','GET'])
-
 def ifsw(host, iface):
 
     ip = boxes[host]['ip']
@@ -341,3 +340,12 @@ def ifsw(host, iface):
     
 
     return render_template('iface_switchport.html', title='Interface switchport configuration', iface=iface, host=host, ifsw=ifsw) 
+
+@app.route('/iferr/<host>/<path:iface>', methods=['POST','GET'])
+def iferr(host, iface):
+
+    ip = boxes[host]['ip']
+    box = NXAPIClient(hostname=ip, username = creds['user'], password = creds['passwd'])
+    iferr = box.get_iface_errors(box.nxapi_call("show interface " + iface + " counters errors" ))
+
+    return render_template('iface_errors.html', title='Interface errors', iface=iface, host=host, iferr=iferr) 

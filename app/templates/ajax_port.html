@@ -19,14 +19,10 @@ $(document).ready(function () {
 </script>
 
 <div class="form-group row">
-  <div class="col-md-6" style="font-size:25px">
+  <div class="col-md-8" style="font-size:25px">
     {{ location }}: Port Status {{ hosts[0] }} {{ hosts[1] }}
   </div>
   <div class="col-md-3">
-    <button class="btn btn-primary btn-xs" title="switchport">S</button>&nbsp;switchport
-      <button class="btn btn-black btn-xs" title="routed port">R</button>&nbsp;routed port
-  </div>
-  <div class="col-md-2">
     <input id="filter" type="text" class="form-control" placeholder="What you looking for?">
   </div>
   <div class="col-md-1">
@@ -42,13 +38,13 @@ $(document).ready(function () {
           <th>Name {{ hosts[0] }}</th>
           <th>Speed</th>
           <th>Duplex</th>
-          <th>Status</th>
-          <th>r/s</th>
+          <th>State</th>
+          <th>Info</th>
           <th>Name {{ hosts[1] }}</th>
           <th>Speed</th>
           <th>Duplex</th>
-          <th>Status</th>
-          <th>r/s</th>
+          <th>State</th>
+          <th>Info</th>
         </tr>
       </thead>
       <tbody class="searchable">
@@ -59,32 +55,64 @@ $(document).ready(function () {
           <td> {{ value['speed1'] }} </td>
           <td> {{ value['duplex1'] }} </td>
           {% if value['state1'] == 'connected' %}
-          <td><span class="glyphicon glyphicon-ok" style="color:green" aria-hidden="true"></span></td>
-          {% elif value['state1'] == 'notconnect' %}
-          <td><span class="glyphicon glyphicon-remove" style="color:red" aria-hidden="true"></span></td>
+          <td><span class="glyphicon glyphicon-ok-sign" style="color:green" aria-hidden="true" title="connected"></span></td>
+          {% elif value['state1'] == 'notconnect' or value['state1'] == 'down' %}
+          <td><span class="glyphicon glyphicon-remove-sign" style="color:red" aria-hidden="true" title="down"></span></td>
+          {% elif value['state1'] == 'sfpAbsent' or value['state1'] == 'xcvrAbsent' %}
+          <td><span class="glyphicon glyphicon glyphicon-minus-sign" style="color:orange" aria-hidden="true" title="absent"></span></td>
+          {% elif value['state1'] == 'sfpInvalid' %}
+          <td><span class="glyphicon glyphicon glyphicon-question-sign" style="color:orange" aria-hidden="true" title="sfpInvalid"></span></td>
+          {% elif value['state1'] == 'inactive' %}
+          <td><span class="glyphicon glyphicon glyphicon-question-sign" style="color:orange" aria-hidden="true" title="inactive"></span></td>
+          {% elif value['state1'] == 'noOperMembers' %}
+          <td><span class="glyphicon glyphicon glyphicon-question-sign" style="color:orange" aria-hidden="true" title="noOperMembers"></span></td>
+          {% elif value['state1'] == 'disabled' %}
+          <td><span class="glyphicon glyphicon glyphicon-question-sign" style="color:orange" aria-hidden="true" title="disabled"></span></td>
+          {% elif value['state1'] == 'suspnd' %}
+          <td><span class="glyphicon glyphicon glyphicon-question-sign" style="color:orange" aria-hidden="true" title="suspnd"></span></td>
+          {% elif 'unknown enum' in value['state1'] %}
+          <td><span class="glyphicon glyphicon glyphicon-question-sign" style="color:orange" aria-hidden="true" title="unknown enum"></span></td>
           {% else %}
           <td><span style="color: red;">{{ value['state1'] }}</span></td>
           {% endif %}
-          {% if value['vlan2'] != 'routed' %}
-          <td><a href="{{ url_for('ifsw', iface=key, host=hosts[1]) }}"><button class="btn btn-primary btn-xs" title="switchport">S</button></span></a></td>
+           <td class="text-nowrap">
+          {% if value['vlan1'] != 'routed' %}
+          <a href="{{ url_for('ifsw', iface=key, host=hosts[0]) }}"><button class="btn btn-black btn-xs" title="switchport">S</button></a>
           {% else %}
-          <td><button class="btn btn-black btn-xs" title="routed port">R</button></td>
+          <button class="btn btn-black btn-xs" title="routed port">R</button>
           {% endif %}
+          <a href="{{ url_for('iferr', iface=key, host=hosts[0]) }}"><button class="btn btn-black btn-xs" title="errors">e</button></a></td>
           <td> {{ value['name2'] }} </td>
           <td> {{ value['speed2'] }} </td>
           <td> {{ value['duplex2'] }} </td>
           {% if value['state2'] == 'connected' %}
-          <td><span class="glyphicon glyphicon-ok" style="color:green" aria-hidden="true"></span></td>
-          {% elif value['state2'] == 'notconnect' %}
-          <td><span class="glyphicon glyphicon-remove" style="color:red" aria-hidden="true"></span></td>
+          <td><span class="glyphicon glyphicon-ok-sign" style="color:green" aria-hidden="true" title="connected"></span></td>
+          {% elif value['state2'] == 'notconnect' or value['state2'] == 'down' %}
+          <td><span class="glyphicon glyphicon-remove-sign" style="color:red" aria-hidden="true" title="down"></span></td>
+          {% elif value['state2'] == 'sfpAbsent' or value['state2'] == 'xcvrAbsent' %}
+          <td><span class="glyphicon glyphicon glyphicon-minus-sign" style="color:orange" aria-hidden="true" title="absent"></span></td>
+          {% elif value['state2'] == 'sfpInvalid' %}
+          <td><span class="glyphicon glyphicon glyphicon-question-sign" style="color:orange" aria-hidden="true" title="sfpInvalid"></span></td>
+          {% elif value['state2'] == 'inactive' %}
+          <td><span class="glyphicon glyphicon glyphicon-question-sign" style="color:orange" aria-hidden="true" title="inactive"></span></td>
+          {% elif value['state2'] == 'noOperMembers' %}
+          <td><span class="glyphicon glyphicon glyphicon-question-sign" style="color:orange" aria-hidden="true" title="noOperMembers"></span></td>
+          {% elif value['state2'] == 'disabled' %}
+          <td><span class="glyphicon glyphicon glyphicon-question-sign" style="color:orange" aria-hidden="true" title="disabled"></span></td>
+          {% elif value['state2'] == 'suspnd' %}
+          <td><span class="glyphicon glyphicon glyphicon-question-sign" style="color:orange" aria-hidden="true" title="suspnd"></span></td>
+          {% elif 'unknown enum' in value['state2'] %}
+          <td><span class="glyphicon glyphicon glyphicon-question-sign" style="color:orange" aria-hidden="true" title="unknown enum"></span></td>
           {% else %}
           <td><span style="color: red;">{{ value['state2'] }}</span></td>
           {% endif %}
+           <td class="text-nowrap">
           {% if value['vlan2'] != 'routed' %}
-          <td><a href="{{ url_for('ifsw', iface=key, host=hosts[1]) }}"><button class="btn btn-primary btn-xs" title="switchport">S</button></span></a></td>
+          <a href="{{ url_for('ifsw', iface=key, host=hosts[1]) }}"><button class="btn btn-black btn-xs" title="switchport">S</button></a>
           {% else %}
-          <td><button class="btn btn-black btn-xs" title="routed port">R</button></td>
+          <button class="btn btn-black btn-xs" title="routed port">R</button>
           {% endif %}
+          <a href="{{ url_for('iferr', iface=key, host=hosts[0]) }}"><button class="btn btn-black btn-xs" title="errors">e</button></a></td>
         </tr>
       {% endfor %}
       </tbody>
