@@ -4,8 +4,6 @@ from forms import PortchannelForm, PeeringForm, RtbhForm, ScrubbingForm, PppoeFo
 from mycreds import *
 from nxapi_light import *
 import json, requests, re, threading, socket, sys, ssl, time
-#from pycsco.nxos.device import Device
-#from pycsco.nxos.utils.nxapi_lib import *
 from collections import OrderedDict
 from librouteros import login
 logger.setLevel(logging.INFO)
@@ -28,7 +26,7 @@ def valid_ip():
     else:
         return False
 
-#@app.before_first_request
+@app.before_first_request
 def get_ifaces_pos():
 
     def run_job(host):
@@ -79,7 +77,7 @@ def get_ifaces_pos():
     thread = threading.Thread(target=run_job('n41'))
     thread.start()
 
-  #  return (ifaces, po_number)
+    return True
 
 def create_twin_dict(output1, output2):
 
