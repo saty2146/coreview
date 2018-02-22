@@ -7,11 +7,13 @@ interface port-channel{{ po_number }}
  {%- if trunk %}
  switchport mode trunk
  switchport trunk allowed vlan {{ form.vlans.data }}
+ spanning-tree port type edge trunk
  {%- else %}
  switchport mode access
  switchport access vlan {{ form.vlans.data }}
+ spanning-tree port type edge
  {%- endif %}
- spanning-tree port type edge trunk
+ no snmp trap link-status
  storm-control broadcast level 3.00
  storm-control multicast level 3.00
  no shutdown
@@ -22,10 +24,13 @@ interface {{ iface1  }}
  {%- if trunk %}
  switchport mode trunk
  switchport trunk allowed vlan {{ form.vlans.data }}
+ spanning-tree port type edge trunk
  {%- else %}
  switchport mode access
  switchport access vlan {{ form.vlans.data }}
+ spanning-tree port type edge
  {%- endif %}
+ no snmp trap link-status
  storm-control broadcast level 3.00
  storm-control multicast level 3.00
  channel-group {{ po_number }} mode active
@@ -36,10 +41,13 @@ interface {{ iface2  }}
  {%- if trunk %}
  switchport mode trunk
  switchport trunk allowed vlan {{ form.vlans.data }}
+ spanning-tree port type edge trunk
  {%- else %}
  switchport mode access
  switchport access vlan {{ form.vlans.data }}
+ spanning-tree port type edge
  {%- endif %}
+ no snmp trap link-status
  storm-control broadcast level 3.00
  storm-control multicast level 3.00
  channel-group {{ po_number }} mode active
