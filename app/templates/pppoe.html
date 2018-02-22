@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3>PPPoE lookup</h3>
+<hr>
+<form action="" method="post" name="rtbh">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-4">
+        {{ form.hidden_tag() }}
+        <label>PPPoE account</label>
+        {% for error in form.pppoe.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+        {{ form.pppoe(class_="form-control form-group", placeholder="pppoe account") }}
+        <button type="submit" name="find" class="btn btn-primary">Find</button>
+      </div>
+       <div class="col-sm-1"></div>
+      <div class="col-sm-3">
+        <label>PPPoE status</label>
+        {% if status %}
+        <span class="glyphicon glyphicon-ok-sign" style="color:green" title="established" aria-hidden="true"></span>
+        <li>gw: {{ gw }}</li>
+        <li>user: {{ status['name'] }}</li>
+        <li>ip: {{ status['address'] }}</li>
+        <li>mac: {{ status['caller-id'] }}</li>
+        <li>vendor: {{ vendor }}</li>
+        <li>uptime: {{ status['uptime'] }}</li>
+        <li>service: {{ status['service'] }}</li>
+        {% elif first_request %}
+        {% else %}
+            <span class="glyphicon glyphicon-remove-sign" style="color:red" title="down" aria-hidden="true"></span>
+            <h5>account not found<h5>
+            {% endif %}
+      </div>
+      <div class="col-sm-2">
+        <label>GW status</label>
+        {% if gw_status %}
+        {% for gw in  gw_status %}
+        <li>{{ gw }}: {{ gw_status[gw] }}</li>
+        {% endfor %}
+            {% endif %}
+
+      </div>
+    </div>
+</form>
+</div>
+
+{% endblock %}

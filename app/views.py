@@ -1,18 +1,22 @@
 from flask import render_template, request
 from app import app
-from forms import PortchannelForm, PeeringForm, RtbhForm, ScrubbingForm
+from forms import PortchannelForm, PeeringForm, RtbhForm, ScrubbingForm, PppoeForm, VxlanForm
 from mycreds import *
 from nxapi_light import *
-import json, requests, re, threading
+import json, requests, re, threading, socket, sys, ssl, time
 #from pycsco.nxos.device import Device
 #from pycsco.nxos.utils.nxapi_lib import *
 from collections import OrderedDict
+from librouteros import login
+logger.setLevel(logging.INFO)
 
 requests.packages.urllib3.disable_warnings()
 
-#global variable
-ifaces = []
-po_number = 1000
+#global variable for portchannels SHC3 & DC4
+ifaces_shc3 = []
+po_number_shc3 = 1000
+ifaces_dc4 = []
+po_number_dc4 = 1000
 
 ip_whitelist = ['81.89.63.129', '81.89.63.130', '81.89.63.131', '81.89.63.132', '81.89.63.133', '81.89.63.134', '81.89.63.135', '81.89.63.136', '81.89.63.137', '81.89.63.138', '81.89.63.139', '81.89.63.140', '81.89.63.141', '81.89.63.142', '81.89.63.143', '81.89.63.144', '81.89.63.145', '81.89.63.146', '81.89.63.147', '81.89.63.148', '81.89.63.149', '81.89.63.150', '127.0.0.1']
 
@@ -24,24 +28,29 @@ def valid_ip():
     else:
         return False
 
-@app.before_first_request
-def get_ifs_pos_shc3():
+#@app.before_first_request
+def get_ifaces_pos():
 
-    def run_job():
-        print "Run Job running"
-        global ifaces 
-        global po_number
-        start = 300
-        end = 400
+    def run_job(host):
+        
+        ifaces = []
+        ip_box = boxes[host]['ip']
+        
+        if host == 'n31':
+            start = 301
+            end = 400
+        else:
+            start = 401
+            end = 500
 
-        box = NXAPIClient(hostname="192.168.35.40", username = creds['user'], password = creds['passwd'])
+        box = NXAPIClient(hostname=ip_box, username = creds['user'], password = creds['passwd'])
         po_list = box.get_po_list(box.nxapi_call("show port-channel summary"))
         po_list = map(int, po_list)
         po_list = sorted(x for x in po_list if x >= start and x <= end)
         po_list = set(range(start,end)) - set(po_list)
         po_list = sorted(list(po_list))
-        po_number = po_list[0]
         print "before request running"
+
         iface_status = box.get_iface_status(box.nxapi_call("show interface status"))
         
         iface_regex = re.compile(r".*({}).*".format('Ethernet'))
@@ -54,15 +63,23 @@ def get_ifs_pos_shc3():
             else:
                 pass
 
-        ifaces = [str(r) for r in ifaces]
+        if host == 'n31':
+            global ifaces_shc3 
+            global po_number_shc3
+            po_number_shc3 = po_list[0]
+            ifaces_shc3 = [str(r) for r in ifaces]
+        else:
+            global ifaces_dc4
+            global po_number_dc4
+            po_number_dc4 = po_list[0]
+            ifaces_dc4 = [str(r) for r in ifaces]
 
-    thread = threading.Thread(target=run_job)
+    thread = threading.Thread(target=run_job('n31'))
+    thread.start()
+    thread = threading.Thread(target=run_job('n41'))
     thread.start()
 
-    print "IFACES: ", ifaces
-
   #  return (ifaces, po_number)
-
 
 def create_twin_dict(output1, output2):
 
@@ -89,7 +106,7 @@ def create_twin_dict(output1, output2):
     return iface_status
 
 def convert_mac(raw_list, mac_key):
-    
+
     for arp in raw_list:
         if mac_key in arp:
             mac = str(arp[mac_key])
@@ -152,6 +169,21 @@ def ajax_port(twins):
     iface_status = create_twin_dict(iface_box1, iface_box2)
 
     return render_template('ajax_port.html', title=title, iface_status = iface_status, hosts = hosts, twins = twins, location = location)
+
+@app.route('/port_host/<host>', methods=['POST','GET'])
+def port_host(host):
+    return render_template('port_host.html', host = host)
+
+@app.route('/port_host/ajax_port_<host>', methods=['POST','GET'])
+def ajax_port_host(host):
+    
+    ip_box = boxes[host]['ip']
+    location = boxes[host]['location']
+    title = str(location) + " " + str(host)
+    box = NXAPIClient(hostname = ip_box, username = creds['user'], password = creds['passwd'])
+    iface_status = box.get_iface_status(box.nxapi_call("show interface status"))
+    
+    return render_template('ajax_port_host.html', title=title, iface_status = iface_status, host = host, location = location)
 
 @app.route('/arp/<host>', methods=['POST','GET'])
 def arp(host):
@@ -259,6 +291,91 @@ def scrubbing():
 
     return render_template('scrubbing.html', title='Scrubbing', form=form, status=status, advertisement=advertisement,log=log)
 
+def pppoe_status(pppoe):
+   
+    status = {}
+    gw_status  = {}
+    for k,v in pppoe_gws.iteritems():
+        gw = k
+        ip = v
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        server_address = (ip, 8728)
+        sock.settimeout(5.0)
+
+        try:
+            sock.connect(server_address)
+            api = login(username='api', password='apina', sock=sock)
+            #params = {'.proplist':('type,.id,name,mac-address')}
+            #result = api(cmd='/interface/print', **params)
+            #result = api(cmd='/interface/pppoe-server/print')
+        except socket.error, exc:
+            print "Socket error: %s" % exc
+            gw_status[gw] = 'Socket error'
+            continue
+        
+        try:
+            result = api(cmd='/ppp/active/print')
+        except:
+            gw_status[gw] = 'API error'
+            print "API error"
+            print result
+            continue
+       
+        sock.close()
+
+        gw_status[gw] = 'OK'
+
+        for acc in result: 
+            if acc['name'] == pppoe:
+                status = acc
+                break
+        else:
+            time.sleep(0.2)
+            continue
+        break
+
+    print status, gw, gw_status
+
+    return (status, gw, gw_status)
+
+def pppoe_get_vendor(mac):
+    MAC_URL = 'http://macvendors.co/api/%s'
+    r = requests.get(MAC_URL % mac)
+    r = r.json()
+    r = r['result']
+    print r
+    
+    if 'error' not in r:
+        mac = r['company'] 
+    else:
+        mac = None
+    return mac
+
+@app.route('/pppoe', methods=['POST','GET'])
+def pppoe():
+    form = PppoeForm()
+    first_request = True
+    mac_address = None
+    vendor = None
+
+    if form.validate_on_submit():
+        print "validated"
+        first_request = False
+        pppoe = form.pppoe.data
+        status, gw, gw_status = pppoe_status(pppoe)
+        if status:
+            #mac_address = status['remote-address']
+            mac_address = status['caller-id']
+            vendor = pppoe_get_vendor(mac_address)
+        return render_template('pppoe.html', title='Pppoe', form=form, status=status, gw=gw, gw_status = gw_status, vendor=vendor, first_request = first_request)
+
+    return render_template('pppoe.html', title='Pppoe', form=form, first_request = first_request)
+
+@app.route('/pppoejq', methods=['POST','GET'])
+def pppoejq():
+    form = PppoeForm()
+    return render_template('jquery.html')
+
 @app.route('/peering', methods=['POST','GET'])
 def peering():
     form = PeeringForm()
@@ -275,16 +392,49 @@ def peering():
 
     return render_template('peering.html', title='Peering', form=form, first_request = first_request)
 
+def get_vxlan_data(vlanid):
+    vlanidhex = bin(vlanid)[2:].zfill(16)
+    octet1 = int(vlanidhex[:8], 2)
+    octet2 = int(vlanidhex[8:], 2)
+    return (octet1, octet2)
+
+@app.route('/vxlan', methods=['POST','GET'])
+def vxlan():
+    form = VxlanForm()
+    first_request = True
+    vxlan_data = {}
+
+    if form.validate_on_submit():
+        print "validated"
+        first_request = False
+        vlanid = form.vlanid.data
+        vni = 10000 + int(vlanid )
+        octet1, octet2 = get_vxlan_data(vlanid)
+        vxlan_data['octet1'] = octet1
+        vxlan_data['octet2'] = octet2
+        vxlan_data['vni'] = vni
+
+        return render_template('vxlan.html', title='Vxlan', form=form, vxlan_data = vxlan_data, first_request = first_request)
+
+    return render_template('vxlan.html', title='Vxlan', form=form, first_request = first_request)
+
 @app.route('/po/<twins>', methods=['POST','GET'])
 def portchannel(twins):
+    
+    global ifaces_shc3
+    global po_number_shc3
+    global ifaces_dc4
+    global po_number_dc4
 
-    return render_template('portchannel.html', twins = twins)
+    if twins == 'tn3':
+        ifaces = ifaces_shc3
+        po_number = po_number_shc3
+        location = 'SHC3'
+    else: 
+        ifaces = ifaces_dc4
+        po_number = po_number_dc4
+        location = 'DC4'
 
-@app.route('/po/ajax_<twins>', methods=['POST','GET'])
-def ajax_portchannel(twins):
-
-    global ifaces 
-    global po_number
     first_request = True
     twins = twins
     form = PortchannelForm()
@@ -295,7 +445,6 @@ def ajax_portchannel(twins):
     print form.data
 
     porttype = form.porttype.data
-    location = form.location.data
     iface1_id = form.iface1.data
     
     print portchannel, porttype, location, iface1_id, twins
@@ -306,7 +455,6 @@ def ajax_portchannel(twins):
         print portchannel, porttype, location, iface1_id
         portchannel = form.portchannel.data
         porttype = form.porttype.data
-        location = form.location.data
         iface1_id = form.iface1.data
         iface2_id = form.iface2.data
         clientid = form.clientid.data
@@ -322,13 +470,13 @@ def ajax_portchannel(twins):
         
         form.clientid.data = clientid
         
-        return render_template('ajax_portchannel.html', title='Portchannel', form=form, po_number=po_number, description=description, portchannel=portchannel, iface1=iface1, iface2 = iface2, trunk = porttype, twins = twins, first_request = first_request)
+        return render_template('portchannel.html', title='Portchannel', form=form, po_number=po_number, description=description, location=location, portchannel=portchannel, iface1=iface1, iface2 = iface2, trunk = porttype, twins = twins, first_request = first_request)
         
     else:
         clientid = 0
         print form.errors
 
-    return render_template('ajax_portchannel.html', title='Portchannel', form=form, twins = twins, first_request=first_request)
+    return render_template('portchannel.html', title='Portchannel', form=form, twins = twins, location = location, first_request=first_request)
 
 
 @app.route('/ifsw/<host>/<path:iface>', methods=['POST','GET'])

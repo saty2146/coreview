@@ -15,7 +15,6 @@ def vnet_ipv4(form, field):
 
 class PortchannelForm(FlaskForm):
     portchannel = SelectField('portchannel', coerce=int, choices=[(1,'Yes'),(0,'No')])
-    location = SelectField('location', coerce=int, choices = [(1, 'SHC3')])
     porttype = SelectField('porttype', coerce=int, choices = [(0, 'Access'), (1, 'Trunk')])
     clientid = IntegerField('clientid', validators=[Optional()])
     company = StringField('company', validators=[DataRequired()])
@@ -33,10 +32,16 @@ class PeeringForm(FlaskForm):
     prefixlimipv4 = IntegerField('prefixlimipv4', validators=[DataRequired(), NumberRange(min=1, max=None, message=None)])
     prefixlimipv6 = IntegerField('prefixlimipv6', validators=[DataRequired(),NumberRange(min=1, max=None, message=None)])
 
+class VxlanForm(FlaskForm):
+    vlanid = IntegerField('vlan', validators=[DataRequired(), NumberRange(min=1, max=9999, message='1-9999')])
+    vlanname = StringField('vlanname', validators=[DataRequired()])
+
+class PppoeForm(FlaskForm):
+    pppoe = StringField('pppoe account', validators=[DataRequired()])
+
 class RtbhForm(FlaskForm):
     ipv4 = StringField('ipv4', validators=[DataRequired(),IPAddress(ipv4=True, ipv6=False, message=None),vnet_ipv4])
     action = SelectField('action', coerce=int, choices=[(1,'announce'),(0,'withdraw')])
-
 
 class ScrubbingForm(FlaskForm):
     action = SelectField('action', coerce=int, choices=[(1,'announce'),(0,'withdraw')])

@@ -30,9 +30,9 @@
               {{ k }}
             {% endif %}
             {% if v == "established" %}
-              <span class="glyphicon glyphicon-ok" style="color:green" aria-hidden="true"></span>
+              <span class="glyphicon glyphicon-ok-sign" style="color:green" title="established" aria-hidden="true"></span>
             {% else %}
-              <span class="glyphicon glyphicon-remove" style="color:red" aria-hidden="true"></span>
+              <span class="glyphicon glyphicon-remove-sign" style="color:red" title="down" aria-hidden="true"></span>
             {% endif %}
               {% if advertisement[k] %}
                 {% for v in advertisement[k] %}

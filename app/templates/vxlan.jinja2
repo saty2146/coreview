@@ -1,0 +1,11 @@
+configure terminal
+!
+vlan {{ form.vlanid.data }}
+ name {{ form.vlanname.data }} 
+ vni-segment {{ vxlan_data['vni'] }}
+ exit
+!
+interface nve1
+ member vni {{ vxlan_data['vni'] }}  mcast-group 239.239.{{ vxlan_data['octet1'] }}.{{ vxlan_data['octet2'] }}
+!
+end

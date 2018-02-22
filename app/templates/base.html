@@ -29,18 +29,29 @@ $(function(){
               <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">IFACE <span class="caret"></span></a>
                 <ul class="dropdown-menu">
+                  <li class="dropdown-header">N5K</li>
                   <li><a href="/port/tn3">SHC3_N5k</a></li>
+                  <li><a href="/port/tn4">DC4_N5k</a></li>
+                  <li role="separator" class="divider"></li>
+                  <li class="dropdown-header">N9K</li>
                   <li><a href="/port/tn91">SIX_N9k</a></li>
                   <li><a href="/port/tn92">SITEL_N9k</a></li>
                   <li><a href="/port/tn93">SHC3_N9k</a></li>
-                  <li><a href="/port/tn94">DC4_n9k</a></li>
+                  <li><a href="/port/tn94">DC4_N9k</a></li>
+                  <li role="separator" class="divider"></li>
+                  <li class="dropdown-header">N3K</li>
+                  <li><a href="/port_host/datacube_n3k">Datacube_N3k</a></li>
+                  <li><a href="/port_host/axton_n3k">Axton_N3k</a></li>
                 </ul>
               </li>
               <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">ARP <span class="caret"></span></a>
                 <ul class="dropdown-menu">
+                  <li class="dropdown-header">N5K</li>
                   <li><a href="/arp/n31">SHC3_N31</a></li>
                   <li><a href="/arp/n32">SHC3_N32</a></li>
+                  <li role="separator" class="divider"></li>
+                  <li class="dropdown-header">N9K</li>
                   <li><a href="/arp/n911">SIX_N911</a></li>
                   <li><a href="/arp/n912">SIX_N912</a></li>
                   <li><a href="/arp/n921">SITEL_N921</a></li>
@@ -49,13 +60,20 @@ $(function(){
                   <li><a href="/arp/n932">SHC3_N932</a></li>
                   <li><a href="/arp/n941">DC4_N941</a></li>
                   <li><a href="/arp/n942">DC4_N942</a></li>
+                  <li role="separator" class="divider"></li>
+                  <li class="dropdown-header">N3K</li>
+                  <li><a href="/arp/axton_n3k">Axton_N3k</a></li>
+                  <li><a href="/arp/datacube_n3k">Datacube_N3k</a></li>
                 </ul>
               </li>
               <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">MAC <span class="caret"></span></a>
                 <ul class="dropdown-menu">
+                  <li class="dropdown-header">N5K</li>
                   <li><a href="/mac/n31">SHC3_N31</a></li>
                   <li><a href="/mac/n32">SHC3_N32</a></li>
+                  <li role="separator" class="divider"></li>
+                  <li class="dropdown-header">N9K</li>
                   <li><a href="/mac/n911">SIX_N911</a></li>
                   <li><a href="/mac/n912">SIX_N912</a></li>
                   <li><a href="/mac/n921">SITEL_N921</a></li>
@@ -64,6 +82,10 @@ $(function(){
                   <li><a href="/mac/n932">SHC3_N932</a></li>
                   <li><a href="/mac/n941">DC4_N941</a></li>
                   <li><a href="/mac/n942">DC4_N942</a></li>
+                  <li role="separator" class="divider"></li>
+                  <li class="dropdown-header">N3K</li>
+                  <li><a href="/mac/axton_n3k">Axton_N3k</a></li>
+                  <li><a href="/mac/datacube_n3k">Datacube_N3k</a></li>
                 </ul>
               </li>
               <li class="dropdown">
@@ -85,7 +107,9 @@ $(function(){
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">ConfGen <span class="caret"></span></a>
                 <ul class="dropdown-menu">
                   <li><a href="/peering">Peering</a></li>
-                  <li><a href="/po/tn3">SHC3_N5k</a></li>
+                  <li><a href="/vxlan">Vxlan</a></li>
+                  <li><a href="/po/tn3">Port-channel_SHC3</a></li>
+                  <li><a href="/po/tn4">Port-channel_DC4</a></li>
                   <li role="separator" class="divider"></li>
                   <li class="dropdown-header">Nav header</li>
                   <li><a href="#">Separated link</a></li>
@@ -99,6 +123,12 @@ $(function(){
                   <li><a href="/scrubbing">SCRUBBING</a></li>
                 </ul>
               </li>
+            </ul>
+            </ul>
+            <ul class="nav navbar-nav">
+              <li><a href="/pppoe">PPPoE</a></li>
+            </ul>
+            <ul class="nav navbar-nav">
             </ul>
             <ul class="nav navbar-nav navbar-right">
               <li><a href="#">Contact</a></li>

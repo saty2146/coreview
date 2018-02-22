@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script>
+  var path = 'ajax_port_' + '{{ host }}';
+
+  $(function () { 
+    $("#content").load(path); 
+  });
+</script>
+
+<div id="content">Loading...</div>
+
+{% endblock %}
