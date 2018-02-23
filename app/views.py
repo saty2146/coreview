@@ -50,27 +50,47 @@ def get_ifaces_pos():
         print "before request running"
 
         iface_status = box.get_iface_status(box.nxapi_call("show interface status"))
-        
-        iface_regex = re.compile(r".*({}).*".format('Ethernet'))
 
-        for i in range(len(iface_status)):
-            interface = iface_status[i]['interface']
-            mo_iface = iface_regex.search(interface)
+        for item in iface_status:
+            key = item['interface']
+            value = item['state']
+            
+            if value == 'connected':
+                value = 'Up'
+            else:
+                value = 'Down'
+
+            key_value = key + ' ' + value
+            iface_regex = re.compile(r".*({}).*".format('Ethernet'))
+            mo_iface = iface_regex.search(key)
             if mo_iface:
-                ifaces.append(interface)
+                ifaces.append(key_value)
             else:
                 pass
+        #print ifaces
+
+        
+#        iface_regex = re.compile(r".*({}).*".format('Ethernet'))
+#
+#        for i in range(len(iface_status)):
+#            interface = iface_status[i]['interface']
+#            mo_iface = iface_regex.search(interface)
+#            if mo_iface:
+#                ifaces.append(interface)
+#            else:
+#                pass
 
         if host == 'n31':
             global ifaces_shc3 
             global po_number_shc3
             po_number_shc3 = po_list[0]
-            ifaces_shc3 = [str(r) for r in ifaces]
+            #ifaces_shc3 = [str(r) for r in ifaces]
+            ifaces_shc3 = ifaces
         else:
             global ifaces_dc4
             global po_number_dc4
             po_number_dc4 = po_list[0]
-            ifaces_dc4 = [str(r) for r in ifaces]
+            ifaces_dc4 = ifaces
 
     thread = threading.Thread(target=run_job('n31'))
     thread.start()
@@ -432,7 +452,6 @@ def portchannel(twins):
         ifaces = ifaces_dc4
         po_number = po_number_dc4
         location = 'DC4'
-
     first_request = True
     twins = twins
     form = PortchannelForm()
@@ -440,13 +459,9 @@ def portchannel(twins):
     form.iface1.choices = form.iface2.choices = list(zip(ids, ifaces))
     portchannel = form.portchannel.data
 
-    print form.data
-
     porttype = form.porttype.data
     iface1_id = form.iface1.data
     
-    print portchannel, porttype, location, iface1_id, twins
-
     if form.validate_on_submit():
         print "validated"
         first_request = False

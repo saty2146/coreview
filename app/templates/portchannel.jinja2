@@ -18,8 +18,8 @@ interface port-channel{{ po_number }}
  storm-control multicast level 3.00
  no shutdown
 !
-default interface {{ iface1 }}
-interface {{ iface1  }}
+default interface {{ iface1 | replace(' Up','') | replace(' Down','')}}
+interface {{ iface1 | replace(' Up','') | replace(' Down','')}}
  description {{ description }}
  {%- if trunk %}
  switchport mode trunk
@@ -35,8 +35,8 @@ interface {{ iface1  }}
  storm-control multicast level 3.00
  channel-group {{ po_number }} mode active
 !
-default interface {{ iface2  }}
-interface {{ iface2  }}
+default interface {{ iface2 | replace(' Up','') | replace(' Down','')}}
+interface {{ iface2 | replace(' Up','') | replace(' Down','')}}
  description {{ description }}
  {%- if trunk %}
  switchport mode trunk

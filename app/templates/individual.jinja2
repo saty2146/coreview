@@ -1,28 +1,34 @@
 configure terminal
 !
-default interface {{ iface1  }}
-interface {{ iface1  }}
+default interface  {{ iface1 | replace(' Up','') | replace(' Down','') }}
+interface {{ iface1 | replace(' Up','') | replace(' Down','') }}
  description {{ description }}
  {%- if trunk %}
  switchport mode trunk
  switchport trunk allowed vlan {{ form.vlans.data }}
+ spanning-tree port type edge trunk
  {%- else %}
  switchport mode access
  switchport access vlan {{ form.vlans.data }}
+ spanning-tree port type edge
  {%- endif %}
+ no snmp trap link-status
  storm-control broadcast level 3.00
  storm-control multicast level 3.00
 !
-default interface {{ iface2  }}
-interface {{ iface2  }}
+default interface {{ iface2 | replace(' Up','') | replace(' Down','') }}
+interface {{ iface2 | replace(' Up','') | replace(' Down','') }}
  description {{ description }}
  {%- if trunk %}
  switchport mode trunk
  switchport trunk allowed vlan {{ form.vlans.data }}
+ spanning-tree port type edge trunk
  {%- else %}
  switchport mode access
  switchport access vlan {{ form.vlans.data }}
+ spanning-tree port type edge
  {%- endif %}
+ no snmp trap link-status
  storm-control broadcast level 3.00
  storm-control multicast level 3.00
 !
