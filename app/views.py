@@ -1,12 +1,14 @@
 from flask import render_template, request
 from app import app
-from forms import PortchannelForm, PeeringForm, RtbhForm, ScrubbingForm, PppoeForm, VxlanForm
+from forms import PortchannelForm, PeeringForm, RtbhForm, ScrubbingForm, PppoeForm, VxlanForm, DateForm
 from mycreds import *
 from nxapi_light import *
 import json, requests, re, threading, socket, sys, ssl, time
 from collections import OrderedDict
 from librouteros import login
 logger.setLevel(logging.INFO)
+import datetime
+from boxes import *
 
 requests.packages.urllib3.disable_warnings()
 
@@ -510,3 +512,32 @@ def iferr(host, iface):
     iferr = box.get_iface_errors(box.nxapi_call("show interface " + iface + " counters errors" ))
 
     return render_template('iface_errors.html', title='Interface errors', iface=iface, host=host, iferr=iferr) 
+
+@app.route('/logs', methods=['POST','GET'])
+def logs():
+    form = DateForm()
+    if form.validate_on_submit():
+        print("validated")
+        dt = str(form.dt.data)
+        date = dt.replace('-','')
+        box_id = form.box.data
+        box = [f[1] for f in box_form_choice if f[0] == box_id]
+        severity_id = form.severity.data
+        severity = [f[1] for f in severity_form_choice if f[0] == severity_id]
+
+        payload = { 'date':date, 'severity':severity, 'box':box }
+        r = requests.get('http://127.0.0.1:5002/syslog', params=payload)
+        print(r.url)
+        logs  = json.loads(r.text)
+
+        return render_template('logs.html', logs=logs, form=form) 
+        
+    else:
+        date = datetime.datetime.now().strftime ("%Y%m%d")
+        severity = 'err'
+        box = 'six1'
+        payload = { 'date':date, 'severity':severity, 'box':box }
+        r = requests.get('http://127.0.0.1:5002/syslog', params=payload)
+        print(r.url)
+        logs  = json.loads(r.text)
+        return render_template('logs.html', logs=logs, form=form) 

@@ -1,37 +1,17 @@
 {% block content %}
 
-<script>
-$(document).ready(function () {
-  (function ($) {
-    $('#filter').keyup(function () {
-      
-      var rex = new RegExp($(this).val(), 'i');
-      $('.searchable tr').hide();
-      $('.searchable tr').filter(function () {
-        return rex.test($(this).text());
-      }).show();
-      
-    })
-    
-  }(jQuery));
-
-});
-</script>
+<script src="{{ url_for('static', filename='js/datatable.js') }}"></script>
 
 <div class="form-group row">
-  <div class="col-md-8" style="font-size:25px">
+  <div class="col-md-11" style="font-size:25px">
     {{ location }}: Port Status {{ hosts[0] }} {{ hosts[1] }}
   </div>
-  <div class="col-md-3">
-    <input id="filter" type="text" class="form-control" placeholder="What you looking for?">
-  </div>
-  <div class="col-md-1">
+  <div class="col-md-1"><div class="pull-right">
     <a href="{{ url_for('port', twins=twins) }}"><button class="btn btn-primary" align="left"><span class="glyphicon glyphicon-refresh "aria-hidden="true"></span></button></a>
   </div>
+  </div>
 </div>
-
-  <div class="container-fluid">
-    <table class="table table-hover table-bordered table-responsive">
+    <table id=mytable class="table table-hover table-bordered table-responsive">
       <thead>
         <tr>
           <th>Port</th>
@@ -47,7 +27,7 @@ $(document).ready(function () {
           <th>Info</th>
         </tr>
       </thead>
-      <tbody class="searchable">
+      <tbody">
       {% for key, value in iface_status.iteritems() %}
         <tr>
           <td> {{ key }} </td>
@@ -117,7 +97,6 @@ $(document).ready(function () {
       {% endfor %}
       </tbody>
     </table>
-</div>
 </div>
 
 {% endblock %}

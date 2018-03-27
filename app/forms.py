@@ -1,7 +1,9 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, BooleanField, SubmitField, SelectField, RadioField, TextAreaField, TextField, IntegerField, ValidationError
+from wtforms import StringField, BooleanField, SubmitField, SelectField, RadioField, TextAreaField, TextField, IntegerField, ValidationError, DateField 
 from wtforms.validators import DataRequired, IPAddress, NumberRange, Optional
 import ipaddress
+from datetime import datetime
+from boxes import *
 
 def vnet_ipv4(form, field):
     if (
@@ -47,3 +49,7 @@ class ScrubbingForm(FlaskForm):
     action = SelectField('action', coerce=int, choices=[(1,'announce'),(0,'withdraw')])
     network = SelectField('network', coerce=int, choices=[(0,''),(1,'86.110.233.0/24'),(2,'46.229.237.0/24'),(3,'81.89.54.0/24'),(4,'93.184.75.0/24'),(5,'185.176.75.0/24')])
 
+class DateForm(FlaskForm):
+    dt = DateField('dt', format="%d/%m/%Y")
+    box = SelectField('box', coerce=int, choices=box_form_choice)
+    severity = SelectField('severity', coerce=int, choices=severity_form_choice)

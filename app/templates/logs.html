@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script> 
+
+<script src="{{ url_for('static', filename='js/datatable.js') }}"></script>
+<script src="{{ url_for('static', filename='js/datepicker.js') }}"></script>
+
+<div class="form-group row">
+  <div class="col-md-6" style="font-size:25px">
+    LOGS
+  </div>
+  <form class="form-search form-inline pull-right" action="" method="post">
+    {{ form.hidden_tag() }}
+    {{ form.box(class="form-control") }}
+    {{ form.severity(class="form-control") }}
+    <div class='input-group date' id='datetimepicker1' name='datetimepicker1'>
+      {{ form.dt(class="form-control") }}
+      <span class="input-group-addon">
+        <span class="glyphicon glyphicon-calendar"></span>
+      </span>
+    </div>
+    <button class="btn btn-primary" align="left" type="submit"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button></a>
+  </div>
+  </form>
+
+    <table id=mytable class="table table-hover table-bordered table-responsive table-condensed">
+      <thead>
+        <tr>
+          <th>date</th>
+          <th>time</th>
+          <th>device</th>
+          <th>type</th>
+          <th>error_code</th>
+          <th>error_message</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for item in logs['data'] %}
+        <tr>
+          <td> {{ item['datestamp'] }} </td>
+          <td> {{ item['timestamp'] }} </td>
+          <td> {{ item['device'] }} </td>
+          <td> {{ item['error_severity'] }} </td>
+          <td> {{ item['error_code'] }} </td>
+          <td> {{ item['error_message'] }} </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+</div>
+
+{% endblock %}

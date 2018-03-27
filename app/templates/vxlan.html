@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
 
+
+<script src="{{ url_for('static', filename='js/clipboard.js') }}"></script>
+
 <h3>VXLAN configuration</h3>
 <hr>
 <form action="" method="post" name="vxlan">
