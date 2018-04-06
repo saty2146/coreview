@@ -27,7 +27,7 @@ box_form_choice = [(1,'six1'),
                 (27,'six-tv')
                 ]
 severity_form_choice = [(1,'err'),
-             (2,'warn'),
-             (3,'note'),
+             (2,'warning'),
+             (3,'notice'),
              (4,'all')
              ]

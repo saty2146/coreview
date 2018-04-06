@@ -526,7 +526,7 @@ def logs():
         severity = [f[1] for f in severity_form_choice if f[0] == severity_id]
 
         payload = { 'date':date, 'severity':severity, 'box':box }
-        r = requests.get('http://127.0.0.1:5002/syslog', params=payload)
+        r = requests.get('http://217.73.28.16:5002/syslog', params=payload)
         print(r.url)
         logs  = json.loads(r.text)
 
@@ -537,7 +537,7 @@ def logs():
         severity = 'err'
         box = 'six1'
         payload = { 'date':date, 'severity':severity, 'box':box }
-        r = requests.get('http://127.0.0.1:5002/syslog', params=payload)
+        r = requests.get('http://217.73.28.16:5002/syslog', params=payload)
         print(r.url)
         logs  = json.loads(r.text)
         return render_template('logs.html', logs=logs, form=form) 
