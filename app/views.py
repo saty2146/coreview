@@ -534,7 +534,7 @@ def logs():
         
     else:
         date = datetime.datetime.now().strftime ("%Y%m%d")
-        severity = 'err'
+        severity = 'all'
         box = 'six1'
         payload = { 'date':date, 'severity':severity, 'box':box }
         r = requests.get('http://217.73.28.16:5002/syslog', params=payload)

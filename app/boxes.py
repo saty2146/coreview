@@ -26,8 +26,8 @@ box_form_choice = [(1,'six1'),
                 (26,'olt-shc3'),
                 (27,'six-tv')
                 ]
-severity_form_choice = [(1,'err'),
-             (2,'warning'),
-             (3,'notice'),
-             (4,'all')
+severity_form_choice = [(1,'all'),
+             (2,'err'),
+             (3,'warning'),
+             (4,'notice')
              ]
