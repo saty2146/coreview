@@ -534,10 +534,12 @@ def logs():
         
     else:
         date = datetime.datetime.now().strftime ("%Y%m%d")
-        severity = 'all'
-        box = 'six1'
-        payload = { 'date':date, 'severity':severity, 'box':box }
-        r = requests.get('http://217.73.28.16:5002/syslog', params=payload)
-        print(r.url)
-        logs  = json.loads(r.text)
+        # Uncomment if you want to allow default view
+        #severity = all
+        #box = six
+        #payload = { 'date':date, 'severity':severity, 'box':box }
+        #r = requests.get('http://217.73.28.16:5002/syslog', params=payload)
+        #logs  = json.loads(r.text)
+
+        logs  = {}
         return render_template('logs.html', logs=logs, form=form) 
