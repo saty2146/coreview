@@ -2,10 +2,8 @@
 {% block content %}
 
 <h3>RTBH</h3>
-<hr>
 <form action="" method="post" name="rtbh">
-  <div class="container">
-    <div class="row">
+  <div class="form-group row">
       <div class="col-sm-5">
         {{ form.hidden_tag() }}
         <label>IPv4</label>
@@ -47,9 +45,9 @@
       </div>
     </div>
 </form>
+<hr>
   <div class="row">
      <div class="col-sm-12">
-<hr>
       <label>Log</label>
       <textarea id="content" class="form-control custom-control copy-text" rows="25" name=response>
         {%- if log %}
@@ -60,7 +58,6 @@
         {%- endif %}
       </textarea>
     </div>
-  </div>
 </div>
 
 {% endblock %}

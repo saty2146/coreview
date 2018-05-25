@@ -94,6 +94,7 @@ flask/
 mycreds.py
 *.pyc
 *.swp
+*.or
 app/cookie/*
 .config.py
 .run.py

@@ -1,14 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h3>PPPoE lookup</h3>
-<hr>
+<h3>PPPoE</h3>
 <form action="" method="post" name="rtbh">
-  <div class="container">
     <div class="row">
       <div class="col-sm-4">
         {{ form.hidden_tag() }}
-        <label>PPPoE account</label>
+        <label>Account</label>
         {% for error in form.pppoe.errors %}
         <span style="color: red;">[{{ error }}]</span>
         {% endfor %}
@@ -42,7 +40,6 @@
             {% endif %}
 
       </div>
-    </div>
 </form>
 </div>
 

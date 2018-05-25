@@ -3,10 +3,9 @@
 
 <script src="{{ url_for('static', filename='js/clipboard.js') }}"></script>
 
-<h3>{{ location }}: Port channel configuration</h3>
-<hr>
+<h3>{{ location }}: PORTCHANNEL</h3>
 <form action="" method="post">
-  <div class="container">
+  <div class="row">
   <div class="col-sm-5">
     {{ form.hidden_tag() }}
     <label>Portchannel</label>
@@ -40,7 +39,7 @@
   <div class="col-sm-4">
   <label>Your Configuration</label>
   <div class="form-group form-group">
-  <textarea id="content" class="form-control custom-control" rows="23" style=width:450px name=configuration.data>
+  <textarea id="content" class="form-control custom-control" rows="23" style=width:550px name=configuration.data>
   {%- if not first_request %}
     {%- if portchannel %}
       {%- include "portchannel.jinja2" %}

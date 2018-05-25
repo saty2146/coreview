@@ -28,7 +28,7 @@ def valid_ip():
     else:
         return False
 
-@app.before_first_request
+#@app.before_first_request
 def get_ifaces_pos():
 
     def run_job(host):
@@ -251,9 +251,9 @@ def rtbh():
         
         try:
             if action:
-                payload = "neighbor 109.74.150.18 announce route " + ipv4 + "/32 next-hop 1.1.1.1 community [29405:666]"
+                payload = "neighbor 109.74.150.18 announce route " + ipv4 + "/32 next-hop 192.0.2.1 community [29405:666]"
             else: 
-                payload = "neighbor 109.74.150.18 withdraw route " + ipv4 + "/32 next-hop 1.1.1.1 community [29405:666]"
+                payload = "neighbor 109.74.150.18 withdraw route " + ipv4 + "/32 next-hop 192.0.2.1 community [29405:666]"
 
             data = {'command':payload}
             r = requests.post('http://192.168.8.3:5001/announce', data=data)
@@ -287,9 +287,9 @@ def scrubbing():
         network = network[0]
 
         if action:
-            payload = "neighbor 109.74.147.190 announce route " + network + " next-hop 1.1.1.1 community [29405:778]"
+            payload = "neighbor 109.74.147.190 announce route " + network + " next-hop 192.0.2.1 community [29405:778]"
         else: 
-            payload = "neighbor 109.74.147.190 withdraw route " + network + " next-hop 1.1.1.1 community [29405:778]"
+            payload = "neighbor 109.74.147.190 withdraw route " + network + " next-hop 192.0.2.1 community [29405:778]"
 
         try:
             data = {'command':payload}

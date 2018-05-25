@@ -7,6 +7,7 @@ from boxes import *
 
 def vnet_ipv4(form, field):
     if (
+            ipaddress.ip_address(field.data) not in ipaddress.ip_network(u'46.229.224.0/20') and 
             ipaddress.ip_address(field.data) not in ipaddress.ip_network(u'81.89.48.0/20') and 
             ipaddress.ip_address(field.data) not in ipaddress.ip_network(u'93.184.64.0/20') and
             ipaddress.ip_address(field.data) not in ipaddress.ip_network(u'109.74.144.0/20') and
