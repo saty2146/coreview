@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3>DSL</h3>
+<form action="" method="post" name="rtbh">
+  <div class="form-group row">
+      <div class="col-sm-5">
+        {{ form.hidden_tag() }}
+        <label>Login</label>
+        {% for error in form.dsl.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+        {{ form.dsl(class_="form-control form-group", placeholder="vnet$contract@bdsl.sk") }}
+        <button type="submit" name="find" class="btn btn-primary">Find</button>
+      </div>
+    </div>
+</form>
+<hr>
+  <div class="row">
+     <div class="col-sm-12">
+      <label>Log</label>
+      <textarea id="content" class="form-control custom-control copy-text" rows="25" name=response>
+        {%- if log %}
+      {%- for k in log %}
+      {{ k['_source']['@timestamp'] }} {{ k['_source']['message'] }}
+        {%- endfor %}
+        {%- else %}No logs available
+        {%- endif %}
+      </textarea>
+    </div>
+</div>
+
+{% endblock %}

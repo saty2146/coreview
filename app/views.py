@@ -1,6 +1,6 @@
 from flask import render_template, request
 from app import app
-from forms import PortchannelForm, PeeringForm, RtbhForm, ScrubbingForm, PppoeForm, VxlanForm, DateForm
+from forms import PortchannelForm, PeeringForm, RtbhForm, ScrubbingForm, PppoeForm, VxlanForm, DateForm, DslForm
 from mycreds import *
 from nxapi_light import *
 import json, requests, re, threading, socket, sys, ssl, time
@@ -9,6 +9,7 @@ from librouteros import login
 logger.setLevel(logging.INFO)
 import datetime
 from boxes import *
+from elasticsearch import Elasticsearch
 
 requests.packages.urllib3.disable_warnings()
 
@@ -160,6 +161,15 @@ def index():
 
     if valid_ip():
         return render_template('index.html', title='Home')
+    else:
+        return render_template('404.html', title = 'Not Found')
+
+@app.route('/',methods=['POST','GET'])
+@app.route('/contact', methods=['POST','GET'])
+def contact():
+
+    if valid_ip():
+        return render_template('contact.html', title='Contact')
     else:
         return render_template('404.html', title = 'Not Found')
 
@@ -338,7 +348,6 @@ def pppoe_status(pppoe):
         except:
             gw_status[gw] = 'API error'
             print "API error"
-            print result
             continue
        
         sock.close()
@@ -353,8 +362,6 @@ def pppoe_status(pppoe):
             time.sleep(0.2)
             continue
         break
-
-    print status, gw, gw_status
 
     return (status, gw, gw_status)
 
@@ -371,25 +378,92 @@ def pppoe_get_vendor(mac):
         mac = None
     return mac
 
-@app.route('/pppoe', methods=['POST','GET'])
-def pppoe():
+def create_query_log(id_pppoe):
+
+    query = {
+      "query": {
+        "bool": {
+          "must": [
+            {
+              "match": {
+                "sysloghost": "radiusint1*"
+              }
+            },
+            {
+              "match_phrase": {
+                "message": id_pppoe
+              }
+            },
+            {
+              "range": {
+                "@timestamp": {
+                  "time_zone": "+02:00",
+                  "gte": "now-14d",
+                  "lt": "now"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "sort": {
+        "@timestamp": "asc"
+      }
+    }
+
+    return query
+
+def pppoe_get_log(pppoe, query):
+
+    es = Elasticsearch([{'host': '192.168.35.225', 'port': 9200}])
+    query = es.search(body=query, request_timeout=30)
+    log = [doc for doc in query['hits']['hits']]
+
+    return log
+
+@app.route('/ftth', methods=['POST','GET'])
+def ftth():
     form = PppoeForm()
     first_request = True
     mac_address = None
     vendor = None
+    log = None
 
     if form.validate_on_submit():
         print "validated"
         first_request = False
         pppoe = form.pppoe.data
+        id_pppoe, realm = pppoe.split("@")
         status, gw, gw_status = pppoe_status(pppoe)
+
         if status:
             #mac_address = status['remote-address']
             mac_address = status['caller-id']
             vendor = pppoe_get_vendor(mac_address)
-        return render_template('pppoe.html', title='Pppoe', form=form, status=status, gw=gw, gw_status = gw_status, vendor=vendor, first_request = first_request)
+            query_log = create_query_log(pppoe)
+            log = pppoe_get_log(pppoe, query_log)
+        return render_template('ftth.html', title='Ftth', form=form, status=status, gw=gw, gw_status = gw_status, vendor=vendor, log = log, first_request = first_request)
 
-    return render_template('pppoe.html', title='Pppoe', form=form, first_request = first_request)
+    return render_template('ftth.html', title='Ftth', form=form, first_request = first_request)
+
+@app.route('/dsl', methods=['POST','GET'])
+def dsl():
+    form = DslForm()
+    first_request = True
+    log = None
+
+    if form.validate_on_submit():
+        print "validated"
+        first_request = False
+        dsl = form.dsl.data
+        id_dsl, realm = dsl.split("@")
+
+        query_log = create_query_log(dsl)
+        log = pppoe_get_log(dsl, query_log)
+
+        return render_template('dsl.html', title='Dsl', form=form, log = log, first_request = first_request)
+
+    return render_template('dsl.html', title='Dsl', form=form, first_request = first_request)
 
 @app.route('/pppoejq', methods=['POST','GET'])
 def pppoejq():

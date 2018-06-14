@@ -3,14 +3,14 @@
 
 <h3>PPPoE</h3>
 <form action="" method="post" name="rtbh">
-    <div class="row">
-      <div class="col-sm-4">
+  <div class="form-group row">
+      <div class="col-sm-5">
         {{ form.hidden_tag() }}
-        <label>Account</label>
+        <label>Login</label>
         {% for error in form.pppoe.errors %}
         <span style="color: red;">[{{ error }}]</span>
         {% endfor %}
-        {{ form.pppoe(class_="form-control form-group", placeholder="pppoe account") }}
+        {{ form.pppoe(class_="form-control form-group", placeholder="contract@ftth.vnet.sk") }}
         <button type="submit" name="find" class="btn btn-primary">Find</button>
       </div>
        <div class="col-sm-1"></div>
@@ -40,7 +40,21 @@
             {% endif %}
 
       </div>
+    </div>
 </form>
+<hr>
+  <div class="row">
+     <div class="col-sm-12">
+      <label>Log</label>
+      <textarea id="content" class="form-control custom-control copy-text" rows="25" name=response>
+        {%- if log %}
+      {%- for k in log %}
+      {{ k['_source']['@timestamp'] }} {{ k['_source']['message'] }}
+        {%- endfor %}
+        {%- else %}No logs available
+        {%- endif %}
+      </textarea>
+    </div>
 </div>
 
 {% endblock %}

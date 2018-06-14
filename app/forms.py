@@ -42,6 +42,9 @@ class VxlanForm(FlaskForm):
 class PppoeForm(FlaskForm):
     pppoe = StringField('pppoe account', validators=[DataRequired()])
 
+class DslForm(FlaskForm):
+    dsl = StringField('dsl account', validators=[DataRequired()])
+
 class RtbhForm(FlaskForm):
     ipv4 = StringField('ipv4', validators=[DataRequired(),IPAddress(ipv4=True, ipv6=False, message=None),vnet_ipv4])
     action = SelectField('action', coerce=int, choices=[(1,'announce'),(0,'withdraw')])
