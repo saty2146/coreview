@@ -45,13 +45,16 @@
 <hr>
   <div class="row">
      <div class="col-sm-12">
-      <label>Log</label>
-      <textarea id="content" class="form-control custom-control copy-text" rows="25" name=response>
-        {%- if log %}
-      {%- for k in log %}
+        <label>Log</label>
+        <textarea id="content" class="form-control custom-control copy-text" rows="25" name=response>
+    {%- if not first_request %}
+      {%- if log %}
+        {%- for k in log %}
       {{ k['_source']['@timestamp'] }} {{ k['_source']['message'] }}
         {%- endfor %}
         {%- else %}No logs available
+        {%- endif %}
+        {%- else %}
         {%- endif %}
       </textarea>
     </div>

@@ -3,9 +3,16 @@
 
 <script src="{{ url_for('static', filename='js/clipboard.js') }}"></script>
 
-<h3>{{ location }}: PORTCHANNEL</h3>
+<div class="form-group row">
+  <div class="col-md-11" style="font-size:25px">
+{{ location }}: PORTCHANNEL
+  </div>
+  <div class="col-md-1"><div class="pull-right">
+    <a href="{{ url_for('po', twins=twins) }}"><button class="btn btn-primary" align="left"><span class="glyphicon glyphicon-refresh "aria-hidden="true"></span></button></a>
+  </div>
+</div>
+
 <form action="" method="post">
-  <div class="row">
   <div class="col-sm-5">
     {{ form.hidden_tag() }}
     <label>Portchannel</label>
@@ -39,7 +46,7 @@
   <div class="col-sm-4">
   <label>Your Configuration</label>
   <div class="form-group form-group">
-  <textarea id="content" class="form-control custom-control" rows="23" style=width:550px name=configuration.data>
+  <textarea id="content" class="form-control custom-control" rows="23" name=configuration.data>
   {%- if not first_request %}
     {%- if portchannel %}
       {%- include "portchannel.jinja2" %}

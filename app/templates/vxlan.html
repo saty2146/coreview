@@ -26,7 +26,7 @@
   <div class="col-sm-4">
   <label>Your Configuration</label>
      <div class="form-group form-group">
-<textarea id="content" class="form-control custom-control copy-text" rows="23" style=width:550px name=configuration.data>{%- if not first_request %}
+<textarea id="content" class="form-control custom-control copy-text" rows="23" name=configuration.data>{%- if not first_request %}
   {%- include "vxlan.jinja2" %}
 {%- else %}
 {%- endif %}

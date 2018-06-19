@@ -29,78 +29,48 @@ def valid_ip():
     else:
         return False
 
-#@app.before_first_request
-def get_ifaces_pos():
+def get_ifaces_pos(host):
 
-    def run_job(host):
+    ifaces = []
+    ip_box = boxes[host]['ip']
+    
+    if host == 'n31':
+        start = 301
+        end = 400
+    else:
+        start = 401
+        end = 500
+
+    box = NXAPIClient(hostname=ip_box, username = creds['user'], password = creds['passwd'])
+    po_list = box.get_po_list(box.nxapi_call("show port-channel summary"))
+    po_list = map(int, po_list)
+    po_list = sorted(x for x in po_list if x >= start and x <= end)
+    po_list = set(range(start,end)) - set(po_list)
+    po_list = sorted(list(po_list))
+    print "before request running"
+
+    iface_status = box.get_iface_status(box.nxapi_call("show interface status"))
+
+    for item in iface_status:
+        key = item['interface']
+        value = item['state']
         
-        ifaces = []
-        ip_box = boxes[host]['ip']
-        
-        if host == 'n31':
-            start = 301
-            end = 400
+        if value == 'connected':
+            value = 'Up'
         else:
-            start = 401
-            end = 500
+            value = 'Down'
 
-        box = NXAPIClient(hostname=ip_box, username = creds['user'], password = creds['passwd'])
-        po_list = box.get_po_list(box.nxapi_call("show port-channel summary"))
-        po_list = map(int, po_list)
-        po_list = sorted(x for x in po_list if x >= start and x <= end)
-        po_list = set(range(start,end)) - set(po_list)
-        po_list = sorted(list(po_list))
-        print "before request running"
-
-        iface_status = box.get_iface_status(box.nxapi_call("show interface status"))
-
-        for item in iface_status:
-            key = item['interface']
-            value = item['state']
-            
-            if value == 'connected':
-                value = 'Up'
-            else:
-                value = 'Down'
-
-            key_value = key + ' ' + value
-            iface_regex = re.compile(r".*({}).*".format('Ethernet'))
-            mo_iface = iface_regex.search(key)
-            if mo_iface:
-                ifaces.append(key_value)
-            else:
-                pass
-        #print ifaces
-
-        
-#        iface_regex = re.compile(r".*({}).*".format('Ethernet'))
-#
-#        for i in range(len(iface_status)):
-#            interface = iface_status[i]['interface']
-#            mo_iface = iface_regex.search(interface)
-#            if mo_iface:
-#                ifaces.append(interface)
-#            else:
-#                pass
-
-        if host == 'n31':
-            global ifaces_shc3 
-            global po_number_shc3
-            po_number_shc3 = po_list[0]
-            #ifaces_shc3 = [str(r) for r in ifaces]
-            ifaces_shc3 = ifaces
+        key_value = key + ' ' + value
+        iface_regex = re.compile(r".*({}).*".format('Ethernet'))
+        mo_iface = iface_regex.search(key)
+        if mo_iface:
+            ifaces.append(key_value)
         else:
-            global ifaces_dc4
-            global po_number_dc4
-            po_number_dc4 = po_list[0]
-            ifaces_dc4 = ifaces
+            pass
 
-    thread = threading.Thread(target=run_job('n31'))
-    thread.start()
-    thread = threading.Thread(target=run_job('n41'))
-    thread.start()
+        po_number = po_list[0]
 
-    return True
+    return (ifaces, po_number)
 
 def create_twin_dict(output1, output2):
 
@@ -407,7 +377,7 @@ def create_query_log(id_pppoe):
         }
       },
       "sort": {
-        "@timestamp": "asc"
+        "@timestamp": "desc"
       }
     }
 
@@ -513,21 +483,15 @@ def vxlan():
     return render_template('vxlan.html', title='Vxlan', form=form, first_request = first_request)
 
 @app.route('/po/<twins>', methods=['POST','GET'])
-def portchannel(twins):
+def po(twins):
     
-    global ifaces_shc3
-    global po_number_shc3
-    global ifaces_dc4
-    global po_number_dc4
-
     if twins == 'tn3':
-        ifaces = ifaces_shc3
-        po_number = po_number_shc3
+        ifaces, po_number = get_ifaces_pos("n31")
         location = 'SHC3'
     else: 
-        ifaces = ifaces_dc4
-        po_number = po_number_dc4
+        ifaces, po_number = get_ifaces_pos("n41")
         location = 'DC4'
+
     first_request = True
     twins = twins
     form = PortchannelForm()
@@ -566,7 +530,6 @@ def portchannel(twins):
         print form.errors
 
     return render_template('portchannel.html', title='Portchannel', form=form, twins = twins, location = location, first_request=first_request)
-
 
 @app.route('/ifsw/<host>/<path:iface>', methods=['POST','GET'])
 def ifsw(host, iface):
