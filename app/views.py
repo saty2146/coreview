@@ -386,8 +386,11 @@ def create_query_log(id_pppoe):
 def pppoe_get_log(pppoe, query):
 
     es = Elasticsearch([{'host': '192.168.35.225', 'port': 9200}])
-    query = es.search(body=query, request_timeout=30, size=50 )
-    log = [doc for doc in query['hits']['hits']]
+    try:
+        query = es.search(body=query, request_timeout=30, size=50 )
+        log = [doc for doc in query['hits']['hits']]
+    except Exception:
+        log = [{'_source': { 'message': 'ConnectionTimeout. Try again'}}]
 
     return log
 
