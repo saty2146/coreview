@@ -7,7 +7,7 @@ from collections import OrderedDict
 requests.packages.urllib3.disable_warnings()
 logger = logging.getLogger("")
 logger.setLevel(logging.DEBUG)
-# overwrite requests logger to warning only
+#overwrite requests logger to warning only
 #logging.getLogger("requests").setLevel(logging.WARNING)
 
 
@@ -24,7 +24,7 @@ class NXAPIClient(object):
         self._http = "https://"
         self._session = None    # current session
         self._cookie = None     # active cookiejar
-        self.cookie = kwargs.get("cookie", "cookie/%s_nxapi.cookie"%self.hostname)
+        self.cookie = kwargs.get("cookie", "cookie/%s_nxapi.cookie" % self.hostname)
         self.url = "%s%s:%s%s" % (self._http, self.hostname, self.port, '/ins')
         self.headers = {'content-type': 'application/json-rpc'}
         
