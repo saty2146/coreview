@@ -98,3 +98,5 @@ mycreds.py
 app/cookie/*
 .config.py
 .run.py
+app/vlan-db/*
+.idea/*

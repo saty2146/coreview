@@ -7,7 +7,7 @@ import json, requests, re, threading, socket, sys, ssl, time
 from collections import OrderedDict
 from librouteros import login
 logger.setLevel(logging.INFO)
-import datetime
+import datetime, glob
 from boxes import *
 from elasticsearch import Elasticsearch
 
@@ -599,4 +599,66 @@ def logs():
         #logs  = json.loads(r.text)
 
         logs  = {}
-        return render_template('logs.html', logs=logs, form=form) 
+        return render_template('logs.html', logs=logs, form=form)
+
+def get_vlan():
+
+    vlan = {}
+    boxes = []
+    vlan_attr = ['name', 'state', 'mode']
+
+    resource_path = os.path.join(app.root_path, 'vlan-db')
+    os.chdir(resource_path)
+
+    for filename in glob.glob("*.json"):
+        box = filename.split("-")
+        box = box[0]
+        boxes.append(box)
+
+    box_attr = [str(_box) + '_' + str(_attr) for _attr in vlan_attr for _box in boxes]
+
+    for filename in glob.glob("*.json"):
+        box = filename.split("-")
+        box = box[0]
+        with open(filename) as file:
+            data = json.load(file)
+            vlan_brief = data['TABLE_vlanbrief']['ROW_vlanbrief']
+            vlan_mode = data['TABLE_mtuinfo']['ROW_mtuinfo']
+
+            for item in vlan_brief:
+                vlanid = item['vlanshowbr-vlanid']
+                vlanname = item['vlanshowbr-vlanname']
+                vlanstate = item['vlanshowbr-vlanstate']
+
+                vlanname_key = str(box) + '_' + 'name'
+                vlanstate_key = str(box) + '_' + 'state'
+
+                vlan.setdefault(vlanid,{str(_box) + '_' + str(_attr):'unknown' for _attr in vlan_attr for _box in boxes})
+
+                vlan[vlanid][vlanname_key] = vlanname
+                vlan[vlanid][vlanstate_key] = vlanstate
+            for item in vlan_mode:
+                vlanid = item['vlanshowinfo-vlanid']
+                _vlanmode = item['vlanshowinfo-vlanmode']
+                if _vlanmode == 'fabricpath-vlan':
+                    vlanmode = 'FP'
+                elif  _vlanmode == 'ce-vlan':
+                    vlanmode = 'CE'
+                else:
+                    pass
+
+
+                vlanmode_key = str(box) + '_' + 'mode'
+                vlan[vlanid][vlanmode_key] = vlanmode
+
+    return (vlan, box_attr)
+
+@app.route('/vlan', methods=['POST','GET'])
+def vlan():
+
+    vlan, box_attr = get_vlan()
+
+    #vlan = {'1': {'n31_state': 'active', 'n31_name': 'jednotka','n32_state': 'active', 'n32_name': 'jednotka',},
+#            '2': {'n31_state': 'active', 'n31_name': 'jednotka'}}
+
+    return render_template('vlan.html', vlan=vlan, box_attr = box_attr )
