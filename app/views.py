@@ -602,6 +602,28 @@ def logs():
         return render_template('logs.html', logs=logs, form=form)
 
 def get_vlan():
+    '''
+    Walk through json vlan-db files  located in vlan-db directory (created by cronjob) and create dictionary in format:
+
+    vlan = {vlanid1: { box1_name: name,
+                       box1_state: state,
+                       box1_mode: mode,
+                       box2name: name,
+                       box2_state: state,
+                       box2_mode: mode,
+                       ...
+                     }
+            vlanid2: { box1_name: name,
+                       box1_state: state,
+                       box1_mode: mode,
+                       box2name: name,
+                       box2_state: state,
+                       box2_mode: mode,
+                       ...
+                       }
+    }
+    :return:vlan
+    '''
 
     vlan = {}
     boxes = []
@@ -646,7 +668,6 @@ def get_vlan():
                     vlanmode = 'CE'
                 else:
                     pass
-
 
                 vlanmode_key = str(box) + '_' + 'mode'
                 vlan[vlanid][vlanmode_key] = vlanmode
