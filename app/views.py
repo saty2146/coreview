@@ -635,7 +635,7 @@ def get_vlan(nxhosts):
     if nxhosts == 'n5k':
         created = time.ctime(os.path.getctime('n31-vlan-db.json'))
     elif nxhosts == 'n9k':
-        created = time.ctime(os.path.getctime('n9six1-vlan-db.json'))
+        created = time.ctime(os.path.getctime('n911-vlan-db.json'))
     else:
         pass
 
