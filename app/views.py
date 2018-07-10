@@ -3,7 +3,7 @@ from app import app
 from forms import PortchannelForm, PeeringForm, RtbhForm, ScrubbingForm, PppoeForm, VxlanForm, DateForm, DslForm
 from mycreds import *
 from nxapi_light import *
-import json, requests, re, threading, socket, sys, ssl, time
+import json, requests, re, threading, socket, sys, ssl, time, os.path
 from collections import OrderedDict
 from librouteros import login
 logger.setLevel(logging.INFO)
@@ -601,7 +601,7 @@ def logs():
         logs  = {}
         return render_template('logs.html', logs=logs, form=form)
 
-def get_vlan():
+def get_vlan(nxhosts):
     '''
     Walk through json vlan-db files  located in vlan-db directory (created by cronjob) and create dictionary in format:
 
@@ -622,15 +622,22 @@ def get_vlan():
                        ...
                        }
     }
-    :return:vlan
+    :return:(vlan, key_attributes, file_created)
     '''
 
     vlan = {}
     boxes = []
     vlan_attr = ['name', 'state', 'mode']
 
-    resource_path = os.path.join(app.root_path, 'vlan-db')
+    resource_path = os.path.join(app.root_path, 'vlan-db' + '/' + nxhosts)
     os.chdir(resource_path)
+
+    if nxhosts == 'n5k':
+        created = time.ctime(os.path.getctime('n31-vlan-db.json'))
+    elif nxhosts == 'n9k':
+        created = time.ctime(os.path.getctime('n911-vlan-db.json'))
+    else:
+        pass
 
     for filename in glob.glob("*.json"):
         box = filename.split("-")
@@ -672,14 +679,12 @@ def get_vlan():
                 vlanmode_key = str(box) + '_' + 'mode'
                 vlan[vlanid][vlanmode_key] = vlanmode
 
-    return (vlan, box_attr)
+    return (vlan, box_attr, created)
 
-@app.route('/vlan', methods=['POST','GET'])
-def vlan():
+@app.route('/vlan/<nxhosts>', methods=['POST','GET'])
+def vlan(nxhosts):
 
-    vlan, box_attr = get_vlan()
 
-    #vlan = {'1': {'n31_state': 'active', 'n31_name': 'jednotka','n32_state': 'active', 'n32_name': 'jednotka',},
-#            '2': {'n31_state': 'active', 'n31_name': 'jednotka'}}
+    vlan, box_attr, created = get_vlan(nxhosts)
 
-    return render_template('vlan.html', vlan=vlan, box_attr = box_attr )
+    return render_template('vlan.html', vlan=vlan, box_attr = box_attr, created = created, nxhosts = nxhosts )
