@@ -627,7 +627,7 @@ def get_vlan(nxhosts):
 
     vlan = {}
     boxes = []
-    vlan_attr = ['name', 'state', 'mode']
+    vlan_attr = ['N', 'S', 'M']
 
     resource_path = os.path.join(app.root_path, 'vlan-db' + '/' + nxhosts)
     os.chdir(resource_path)
@@ -659,7 +659,7 @@ def get_vlan(nxhosts):
                 vlanname = item['vlanshowbr-vlanname']
                 vlanstate = item['vlanshowbr-vlanstate']
 
-                vlanname_key = str(box)
+                vlanname_key = str(box) + '_' + 'N'
                 vlanstate_key = str(box) + '_' + 'S'
 
                 vlan.setdefault(vlanid,{str(_box) + '_' + str(_attr):'ERR' for _attr in vlan_attr for _box in boxes})
