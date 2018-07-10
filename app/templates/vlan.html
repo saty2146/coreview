@@ -25,10 +25,15 @@
       <tbody class="searchable">
       {% for item in vlan %}
       {% set data = vlan[item] %}
-      <tr>
+      <p>
       <td> {{ item }} </td>
         {% for attr in box_attr %}
-         <td> {{ data[attr] }} </td>
+        {% if data[attr] == 'ERR' %}
+      <td><p class="text-danger">{{ data[attr] }}</p></td>
+      {% else %}
+
+      <td>{{ data[attr] }}</td>
+      {% endif %}
         {% endfor %}
       </tr>
       {% endfor %}
