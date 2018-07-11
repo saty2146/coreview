@@ -27,10 +27,10 @@
           {% if item['mac'] is defined %}
             <td> {{ item['mac'] }} </td>
           {% else %}
-            <td><span class="glyphicon glyphicon-remove" style="color:red" aria-hidden="true"></span></td>
+          <td><span class="glyphicon glyphicon-remove-circle" style="color:red" aria-hidden="true" title="incomplete"></span><small> incomplete</small></td>
           {% endif %}
           {% if item['time-stamp'] == '-' %}
-            <td><span class="glyphicon glyphicon-king" style="color:green" aria-hidden="true"></span></td>
+          <td><span class="glyphicon glyphicon-ok-circle" style="color:green" aria-hidden="true"></span><small> static</small></td>
             {% else %}
           <td> {{ item['time-stamp'] }} </td>
           {% endif %}
