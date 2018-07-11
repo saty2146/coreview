@@ -3,40 +3,54 @@
 
 <h3>PPPoE</h3>
 <form action="" method="post" name="rtbh">
-  <div class="form-group row">
-      <div class="col-sm-5">
-        {{ form.hidden_tag() }}
-        <label>Login</label>
-        {% for error in form.pppoe.errors %}
-        <span style="color: red;">[{{ error }}]</span>
-        {% endfor %}
-        {{ form.pppoe(class_="form-control form-group", placeholder="contract@ftth.vnet.sk") }}
-        <button type="submit" name="find" class="btn btn-primary">Find</button>
-      </div>
-       <div class="col-sm-1"></div>
-      <div class="col-sm-3">
-        <label>PPPoE status</label>
-        {% if status %}
-        <span class="glyphicon glyphicon-ok-sign" style="color:green" title="established" aria-hidden="true"></span>
-        <li>gw: {{ gw }}</li>
-        <li>user: {{ status['name'] }}</li>
-        <li>ip: {{ status['address'] }}</li>
-        <li>mac: {{ status['caller-id'] }}</li>
-        <li>vendor: {{ vendor }}</li>
-        <li>uptime: {{ status['uptime'] }}</li>
-        <li>service: {{ status['service'] }}</li>
-        {% elif first_request %}
-        {% else %}
-            <span class="glyphicon glyphicon-remove-sign" style="color:red" title="down" aria-hidden="true"></span>
-            <h5>account not found<h5>
+    <div class="form-group row">
+        <div class="col-sm-5">
+            {{ form.hidden_tag() }}
+            <label>Login</label>
+            {% for error in form.pppoe.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+            {{ form.pppoe(class_="form-control form-group", placeholder="contract@ftth.vnet.sk") }}
+            <button type="submit" name="find" class="btn btn-primary">Find</button>
+        </div>
+        <div class="col-sm-2"></div>
+        <div class="col-sm-2">
+            <label>PPPoE</label>
+            <ul class="list-group">
+                {%- if not first_request %}
+                    <li class="list-group-item">
+                    {% if status %}
+                        <span class="glyphicon glyphicon-ok-circle" style="color:green" title="established" aria-hidden="true"></span><small> Connected</small>
+                </li>
+                <li class="list-group-item">gw: <small>{{ gw }}</small></li>
+                <li class="list-group-item">user: <small>{{ status['name'] }}</small></li>
+                <li class="list-group-item">ip: <small>{{ status['address'] }}</small></li>
+                <li class="list-group-item">mac: <small>{{ status['caller-id'] }}</small></li>
+                <li class="list-group-item">vendor: <small>{{ vendor }}</small></li>
+                <li class="list-group-item">uptime: <small>{{ status['uptime'] }}</small></li>
+                <li class="list-group-item">service: <small>{{ status['service'] }}</small></li>
+                {% else %}
+                <span class="glyphicon glyphicon-remove-circle" style="color:red" title="down" aria-hidden="true"></span><small> account not found</small>
+                {% endif %}
+                {% else %}
+            </ul>
             {% endif %}
+
       </div>
       <div class="col-sm-2">
-        <label>GW status</label>
+        <label>Gateways</label>
         {% if gw_status %}
         {% for gw in  gw_status %}
-        <li>{{ gw }}: {{ gw_status[gw] }}</li>
+          <ul class="list-group"><li class="list-group-item">
+        {% if gw_status[gw] == 'OK' %}
+          <span class="glyphicon glyphicon-ok-circle" style="color:green" title="established" aria-hidden="true"></span>
+          {% else %}
+          <span class="glyphicon glyphicon-remove-circle" style="color:red" title="down" aria-hidden="true"></span><
+          {% endif %}
+              {{ gw }}: <small>{{ gw_status[gw] }}</small></li>
+
         {% endfor %}
+          </ul>
             {% endif %}
 
       </div>
