@@ -23,36 +23,36 @@
         </tr>
       </thead>
       <tbody class="searchable">
-      {% for item in iface_status %}
-      {% set iface =  item['interface'] %}
+      {% for value in iface_status %}
+      {% set iface =  value['interface'] %}
         <tr>
           <td> {{ iface }} </td>
-          <td> {{ item['name'] }} </td>
-          <td> {{ item['speed'] }} </td>
-          <td> {{ item['duplex'] }} </td>
-          {% if item['state'] == 'connected' %}
-          <td><span class="glyphicon glyphicon-ok-sign" style="color:green" aria-hidden="true" title="connected"></span></td>
-          {% elif item['state'] == 'notconnect' or item['state'] == 'down' %}
-          <td><span class="glyphicon glyphicon-remove-sign" style="color:red" aria-hidden="true" title="down"></span></td>
-          {% elif item['state'] == 'sfpAbsent' or item['state'] == 'xcvrAbsent' %}
-          <td><span class="glyphicon glyphicon glyphicon-minus-sign" style="color:orange" aria-hidden="true" title="absent"></span></td>
-          {% elif item['state'] == 'sfpInvalid' %}
-          <td><span class="glyphicon glyphicon glyphicon-question-sign" style="color:orange" aria-hidden="true" title="sfpInvalid"></span></td>
-          {% elif item['state'] == 'inactive' %}
-          <td><span class="glyphicon glyphicon glyphicon-question-sign" style="color:orange" aria-hidden="true" title="inactive"></span></td>
-          {% elif item['state'] == 'noOperMembers' %}
-          <td><span class="glyphicon glyphicon glyphicon-question-sign" style="color:orange" aria-hidden="true" title="noOperMembers"></span></td>
-          {% elif item['state'] == 'disabled' %}
-          <td><span class="glyphicon glyphicon glyphicon-question-sign" style="color:orange" aria-hidden="true" title="disabled"></span></td>
-          {% elif item['state'] == 'suspnd' %}
-          <td><span class="glyphicon glyphicon glyphicon-question-sign" style="color:orange" aria-hidden="true" title="suspnd"></span></td>
-          {% elif 'unknown enum' in item['state'] %}
-          <td><span class="glyphicon glyphicon glyphicon-question-sign" style="color:orange" aria-hidden="true" title="unknown enum"></span></td>
+          <td> {{ value['name'] }} </td>
+          <td> {{ value['speed'] }} </td>
+          <td> {{ value['duplex'] }} </td>
+          {% if value['state'] == 'connected' %}
+          <td><span class="glyphicon glyphicon-ok-circle" style="color:green" aria-hidden="true" title="connected"></span><small> Up</small></td>
+          {% elif value['state'] == 'notconnect' or value['state'] == 'down' %}
+          <td><span class="glyphicon glyphicon-remove-circle" style="color:red" aria-hidden="true" title="down"></span><small> down</small></td>
+          {% elif value['state'] == 'sfpAbsent' or value['state'] == 'xcvrAbsent' %}
+          <td><span class="glyphicon glyphicon glyphicon-ban-circle" style="color:orange" aria-hidden="true" title="absent"></span><small> sfpAbsent</small></td>
+          {% elif value['state'] == 'sfpInvalid' %}
+          <td><span class="glyphicon glyphicon glyphicon-ban-circle" style="color:orange" aria-hidden="true" title="sfpInvalid"></span><small> sfpInvalid</small></td>
+          {% elif value['state'] == 'inactive' %}
+          <td><span class="glyphicon glyphicon glyphicon-ban-circle" style="color:orange" aria-hidden="true" title="inactive"></span><small> inactive</small></td>
+          {% elif value['state'] == 'noOperMembers' %}
+          <td><span class="glyphicon glyphicon glyphicon-ban-circle" style="color:orange" aria-hidden="true" title="noOperMembers"></span><small> noOperMembers</small></td>
+          {% elif value['state'] == 'disabled' %}
+          <td><span class="glyphicon glyphicon glyphicon-ban-circle" style="color:orange" aria-hidden="true" title="disabled"></span><small> disabled</small></td>
+          {% elif value['state'] == 'suspnd' %}
+          <td><span class="glyphicon glyphicon glyphicon-ban-circle" style="color:orange" aria-hidden="true" title="suspnd"></span><small> suspnd</small></td>
+          {% elif 'unknown enum' in value['state'] %}
+          <td><span class="glyphicon glyphicon glyphicon-ban-circle" style="color:orange" aria-hidden="true" title="unknown enum"></span><small> unknownEnum</small></td>
           {% else %}
-          <td><span style="color:red">{{ item['state'] }}</span></td>
+          <td><span style="color:red">{{ value['state'] }}</span></td>
           {% endif %}
            <td class="text-nowrap">
-          {% if item['vlan1'] != 'routed' %}
+          {% if value['vlan1'] != 'routed' %}
           <a href="{{ url_for('ifsw', iface=iface, host=host) }}"><button class="btn btn-black btn-xs" title="switchport">S</button></a>
           {% else %}
           <button class="btn btn-black btn-xs" title="routed port">R</button>
