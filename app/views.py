@@ -662,7 +662,7 @@ def get_vlan(nxhosts):
                 vlanname_key = str(box) + '_' + 'N'
                 vlanstate_key = str(box) + '_' + 'S'
 
-                vlan.setdefault(vlanid,{str(_box) + '_' + str(_attr):'ERR' for _attr in vlan_attr for _box in boxes})
+                vlan.setdefault(vlanid,{str(_box) + '_' + str(_attr):'Error' for _attr in vlan_attr if _attr == 'N' for _box in boxes})
 
                 vlan[vlanid][vlanname_key] = vlanname
                 vlan[vlanid][vlanstate_key] = vlanstate

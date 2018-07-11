@@ -28,8 +28,8 @@
       <p>
       <td> {{ item }} </td>
         {% for attr in box_attr %}
-        {% if data[attr] == 'ERR' %}
-      <td><span class="glyphicon glyphicon-remove-circle" style="color:red" aria-hidden="true" title="Error"></span></td>
+        {% if data[attr] == 'Error' %}
+      <td><span class="glyphicon glyphicon-remove-circle" style="color:red" aria-hidden="true" title="Error"></span><small> not found</small></td>
       {% else %}
 
       <td>{{ data[attr] }}</td>
