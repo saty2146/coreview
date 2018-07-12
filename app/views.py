@@ -352,9 +352,6 @@ def pppoe_status(pppoe):
                         shape_up_down =  queue['max-limit'].split("/")
                         shape = str(int(shape_up_down[0])/1000000) + 'M' + ' / ' + str(int(shape_up_down[1])/1000000) + 'M'
                         status['shape'] = shape
-                        print queue
-
-
                 break
         else:
             time.sleep(0.2)
@@ -364,7 +361,6 @@ def pppoe_status(pppoe):
 
         sock.close()
 
-    print status
     return (status, gw, gw_status)
 
 def pppoe_get_vendor(mac):
