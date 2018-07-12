@@ -1,8 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, BooleanField, SubmitField, SelectField, RadioField, TextAreaField, TextField, IntegerField, ValidationError, DateField 
+from wtforms import StringField, BooleanField, SubmitField, SelectField, RadioField
+from wtforms import TextAreaField, TextField, IntegerField, ValidationError, DateField, validators
 from wtforms.validators import DataRequired, IPAddress, NumberRange, Optional
 import ipaddress
-from datetime import datetime
 from boxes import *
 
 def vnet_ipv4(form, field):
@@ -40,10 +40,10 @@ class VxlanForm(FlaskForm):
     vlanname = StringField('vlanname', validators=[DataRequired()])
 
 class PppoeForm(FlaskForm):
-    pppoe = StringField('pppoe account', validators=[DataRequired()])
+    pppoe = StringField('pppoe account', [validators.DataRequired(), validators.Regexp('\d+@ftth.vnet.sk', message="Invalid format")])
 
 class DslForm(FlaskForm):
-    dsl = StringField('dsl account', validators=[DataRequired()])
+    dsl = StringField('dsl account', [validators.DataRequired(), validators.Regexp('\S+@\S+', message="Invalid format")])
 
 class RtbhForm(FlaskForm):
     ipv4 = StringField('ipv4', validators=[DataRequired(),IPAddress(ipv4=True, ipv6=False, message=None),vnet_ipv4])
