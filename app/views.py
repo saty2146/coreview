@@ -331,25 +331,40 @@ def pppoe_status(pppoe):
             continue
         
         try:
-            result = api(cmd='/ppp/active/print')
+            params = {'.proplist':('name,address,caller-id,uptime,service')}
+            result = api(cmd='/ppp/active/print', **params)
         except:
             gw_status[gw] = 'API error'
             print "API error"
             continue
        
-        sock.close()
 
         gw_status[gw] = 'OK'
 
         for acc in result: 
             if acc['name'] == pppoe:
                 status = acc
+                params = {'.proplist':('target,max-limit')}
+                queues = api(cmd='/queue/simple/print', **params)
+                for queue in queues:
+                    target = '<pppoe-' + pppoe + '>'
+                    if queue['target'] == target:
+                        shape_up_down =  queue['max-limit'].split("/")
+                        shape = str(int(shape_up_down[0])/1000000) + 'M' + ' / ' + str(int(shape_up_down[1])/1000000) + 'M'
+                        status['shape'] = shape
+                        print queue
+
+
                 break
         else:
             time.sleep(0.2)
+            sock.close()
             continue
         break
 
+        sock.close()
+
+    print status
     return (status, gw, gw_status)
 
 def pppoe_get_vendor(mac):
@@ -357,8 +372,7 @@ def pppoe_get_vendor(mac):
     r = requests.get(MAC_URL % mac)
     r = r.json()
     r = r['result']
-    print r
-    
+
     if 'error' not in r:
         mac = r['company'] 
     else:

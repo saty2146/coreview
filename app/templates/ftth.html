@@ -22,13 +22,13 @@
                     {% if status %}
                         <span class="glyphicon glyphicon-ok-circle" style="color:green" title="established" aria-hidden="true"></span><small> Connected</small>
                 </li>
-                <li class="list-group-item">gw: <small>{{ gw }}</small></li>
-                <li class="list-group-item">user: <small>{{ status['name'] }}</small></li>
-                <li class="list-group-item">ip: <small>{{ status['address'] }}</small></li>
-                <li class="list-group-item">mac: <small>{{ status['caller-id'] }}</small></li>
-                <li class="list-group-item">vendor: <small>{{ vendor }}</small></li>
-                <li class="list-group-item">uptime: <small>{{ status['uptime'] }}</small></li>
-                <li class="list-group-item">service: <small>{{ status['service'] }}</small></li>
+                <li class="list-group-item"><small>gw: </small>{{ gw }}</li>
+                <li class="list-group-item"><small>user: </small>{{ status['name'] }}</li>
+                <li class="list-group-item"><small>ip: </small>{{ status['address'] }}</li>
+                <li class="list-group-item"><small>mac: </small>{{ status['caller-id'] }}</li>
+                <li class="list-group-item"><small>vendor: </small>{{ vendor }}</li>
+                <li class="list-group-item"><small>uptime: </small>{{ status['uptime'] }}</li>
+                <li class="list-group-item"><small>shape: </small>{{ status['shape'] }}</li>
                 {% else %}
                 <span class="glyphicon glyphicon-remove-circle" style="color:red" title="down" aria-hidden="true"></span><small> account not found</small>
                 {% endif %}
@@ -45,7 +45,7 @@
         {% if gw_status[gw] == 'OK' %}
           <span class="glyphicon glyphicon-ok-circle" style="color:green" title="established" aria-hidden="true"></span>
           {% else %}
-          <span class="glyphicon glyphicon-remove-circle" style="color:red" title="down" aria-hidden="true"></span><
+          <span class="glyphicon glyphicon-remove-circle" style="color:red" title="down" aria-hidden="true"></span>
           {% endif %}
               {{ gw }}: <small>{{ gw_status[gw] }}</small></li>
 
