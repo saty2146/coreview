@@ -437,11 +437,14 @@ def ftth():
         status, gw, gw_status = pppoe_status(pppoe)
 
         if status:
-            #mac_address = status['remote-address']
             mac_address = status['caller-id']
             vendor = pppoe_get_vendor(mac_address)
             query_log = create_query_log(pppoe)
             log = pppoe_get_log(pppoe, query_log)
+        else:
+            query_log = create_query_log(pppoe)
+            log = pppoe_get_log(pppoe, query_log)
+
         return render_template('ftth.html', title='Ftth', form=form, status=status, gw=gw, gw_status = gw_status, vendor=vendor, log = log, first_request = first_request)
 
     return render_template('ftth.html', title='Ftth', form=form, first_request = first_request)
