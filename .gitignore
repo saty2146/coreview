@@ -94,9 +94,11 @@ flask/
 mycreds.py
 *.pyc
 *.swp
+*.swo
 *.or
 app/cookie/*
 .config.py
 .run.py
 app/vlan-db/*
+app/node_modules/*
 .idea/*

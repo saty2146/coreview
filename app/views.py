@@ -442,6 +442,7 @@ def ftth():
             query_log = create_query_log(pppoe)
             log = pppoe_get_log(pppoe, query_log)
         else:
+            # get log even if account is not found (aka auth failure:)
             query_log = create_query_log(pppoe)
             log = pppoe_get_log(pppoe, query_log)
 
