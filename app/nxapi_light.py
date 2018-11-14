@@ -166,6 +166,12 @@ class NXAPIClient(object):
     
         return po_list
 
+    def set_iface_po(self, response):
+        
+        output = response['result']
+        
+        return output
+
 if __name__ == "__main__":
     # SETUP logging at debug level to stdout (default)
     logger = logging.getLogger("")
@@ -174,6 +180,6 @@ if __name__ == "__main__":
     logging.getLogger("requests").setLevel(logging.WARNING)
 
 #Testing
-    #nxapi = NXAPIClient(hostname="X.X.X.X", username="xxx", password="xxx")
     test = nxapi.get_mac_list(nxapi.nxapi_call("show mac address dynamic"))
+#    test = nxapi.get_po_list(nxapi.nxapi_call("show port-channel summary"))
     print test

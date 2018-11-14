@@ -3,7 +3,7 @@ from app import app
 from forms import PortchannelForm, PeeringForm, RtbhForm, ScrubbingForm, PppoeForm, VxlanForm, DateForm, DslForm
 from mycreds import *
 from nxapi_light import *
-import json, requests, re, threading, socket, sys, ssl, time, os.path
+import json, requests, re, threading, socket, sys, ssl, time, os.path, yaml
 from collections import OrderedDict
 from librouteros import login
 logger.setLevel(logging.INFO)
@@ -38,6 +38,17 @@ ip_whitelist = ['81.89.63.129',
                 '127.0.0.1'
                 ]
 
+
+def load_config():
+    with open('app/config.yml', 'r') as f:
+        conf = yaml.safe_load(f)
+        boxes = conf['boxes']
+        pairs = conf['pairs']
+        pppoe_gws = conf['pppoe_gws']
+
+    return(conf, boxes,pairs,pppoe_gws)
+
+conf, boxes, pairs, pppoe_gws = load_config()
 
 def valid_ip():
     client = request.remote_addr
@@ -147,7 +158,7 @@ def last_log():
 def index():
 
     if valid_ip():
-        return render_template('index.html', title='Home')
+        return render_template('index.html', title='Home', conf=conf)
     else:
         return render_template('404.html', title = 'Not Found')
 
@@ -156,24 +167,24 @@ def index():
 def contact():
 
     if valid_ip():
-        return render_template('contact.html', title='Contact')
+        return render_template('contact.html', title='Contact', conf=conf)
     else:
         return render_template('404.html', title = 'Not Found')
 
 @app.route('/port_status_tn3', methods=['POST','GET'])
 def port_status_tn3():
 
-    return render_template('port_status_tn3.html', title='Port Status SHC3')
+    return render_template('port_status_tn3.html', title='Port Status SHC3', conf=conf)
 
 @app.route('/port/<twins>', methods=['POST','GET'])
 def port(twins):
-
-    return render_template('port.html', twins = twins)
+    print conf
+    return render_template('port.html', twins = twins, conf=conf)
 
 @app.route('/port/ajax_<twins>', methods=['POST','GET'])
 def ajax_port(twins):
     
-    hosts = pairs[twins]
+    hosts = pairs[twins]['members']
     ip_box1 = boxes[hosts[0]]['ip']
     ip_box2 = boxes[hosts[1]]['ip']
     location = boxes[hosts[0]]['location']
@@ -189,7 +200,7 @@ def ajax_port(twins):
 
 @app.route('/port_host/<host>', methods=['POST','GET'])
 def port_host(host):
-    return render_template('port_host.html', host = host)
+    return render_template('port_host.html', host=host, conf=conf)
 
 @app.route('/port_host/ajax_port_<host>', methods=['POST','GET'])
 def ajax_port_host(host):
@@ -204,8 +215,7 @@ def ajax_port_host(host):
 
 @app.route('/arp/<host>', methods=['POST','GET'])
 def arp(host):
-
-    return render_template('arp.html', host = host)
+    return render_template('arp.html', host=host, conf=conf)
 
 @app.route('/arp/ajax_<host>', methods=['POST','GET'])
 def ajax_arp(host):
@@ -222,7 +232,7 @@ def ajax_arp(host):
 @app.route('/mac/<host>', methods=['POST','GET'])
 def mac(host):
 
-    return render_template('mac.html', host = host)
+    return render_template('mac.html', host=host, conf=conf)
 
 @app.route('/mac/ajax_<host>', methods=['POST','GET'])
 def ajax_mac(host):
@@ -262,14 +272,14 @@ def rtbh():
         except:
             response = "Could not connect to API"
 
-        return render_template('rtbh.html', title='RTBH', form=form, status=status, advertisement=advertisement, log=log)
+        return render_template('rtbh.html', title='RTBH', form=form, status=status, advertisement=advertisement, log=log, conf=conf)
     else:
 
         advertisement = route_advertisement()
         status = peering_status()
         log = last_log()
 
-    return render_template('rtbh.html', title='RTBH', form=form, status=status, advertisement=advertisement, log=log)
+    return render_template('rtbh.html', title='RTBH', form=form, status=status, advertisement=advertisement, log=log, conf=conf)
 
 @app.route('/scrubbing', methods=['POST','GET'])
 def scrubbing():
@@ -299,14 +309,14 @@ def scrubbing():
         except:
             response = "Could not connect to API"
 
-        return render_template('scrubbing.html', title='Scrubbing', form=form, status=status, advertisement=advertisement, log=log)
+        return render_template('scrubbing.html', title='Scrubbing', form=form, status=status, advertisement=advertisement, log=log, conf=conf)
     else:
 
         advertisement = route_advertisement()
         status = peering_status()
         log = last_log()
 
-    return render_template('scrubbing.html', title='Scrubbing', form=form, status=status, advertisement=advertisement,log=log)
+    return render_template('scrubbing.html', title='Scrubbing', form=form, status=status, advertisement=advertisement,log=log, conf=conf)
 
 def pppoe_status(pppoe):
    
@@ -446,9 +456,9 @@ def ftth():
             query_log = create_query_log(pppoe)
             log = pppoe_get_log(pppoe, query_log)
 
-        return render_template('ftth.html', title='Ftth', form=form, status=status, gw=gw, gw_status = gw_status, vendor=vendor, log = log, first_request = first_request)
+        return render_template('ftth.html', title='Ftth', form=form, status=status, gw=gw, gw_status = gw_status, vendor=vendor, log = log, first_request = first_request,conf=conf)
 
-    return render_template('ftth.html', title='Ftth', form=form, first_request = first_request)
+    return render_template('ftth.html', title='Ftth', form=form, first_request = first_request, conf=conf)
 
 @app.route('/dsl', methods=['POST','GET'])
 def dsl():
@@ -465,9 +475,9 @@ def dsl():
         query_log = create_query_log(dsl)
         log = pppoe_get_log(dsl, query_log)
 
-        return render_template('dsl.html', title='Dsl', form=form, log = log, first_request = first_request)
+        return render_template('dsl.html', title='Dsl', form=form, log = log, first_request = first_request, conf=conf)
 
-    return render_template('dsl.html', title='Dsl', form=form, first_request = first_request)
+    return render_template('dsl.html', title='Dsl', form=form, first_request = first_request, conf=conf)
 
 @app.route('/pppoejq', methods=['POST','GET'])
 def pppoejq():
@@ -486,9 +496,9 @@ def peering():
         peering = form.peering.data
         peergroup = [peers[f] for f in peers if f == peering]
         print peergroup
-        return render_template('peering.html', title='Peering', form=form, peergroup=peergroup, first_request = first_request)
+        return render_template('peering.html', title='Peering', form=form, peergroup=peergroup, first_request = first_request, conf=conf)
 
-    return render_template('peering.html', title='Peering', form=form, first_request = first_request)
+    return render_template('peering.html', title='Peering', form=form, first_request = first_request, conf=conf)
 
 def get_vxlan_data(vlanid):
     vlanidhex = bin(vlanid)[2:].zfill(16)
@@ -512,9 +522,9 @@ def vxlan():
         vxlan_data['octet2'] = octet2
         vxlan_data['vni'] = vni
 
-        return render_template('vxlan.html', title='Vxlan', form=form, vxlan_data = vxlan_data, first_request = first_request)
+        return render_template('vxlan.html', title='Vxlan', form=form, vxlan_data = vxlan_data, first_request = first_request,conf=conf)
 
-    return render_template('vxlan.html', title='Vxlan', form=form, first_request = first_request)
+    return render_template('vxlan.html', title='Vxlan', form=form, first_request = first_request, conf=conf)
 
 @app.route('/po/<twins>', methods=['POST','GET'])
 def po(twins):
@@ -557,13 +567,13 @@ def po(twins):
         
         form.clientid.data = clientid
         
-        return render_template('portchannel.html', title='Portchannel', form=form, po_number=po_number, description=description, location=location, portchannel=portchannel, iface1=iface1, iface2 = iface2, trunk = porttype, twins = twins, first_request = first_request)
+        return render_template('portchannel.html', title='Portchannel', form=form, po_number=po_number, description=description, location=location, portchannel=portchannel, iface1=iface1, iface2 = iface2, trunk = porttype, twins = twins, first_request = first_request, conf=conf)
         
     else:
         clientid = 0
         print form.errors
 
-    return render_template('portchannel.html', title='Portchannel', form=form, twins = twins, location = location, first_request=first_request)
+    return render_template('portchannel.html', title='Portchannel', form=form, twins = twins, location = location, first_request=first_request, conf=conf)
 
 @app.route('/ifsw/<host>/<path:iface>', methods=['POST','GET'])
 def ifsw(host, iface):
@@ -573,7 +583,7 @@ def ifsw(host, iface):
     ifsw = box.get_iface_switchport(box.nxapi_call("show interface " + iface + " switchport" ))
     
 
-    return render_template('iface_switchport.html', title='Interface switchport configuration', iface=iface, host=host, ifsw=ifsw) 
+    return render_template('iface_switchport.html', title='Interface switchport configuration', iface=iface, host=host, ifsw=ifsw, conf=conf) 
 
 @app.route('/iferr/<host>/<path:iface>', methods=['POST','GET'])
 def iferr(host, iface):
@@ -582,7 +592,7 @@ def iferr(host, iface):
     box = NXAPIClient(hostname=ip, username = creds['user'], password = creds['passwd'])
     iferr = box.get_iface_errors(box.nxapi_call("show interface " + iface + " counters errors" ))
 
-    return render_template('iface_errors.html', title='Interface errors', iface=iface, host=host, iferr=iferr) 
+    return render_template('iface_errors.html', title='Interface errors', iface=iface, host=host, iferr=iferr, conf=conf) 
 
 @app.route('/logs', methods=['POST','GET'])
 def logs():
@@ -601,7 +611,7 @@ def logs():
         print(r.url)
         logs  = json.loads(r.text)
 
-        return render_template('logs.html', logs=logs, form=form) 
+        return render_template('logs.html', logs=logs, form=form, conf=conf) 
         
     else:
         date = datetime.datetime.now().strftime ("%Y%m%d")
@@ -613,7 +623,7 @@ def logs():
         #logs  = json.loads(r.text)
 
         logs  = {}
-        return render_template('logs.html', logs=logs, form=form)
+        return render_template('logs.html', logs=logs, form=form, conf=conf)
 
 def get_vlan(nxhosts):
     '''
@@ -701,4 +711,4 @@ def vlan(nxhosts):
 
     vlan, box_attr, created = get_vlan(nxhosts)
 
-    return render_template('vlan.html', vlan=vlan, box_attr = box_attr, created = created, nxhosts = nxhosts )
+    return render_template('vlan.html', vlan=vlan, box_attr = box_attr, created = created, nxhosts = nxhosts, conf=conf )

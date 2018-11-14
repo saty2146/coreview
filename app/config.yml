@@ -1,0 +1,139 @@
+---
+boxes:
+  n21: 
+    ip: 10.2.10.121
+    location: shc2
+    group: n5k
+  n22: 
+    ip: 10.2.10.122
+    location: shc2
+    group: n5k
+  n31:
+    ip: 192.168.35.41
+    location: shc3
+    group: n5k
+  n32:
+    ip: 192.168.35.41
+    location: shc3
+    group: n5k
+  n41:
+    ip: 10.4.1.141
+    location: dc4
+    group: n5k
+  n42: 
+    ip: 10.4.1.142
+    location: dc4
+    group: n5k
+  n911:
+    ip: 192.168.65.2
+    location: six
+    group: n9k
+  n912:
+    ip: 192.168.65.3
+    location: six
+    group: n9k
+  n921:
+    ip: 192.168.65.10
+    location: sitel
+    group: n9k
+  n922:
+    ip: 192.168.65.11
+    location: sitel
+    group: n9k
+  n931:
+    ip: 192.168.35.231
+    location: shc3
+    group: n9k
+  n932: 
+    ip: 192.168.35.232
+    location: shc3
+    group: n9k
+  n941:
+    ip: 10.4.1.41
+    location: dc4
+    group: n9k
+  n942:
+    ip: 10.4.1.42
+    location: dc4
+    group: n9k
+  datacube_n3k: 
+    ip: 192.168.20.130
+    location: datacube
+    group: n3k
+  axton_n3k:
+    ip: 192.168.174.116
+    location: axton
+    group: n3k
+  n33: 
+    ip: 192.168.35.133
+    location: shc3
+    group: n3k
+  n43:
+    ip: 10.4.1.143
+    location: dc4
+    group: n3k
+  n44: 
+    ip: 10.4.1.144
+    location: dc4
+    group: n3k
+  bix_n3k: 
+    ip: 192.168.194.2
+    location: bix
+    group: n3k
+  jegeho_n3k: 
+    ip: 217.73.18.193
+    location: jegeho
+    group: n3k
+
+pairs:
+  tn2: 
+    members:
+      - n21
+      - n22
+    location: shc2
+    group: n5k
+  tn3: 
+    members:
+      - n31
+      - n32
+    location: shc3
+    group: n5k
+  tn4: 
+    members:
+      - n41
+      - n42
+    location: dc4
+    group: n5k
+  tn91: 
+    members:
+      - n911
+      - n912
+    location: six
+    group: n9k
+  tn92: 
+    members:
+      - n921 
+      - n922
+    location: sitel
+    group: n9k
+  tn93: 
+    members:
+      - n931 
+      - n932
+    location: shc3
+    group: n9k
+  tn94: 
+    members:
+      - n941 
+      - n942
+    location: dc4
+    group: n9k
+
+pppoe_gws: 
+  optikagw1: 109.74.155.34
+  optikagw2: 109.74.155.246
+  optikagw3: 93.184.71.50
+  optikagw3-3: 81.89.57.22
+  optikagw4: 109.74.158.90
+  axton: 81.89.57.3
+  gaudi: 93.184.65.6

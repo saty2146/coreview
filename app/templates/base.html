@@ -53,81 +53,98 @@
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">IFACE <span class="caret"></span></a>
                 <ul class="dropdown-menu">
                   <li class="dropdown-header">DATACENTER N5K twins</li>
-                  <li><a href="/port/tn3">SHC3_N5k</a></li>
-                  <li><a href="/port/tn4">DC4_N5k</a></li>
+                  {% set twins = conf['pairs']  %}
+                  {% for twin in twins %}
+                    {% set location = twins[twin]['location']  %}
+                    {% set group = twins[twin]['group']  %}
+                  {% if group == 'n5k' %}
+                    <li><a href="/port/{{ twin }}">{{ location | upper }}_{{ group }}</a></li>
+                  {% endif %}
+                  {% endfor %}
                   <li role="separator" class="divider"></li>
                   <li class="dropdown-header">CORE N9K twins</li>
-                  <li><a href="/port/tn91">SIX_N9k</a></li>
-                  <li><a href="/port/tn92">SITEL_N9k</a></li>
-                  <li><a href="/port/tn93">SHC3_N9k</a></li>
-                  <li><a href="/port/tn94">DC4_N9k</a></li>
+                  {% for twin in twins %}
+                      {% set location = twins[twin]['location']  %}
+                      {% set group = twins[twin]['group']  %}
+                    {% if group == 'n9k' %}
+                      <li><a href="/port/{{ twin }}">{{ location | upper }}_{{ group }}</a></li>
+                    {% endif %}
+                  {% endfor %}
                   <li role="separator" class="divider"></li>
                   <li class="dropdown-header">POP N3K</li>
-                  <li><a href="/port_host/datacube_n3k">Datacube_N3k</a></li>
-                  <li><a href="/port_host/axton_n3k">Axton_N3k</a></li>
-                  <li><a href="/port_host/n33-rack-D7">SHC3-N33</a></li>
-                  <li><a href="/port_host/n43-rack-1A07">DC4-N43</a></li>
-                  <li><a href="/port_host/n44-rack-1A07">DC4-N44</a></li>
-                  <li><a href="/port_host/bix_n3k">BIX_N3k</a></li>
-                  <li><a href="/port_host/jegeho_n3k">JEG_N3k</a></li>
+                  {% set boxes = conf['boxes']  %}
+                  {% for box in boxes %}
+                  {% set location = boxes[box]['location']  %}
+                  {% set group = boxes[box]['group']  %}
+                  {% if group == 'n3k' %}
+                  <li><a href="/port_host/{{ box }}">{{ location | upper }}_{{ box }}</a></li>
+                  {% endif %}
+                  {% endfor %}
                 </ul>
               </li>
               <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">ARP <span class="caret"></span></a>
                 <ul class="dropdown-menu">
                   <li class="dropdown-header">DATACENTER N5K</li>
-                  <li><a href="/arp/n31">SHC3_N31</a></li>
-                  <li><a href="/arp/n32">SHC3_N32</a></li>
-                  <li><a href="/arp/n41">DC4_N41</a></li>
-                  <li><a href="/arp/n42">DC4_N42</a></li>
+                  {% for box in boxes %}
+                  {% set location = boxes[box]['location']  %}
+                  {% set group = boxes[box]['group']  %}
+                  {% if group == 'n5k' %}
+                  <li><a href="/arp/{{ box }}">{{ location | upper }}_{{ box }}</a></li>
+                  {% endif %}
+                  {% endfor %}
                   <li role="separator" class="divider"></li>
                   <li class="dropdown-header">CORE N9K</li>
-                  <li><a href="/arp/n911">SIX_N911</a></li>
-                  <li><a href="/arp/n912">SIX_N912</a></li>
-                  <li><a href="/arp/n921">SITEL_N921</a></li>
-                  <li><a href="/arp/n922">SITEL_N922</a></li>
-                  <li><a href="/arp/n931">SHC3_N931</a></li>
-                  <li><a href="/arp/n932">SHC3_N932</a></li>
-                  <li><a href="/arp/n941">DC4_N941</a></li>
-                  <li><a href="/arp/n942">DC4_N942</a></li>
+                  {% for box in boxes %}
+                  {% set location = boxes[box]['location']  %}
+                  {% set group = boxes[box]['group']  %}
+                  {% if group == 'n9k' %}
+                  <li><a href="/arp/{{ box }}">{{ location | upper }}_{{ box }}</a></li>
+                  {% endif %}
+                  {% endfor %}
                   <li role="separator" class="divider"></li>
                   <li class="dropdown-header">POP N3K</li>
-                  <li><a href="/arp/axton_n3k">Axton_N3k</a></li>
-                  <li><a href="/arp/datacube_n3k">Datacube_N3k</a></li>
-                  <li><a href="/arp/n33-rack-D7">SHC3-N33</a></li>
-                  <li><a href="/arp/n43-rack-1A07">DC4-N43</a></li>
-                  <li><a href="/arp/n44-rack-1A07">DC4-N44</a></li>
-                  <li><a href="/arp/bix_n3k">BIX_N3k</a></li>
-                  <li><a href="/arp/jegeho_n3k">JEG_N3k</a></li>
+                  {% for box in boxes %}
+                  {% set location = boxes[box]['location']  %}
+                  {% set group = boxes[box]['group']  %}
+                  {% if group == 'n3k' %}
+                  <li><a href="/arp/{{ box }}">{{ location | upper }}_{{ box }}</a></li>
+                  {% endif %}
+                  {% endfor %}
                 </ul>
               </li>
               <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">MAC <span class="caret"></span></a>
                 <ul class="dropdown-menu">
                   <li class="dropdown-header">DATACENTER N5K</li>
-                  <li><a href="/mac/n31">SHC3_N31</a></li>
-                  <li><a href="/mac/n32">SHC3_N32</a></li>
-                  <li><a href="/mac/n41">DC4_N41</a></li>
-                  <li><a href="/mac/n42">DC4_N42</a></li>
+                  {% set boxes = conf['boxes']  %}
+                  {% for box in boxes %}
+                  {% set location = boxes[box]['location']  %}
+                  {% set group = boxes[box]['group']  %}
+                  {% if group == 'n5k' %}
+                  <li><a href="/mac/{{ box }}">{{ location | upper }}_{{ box }}</a></li>
+                  {% endif %}
+                  {% endfor %}
                   <li role="separator" class="divider"></li>
                   <li class="dropdown-header">CORE N9K</li>
-                  <li><a href="/mac/n911">SIX_N911</a></li>
-                  <li><a href="/mac/n912">SIX_N912</a></li>
-                  <li><a href="/mac/n921">SITEL_N921</a></li>
-                  <li><a href="/mac/n922">SITEL_N922</a></li>
-                  <li><a href="/mac/n931">SHC3_N931</a></li>
-                  <li><a href="/mac/n932">SHC3_N932</a></li>
-                  <li><a href="/mac/n941">DC4_N941</a></li>
-                  <li><a href="/mac/n942">DC4_N942</a></li>
+                  {% set boxes = conf['boxes']  %}
+                  {% for box in boxes %}
+                  {% set location = boxes[box]['location']  %}
+                  {% set group = boxes[box]['group']  %}
+                  {% if group == 'n9k' %}
+                  <li><a href="/mac/{{ box }}">{{ location | upper }}_{{ box }}</a></li>
+                  {% endif %}
+                  {% endfor %}
                   <li role="separator" class="divider"></li>
                   <li class="dropdown-header">POP N3K</li>
-                  <li><a href="/mac/axton_n3k">Axton_N3k</a></li>
-                  <li><a href="/mac/datacube_n3k">Datacube_N3k</a></li>
-                  <li><a href="/mac/n33-rack-D7">SHC3-N33</a></li>
-                  <li><a href="/mac/n43-rack-1A07">DC4-N43</a></li>
-                  <li><a href="/mac/n44-rack-1A07">DC4-N44</a></li>
-                  <li><a href="/mac/bix_n3k">BIX_N3k</a></li>
-                  <li><a href="/mac/jegeho_n3k">JEG_N3k</a></li>
+                  {% set boxes = conf['boxes']  %}
+                  {% for box in boxes %}
+                  {% set location = boxes[box]['location']  %}
+                  {% set group = boxes[box]['group']  %}
+                  {% if group == 'n3k' %}
+                  <li><a href="/mac/{{ box }}">{{ location | upper }}_{{ box }}</a></li>
+                  {% endif %}
+                  {% endfor %}
                 </ul>
               </li>
               <li class="dropdown">
