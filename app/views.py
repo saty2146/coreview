@@ -178,7 +178,6 @@ def port_status_tn3():
 
 @app.route('/port/<twins>', methods=['POST','GET'])
 def port(twins):
-    print conf
     return render_template('port.html', twins = twins, conf=conf)
 
 @app.route('/port/ajax_<twins>', methods=['POST','GET'])
@@ -212,6 +211,21 @@ def ajax_port_host(host):
     iface_status = box.get_iface_status(box.nxapi_call("show interface status"))
     
     return render_template('ajax_port_host.html', title=title, iface_status = iface_status, host = host, location = location)
+
+@app.route('/sfp/<host>', methods=['POST','GET'])
+def sfp(host):
+    return render_template('sfp.html', host=host, conf=conf)
+
+@app.route('/sfp/ajax_sfp_<host>', methods=['POST','GET'])
+def ajax_sfp_host(host):
+    
+    ip_box = boxes[host]['ip']
+    location = boxes[host]['location']
+    title = str(location) + " " + str(host)
+    box = NXAPIClient(hostname = ip_box, username = creds['user'], password = creds['passwd'])
+    sfp_status = box.get_all_transceiver_details(box.nxapi_call("show interface transceiver details"))
+    
+    return render_template('ajax_sfp.html', title=title, sfp_status = sfp_status, host = host, location = location, conf=conf)
 
 @app.route('/arp/<host>', methods=['POST','GET'])
 def arp(host):

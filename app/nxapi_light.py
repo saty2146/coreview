@@ -136,6 +136,18 @@ class NXAPIClient(object):
         
         return output
 
+    def get_transceiver_details(self, response):
+
+        output = response['result']['body']['TABLE_interface']['ROW_interface'][0]
+        
+        return output
+
+    def get_all_transceiver_details(self, response):
+
+        output = response['result']['body']['TABLE_interface']['ROW_interface']
+        
+        return output
+
     def get_arp_list(self, response):
 
         output = response['result']['body']['TABLE_vrf']['ROW_vrf']['TABLE_adj']['ROW_adj']
@@ -180,6 +192,6 @@ if __name__ == "__main__":
     logging.getLogger("requests").setLevel(logging.WARNING)
 
 #Testing
-    test = nxapi.get_mac_list(nxapi.nxapi_call("show mac address dynamic"))
-#    test = nxapi.get_po_list(nxapi.nxapi_call("show port-channel summary"))
+    nxapi = NXAPIClient(hostname="XXX", username="XXX", password="XXX")
+    test = nxapi.get_all_transceiver_details(nxapi.nxapi_call("show interface transceiver details"))
     print test

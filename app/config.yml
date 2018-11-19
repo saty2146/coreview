@@ -9,7 +9,7 @@ boxes:
     location: shc2
     group: n5k
   n31:
-    ip: 192.168.35.41
+    ip: 192.168.35.40
     location: shc3
     group: n5k
   n32:

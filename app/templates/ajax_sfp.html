@@ -1,0 +1,166 @@
+{% block content %}
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="{{ url_for('static', filename='js/datatable.js') }}"></script>
+
+<div class="form-group row">
+  <div class="col-md-11" style="font-size:25px">
+    {{ location }}: SFP Status {{ host }}
+    {% set group = conf['boxes'][host]['group'] %}
+  </div>
+  <div class="col-md-1"><div class="pull-right">
+    <a href="{{ url_for('sfp', host=host) }}"><button class="btn btn-primary" align="left"><span class="glyphicon glyphicon-refresh "aria-hidden="true"></span></button></a>
+  </div>
+</div>
+</div>
+    <table id=mytable class="table table-hover table-bordered table-responsive">
+      <thead>
+        <tr>
+          <th>Interface</th>
+          <th>Sfp</th>
+          <th>Type</th>
+          <th>Name</th>
+          <th>Partnum</th>
+          <th>Temperature</th>
+          <th>TX_pwr</th>
+          <th>RX_pwr</th>
+          <th>Warnings</th>
+        </tr>
+      </thead>
+      <tbody class="searchable">
+      
+      {% for value in sfp_status %}
+        
+        {% set sfp =  value['sfp'] %}
+        
+        {% if sfp == 'present' %}
+          {% set iface =  value['interface'] %}
+          {% set type =  value['type'] %}
+          {% set name =  value['name'] %}
+          {% set partnum =  value['partnum'] %}
+
+          {% if group != 'n5k' and 'TABLE_lane' in value %}
+            {% set path = value['TABLE_lane']['ROW_lane'] %}
+          {% else %}
+            {% set path = value %}
+          {% endif %}
+          
+          {% if type == 'QSFP-40GE-LR4' or type == 'QSFP-40G-SR4' or  type == 'QSFP-40G-ER4' %}
+            {% set qsfp = True %}
+          {% endif %}
+          
+          {% if qsfp %}
+            {% set temperature =  path[0]['temperature'] | float %}
+            {% set tx_pwr = [] %}
+            {% set rx_pwr = [] %}
+            {% for n in range(4) %}
+              {% do tx_pwr.append(path[n]['tx_pwr']) %}
+              {% do rx_pwr.append(path[n]['rx_pwr']) %}
+              {% set rx_pwr_cur = path[n]['rx_pwr'] | float %}
+              {% set rx_pwr_warn_lo = path[n]['rx_pwr_warn_lo'] | float %}
+              {% set rx_pwr_warn_hi = path[n]['rx_pwr_warn_hi'] | float %}
+              {% set tx_pwr_cur = path[n]['tx_pwr'] | float %}
+              {% set tx_pwr_warn_lo = path[n]['tx_pwr_warn_lo'] | float %}
+              {% set tx_pwr_warn_hi = path[n]['tx_pwr_warn_hi'] | float %}
+
+              {% if rx_pwr_cur > rx_pwr_warn_lo and rx_pwr_cur< rx_pwr_warn_hi %}
+                {% set rx_pwr_warn = False %}
+              {% else %}
+                {% set rx_pwr_warn = True %}
+              {% endif %}
+              {% if tx_pwr_cur > tx_pwr_warn_lo and tx_pwr_cur< tx_pwr_warn_hi %}
+                {% set tx_pwr_warn = False %}
+              {% else %}
+                {% set tx_pwr_warn = True %}
+              {% endif %}
+
+            {% endfor %}
+          {% else %}
+            {% if 'tx_pwr' in path %}
+              {% set tx_pwr = path['tx_pwr'] | float %}
+              {% set tx_pwr_warn_lo = path['tx_pwr_warn_lo'] | float %}
+              {% set tx_pwr_warn_hi = path['tx_pwr_warn_hi'] | float %}
+              {% if tx_pwr > tx_pwr_warn_lo and tx_pwr < tx_pwr_warn_hi %}
+                {% set tx_pwr_warn = False %}
+              {% else %}
+                {% set tx_pwr_warn = True %}
+              {% endif %}
+            {% endif %}
+
+            {% if 'rx_pwr' in path %}
+              {% set rx_pwr = path['rx_pwr'] | float %}
+              {% set rx_pwr_warn_lo = path['rx_pwr_warn_lo'] | float %}
+              {% set rx_pwr_warn_hi = path['rx_pwr_warn_hi'] | float %}
+
+            {% if 'temperature' in path %}
+              {% set temperature =  path['temperature'] | float %}
+              {% set temp_warn_lo = path['temp_warn_lo'] | float %}
+              {% set temp_warn_hi = path['temp_warn_hi'] | float %}
+              
+             {% if rx_pwr > rx_pwr_warn_lo and rx_pwr < rx_pwr_warn_hi %}
+                {% set rx_pwr_warn = False %}
+              {% else %}
+                {% set rx_pwr_warn = True %}
+              {% endif %}
+            {% else %}
+              {% set temperature = 0 %}
+            {% endif %}
+
+              {% if temperature > temp_warn_lo and temperature < temp_warn_hi %}
+                {% set temp_warn = False %}
+              {% else %}
+                {% set temp_warn = True %}
+              {% endif %}
+            {% endif %}
+          {% endif %}
+
+          <tr>
+            <td> {{ iface }} </td>
+            <td> {{ sfp }} </td>
+            <td> {{ type }} </td>
+            <td> {{ name }} </td>
+            <td> {{ partnum }} </td>
+            {% if temp_warn %}
+              <td><span style="color:red">{{ temperature }}</span></td>
+            {% else %}
+            <td> {{ temperature }} </td>
+            {% endif %}
+            {% if tx_pwr_warn %}
+              {% if tx_pwr_warn is iterable %}
+                <td><span style="color:red">{{ tx_pwr|join(', ') }}</span></td>
+              {% else %}
+                <td><span style="color:red">{{ tx_pwr }}</span></td>
+              {% endif %}
+            {% else %}
+              {% if tx_pwr_warn is iterable %}
+                <td> {{ tx_pwr|join(', ') }} </td>
+              {% else %}
+                <td> {{ tx_pwr }} </td>
+              {% endif %}
+            {% endif %}
+            {% if rx_pwr_warn %}
+              {% if rx_pwr_warn is iterable %}
+                <td><span style="color:red">{{ rx_pwr|join(', ') }}</span></td>
+              {% else %}
+                <td><span style="color:red">{{ rx_pwr }}</span></td>
+              {% endif %}
+            {% else %}
+              {% if rx_pwr_warn is iterable %}
+                <td> {{ rx_pwr|join(', ') }} </td>
+              {% else %}
+                <td> {{ rx_pwr }} </td>
+              {% endif %}
+            {% endif %}
+
+              {% if tx_pwr_warn or rx_pwr_warn or temp_warn %}
+                <td><span class="glyphicon glyphicon-remove-circle" style="color:red" aria-hidden="true" title="down"></span> Warning</td>
+              {% else %}
+                <td><span class="glyphicon glyphicon-ok-circle" style="color:green" aria-hidden="true" title="connected"></span> Ok</td>
+              {% endif %}
+          {% endif %}
+        {% endfor %}
+      </tbody>
+    </table>
+</div>
+
+{% endblock %}

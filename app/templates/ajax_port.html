@@ -19,11 +19,13 @@
           <th>Speed</th>
           <th>Duplex</th>
           <th>State</th>
+          <th>Type</th>
           <th>Info</th>
           <th>Name {{ hosts[1] }}</th>
           <th>Speed</th>
           <th>Duplex</th>
           <th>State</th>
+          <th>Type</th>
           <th>Info</th>
         </tr>
       </thead>
@@ -55,6 +57,7 @@
           {% else %}
           <td><span style="color: red;">{{ value['state1'] }}</span></td>
           {% endif %}
+          <td><small>{{ value['type1'] }}</small></td>
            <td class="text-nowrap">
           {% if value['vlan1'] != 'routed' %}
           <a href="{{ url_for('ifsw', iface=key, host=hosts[0]) }}"><button class="btn btn-black btn-xs" title="switchport">S</button></a>
@@ -86,6 +89,7 @@
           {% else %}
           <td><span style="color: red;">{{ value['state2'] }}</span></td>
           {% endif %}
+          <td><small>{{ value['type2'] }}</small></td>
            <td class="text-nowrap">
           {% if value['vlan2'] != 'routed' %}
           <a href="{{ url_for('ifsw', iface=key, host=hosts[1]) }}"><button class="btn btn-black btn-xs" title="switchport">S</button></a>
