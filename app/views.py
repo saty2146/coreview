@@ -212,6 +212,17 @@ def ajax_port_host(host):
     
     return render_template('ajax_port_host.html', title=title, iface_status = iface_status, host = host, location = location)
 
+def merge_sfp_iface(l1, l2, key):
+    merged = {}
+    for item in l1+l2:
+        if item[key] in merged:
+            merged[item[key]].update(item)
+        else:
+            merged[item[key]] = item
+    return [val for (_, val) in merged.items()]
+
+
+
 @app.route('/sfp/<host>', methods=['POST','GET'])
 def sfp(host):
     return render_template('sfp.html', host=host, conf=conf)
@@ -223,7 +234,9 @@ def ajax_sfp_host(host):
     location = boxes[host]['location']
     title = str(location) + " " + str(host)
     box = NXAPIClient(hostname = ip_box, username = creds['user'], password = creds['passwd'])
-    sfp_status = box.get_all_transceiver_details(box.nxapi_call("show interface transceiver details"))
+    sfp_details = box.get_all_transceiver_details(box.nxapi_call("show interface transceiver details"))
+    sfp_desc = box.get_iface_description(box.nxapi_call("show interface description"))
+    sfp_status = merge_sfp_iface(sfp_details, sfp_desc, 'interface')
     
     return render_template('ajax_sfp.html', title=title, sfp_status = sfp_status, host = host, location = location, conf=conf)
 

@@ -124,6 +124,12 @@ class NXAPIClient(object):
         
         return output
 
+    def get_iface_description(self, response):
+
+        output = response['result']['body']['TABLE_interface']['ROW_interface']
+        
+        return output
+
     def get_iface_switchport(self, response):
 
         output = response['result']['body']['TABLE_interface']['ROW_interface']

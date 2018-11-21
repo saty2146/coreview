@@ -17,7 +17,7 @@
       <thead>
         <tr>
           <th>Interface</th>
-          <th>Sfp</th>
+          <th>Description</th>
           <th>Type</th>
           <th>Name</th>
           <th>Partnum</th>
@@ -35,6 +35,7 @@
         
         {% if sfp == 'present' %}
           {% set iface =  value['interface'] %}
+          {% set desc =  value['desc'] %}
           {% set type =  value['type'] %}
           {% set name =  value['name'] %}
           {% set partnum =  value['partnum'] %}
@@ -116,7 +117,7 @@
 
           <tr>
             <td> {{ iface }} </td>
-            <td> {{ sfp }} </td>
+            <td> {{ desc }} </td>
             <td> {{ type }} </td>
             <td> {{ name }} </td>
             <td> {{ partnum }} </td>
