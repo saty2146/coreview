@@ -219,6 +219,7 @@ def merge_sfp_iface(l1, l2, key):
             merged[item[key]].update(item)
         else:
             merged[item[key]] = item
+    print merged
     return [val for (_, val) in merged.items()]
 
 
@@ -236,7 +237,7 @@ def ajax_sfp_host(host):
     box = NXAPIClient(hostname = ip_box, username = creds['user'], password = creds['passwd'])
     sfp_details = box.get_all_transceiver_details(box.nxapi_call("show interface transceiver details"))
     sfp_desc = box.get_iface_description(box.nxapi_call("show interface description"))
-    sfp_status = merge_sfp_iface(sfp_details, sfp_desc, 'interface')
+    sfp_status = merge_sfp_iface(sfp_desc, sfp_details, 'interface')
     
     return render_template('ajax_sfp.html', title=title, sfp_status = sfp_status, host = host, location = location, conf=conf)
 
