@@ -219,7 +219,6 @@ def merge_sfp_iface(l1, l2, key):
             merged[item[key]].update(item)
         else:
             merged[item[key]] = item
-    print merged
     return [val for (_, val) in merged.items()]
 
 
