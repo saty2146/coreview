@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+
+<script src="{{ url_for('static', filename='js/clipboard.js') }}"></script>
+
+<div class="form-group row">
+  <div class="col-md-11" style="font-size:25px">
+  L2CIRCUIT
+  </div>
+  <div class="col-md-1"><div class="pull-right">
+    <a href="{{ url_for('l2circuit') }}"><button class="btn btn-primary" align="left"><span class="glyphicon glyphicon-refresh "aria-hidden="true"></span></button></a>
+  </div>
+</div>
+
+<form action="" method="post">
+  <div class="col-sm-5">
+    {{ form.hidden_tag() }}
+    <label>ASR SIX Interface</label>
+    {{ form.iface(class_="form-control form-group") }}
+    <label>Vlan</label>
+    {% for error in form.vlan.errors %}
+      <span style="color: red;">[{{ error }}]</span>
+    {% endfor %}
+    {{ form.vlan(class_="form-control form-group", placeholder="vlan or vlans comma separated") }}
+    <label>Client id</label>
+    {% for error in form.clientid.errors %}
+      <span style="color: red;">[{{ error }}]</span>
+    {% endfor %}
+    {{ form.clientid(class_="form-control form-group", placeholder="client id") }}
+    <label>Company name</label>
+    {% for error in form.company.errors %}
+      <span style="color: red;">[{{ error }}]</span>
+    {% endfor %}
+    {{ form.company(class_="form-control form-group", placeholder="company name") }}
+     <div class="form-group form-group">
+    <button type="submit" class="btn btn-primary">Generate</button>
+  </div>
+  </div>
+  <div class="col-sm-1"></div>
+  <div class="col-sm-4">
+  <label>Your Configuration</label>
+  <div class="form-group form-group">
+  <textarea id="content" class="form-control custom-control" rows="23" name=configuration.data>
+  {%- if not first_request %}
+    {%- include "l2circuit.jinja2" %}
+  {%- endif %}
+  </textarea>
+  </div>
+  <div class="form-group form-group">
+    <button class="copy-text btn btn-primary" type="button" name="copy" data-clipboard-target="#content">Copy</button>
+  </div>
+  </div>
+
+  </div>
+</form>
+
+{% endblock %}

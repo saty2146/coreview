@@ -1,6 +1,6 @@
 from flask import render_template, request
 from app import app
-from forms import PortchannelForm, PeeringForm, RtbhForm, ScrubbingForm, PppoeForm, VxlanForm, DateForm, DslForm
+from forms import PortchannelForm, PeeringForm, RtbhForm, ScrubbingForm, PppoeForm, VxlanForm, DateForm, DslForm, L2circuitForm
 from mycreds import *
 from nxapi_light import *
 import json, requests, re, threading, socket, sys, ssl, time, os.path, yaml
@@ -526,6 +526,25 @@ def peering():
         return render_template('peering.html', title='Peering', form=form, peergroup=peergroup, first_request = first_request, conf=conf)
 
     return render_template('peering.html', title='Peering', form=form, first_request = first_request, conf=conf)
+
+@app.route('/l2circuit', methods=['POST','GET'])
+def l2circuit():
+    form = L2circuitForm()
+    first_request = True
+
+    if form.validate_on_submit():
+        print "validated"
+        first_request = False
+        iface_id = form.iface.data
+        vlan = form.vlan.data
+        clientid = form.clientid.data
+        company = form.company.data
+        description = str(clientid) + "-" + company
+        iface = [f[1] for f in form.iface.choices if f[0] == iface_id]
+        iface = iface[0]
+        return render_template('l2circuit.html', title='L2circuit', form=form, iface=iface, vlan=vlan, description=description, first_request = first_request, conf=conf)
+
+    return render_template('l2circuit.html', title='L2circuit', form=form, first_request = first_request, conf=conf)
 
 def get_vxlan_data(vlanid):
     vlanidhex = bin(vlanid)[2:].zfill(16)

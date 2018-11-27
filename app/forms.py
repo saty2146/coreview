@@ -2,8 +2,19 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, BooleanField, SubmitField, SelectField, RadioField
 from wtforms import TextAreaField, TextField, IntegerField, ValidationError, DateField, validators
 from wtforms.validators import DataRequired, IPAddress, NumberRange, Optional
-import ipaddress
+import ipaddress,yaml
 from boxes import *
+
+def load_six_asr():
+
+    with open('app/six_asr.yml', 'r') as f:
+        six_asr = yaml.safe_load(f)
+        ifaces = six_asr['ifaces']
+    
+    ids = [i for i in range(len(ifaces))]
+    id_ifaces = list(zip(ids, ifaces))
+
+    return id_ifaces
 
 def vnet_ipv4(form, field):
     if (
@@ -34,6 +45,13 @@ class PeeringForm(FlaskForm):
     ipv6 = StringField('ipv6', validators=[DataRequired(), IPAddress(ipv4=False, ipv6=True, message=None)])
     prefixlimipv4 = IntegerField('prefixlimipv4', validators=[DataRequired(), NumberRange(min=1, max=None, message=None)])
     prefixlimipv6 = IntegerField('prefixlimipv6', validators=[DataRequired(),NumberRange(min=1, max=None, message=None)])
+
+class L2circuitForm(FlaskForm):
+    iface = SelectField('iface', coerce=int, choices = load_six_asr())
+    clientid = IntegerField('clientid', validators=[Optional()])
+    company = StringField('company', validators=[DataRequired()])
+    vlan = IntegerField('vlan', validators=[DataRequired()])
+    configuration = TextAreaField('configuration', default="Empty")
 
 class VxlanForm(FlaskForm):
     vlanid = IntegerField('vlan', validators=[DataRequired(), NumberRange(min=1, max=9999, message='1-9999')])
