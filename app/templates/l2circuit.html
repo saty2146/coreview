@@ -21,7 +21,7 @@
     {% for error in form.vlan.errors %}
       <span style="color: red;">[{{ error }}]</span>
     {% endfor %}
-    {{ form.vlan(class_="form-control form-group", placeholder="vlan or vlans comma separated") }}
+    {{ form.vlan(class_="form-control form-group", placeholder="vlan") }}
     <label>Client id</label>
     {% for error in form.clientid.errors %}
       <span style="color: red;">[{{ error }}]</span>
