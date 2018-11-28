@@ -1,0 +1,18 @@
+configure terminal
+!
+vlan {{ vlan }}
+mode fabricpath
+name {{ description }}
+!
+interface Po81
+switchport trunk allowed vlan add {{ vlan }}
+interface Po82
+switchport trunk allowed vlan add {{ vlan }}
+!
+!N31+N32 (kvoli fabricpath domene)
+!
+vlan {{ vlan }}
+mode fabricpath
+name {{ description }}
+!
+end

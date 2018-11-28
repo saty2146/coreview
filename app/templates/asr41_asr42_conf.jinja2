@@ -1,0 +1,38 @@
+configure terminal
+!
+{%- if circuit_type %}
+interface Port-channel8
+service instance {{ vlan }} ethernet
+ description {{ description }}
+ encapsulation dot1q {{ vlan }}
+!
+interface pseudowire{{ vlan }}
+encapsulation mpls
+signaling protocol ldp
+neighbor 185.176.72.127 {{ vlan }}
+mtu 9188
+!
+l2vpn xconnect context vlan{{ vlan }}
+member Port-channel8 service-instance 702 
+member pseudowire{{ vlan }}
+!
+{%- else %}
+interface Port-channel8
+service instance {{ vlan }} ethernet
+ description {{ description }}
+ encapsulation dot1q {{ vlan }}
+ rewrite ingress tag pop 1 symmetric
+!
+interface pseudowire{{ vlan }}
+encapsulation mpls
+signaling protocol ldp
+neighbor 185.176.72.127 {{ vlan }}
+mtu 9184
+exit
+!
+l2vpn xconnect context vlan{{ vlan }}
+member Port-channel8 service-instance 702 
+member pseudowire{{ vlan }}
+!
+{%- endif %}
+end

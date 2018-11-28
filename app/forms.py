@@ -47,11 +47,14 @@ class PeeringForm(FlaskForm):
     prefixlimipv6 = IntegerField('prefixlimipv6', validators=[DataRequired(),NumberRange(min=1, max=None, message=None)])
 
 class L2circuitForm(FlaskForm):
+    circuit_type = SelectField('circuit_type', coerce=int, choices = [(0, 'Port based - QinQ delivered on port without S-tag'), (1, 'Vlan based - QinQ delivered on NNI with S-tag')])
     iface = SelectField('iface', coerce=int, choices = load_six_asr())
     clientid = IntegerField('clientid', validators=[Optional()])
     company = StringField('company', validators=[DataRequired()])
     vlan = IntegerField('vlan', validators=[DataRequired()])
-    configuration = TextAreaField('configuration', default="Empty")
+    six_asr_conf = TextAreaField('six_asr_conf', default="Empty")
+    asr41_asr42_conf = TextAreaField('asr41_asr42_conf', default="Empty")
+    n41_n42_conf = TextAreaField('n41_n42_conf', default="Empty")
 
 class VxlanForm(FlaskForm):
     vlanid = IntegerField('vlan', validators=[DataRequired(), NumberRange(min=1, max=9999, message='1-9999')])

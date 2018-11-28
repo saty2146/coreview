@@ -539,10 +539,11 @@ def l2circuit():
         vlan = form.vlan.data
         clientid = form.clientid.data
         company = form.company.data
+        circuit_type = form.circuit_type.data
         description = str(clientid) + "-" + company
         iface = [f[1] for f in form.iface.choices if f[0] == iface_id]
         iface = iface[0]
-        return render_template('l2circuit.html', title='L2circuit', form=form, iface=iface, vlan=vlan, description=description, first_request = first_request, conf=conf)
+        return render_template('l2circuit.html', title='L2circuit', form=form, circuit_type=circuit_type, iface=iface, vlan=vlan, description=description, first_request = first_request, conf=conf)
 
     return render_template('l2circuit.html', title='L2circuit', form=form, first_request = first_request, conf=conf)
 
