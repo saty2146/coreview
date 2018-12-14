@@ -39,32 +39,32 @@
       {% for in_key, in_value in value.iteritems() %}
         {% set iface = in_key %}
         {% set align_err =  in_value['eth_align_err'] %}
-        {% set align_err_diff_1h =  in_value['eth_align_err_diff_1h'] %}
+        {% set align_err_diff =  in_value['eth_align_err_diff'] %}
         {% set fcs_err =  in_value['eth_fcs_err'] %}
-        {% set fcs_err_diff_1h =  in_value['eth_fcs_err_diff_1h'] %}
+        {% set fcs_err_diff =  in_value['eth_fcs_err_diff'] %}
         {% set xmit_err =  in_value['eth_xmit_err'] %}
-        {% set xmit_err_diff_1h =  in_value['eth_xmit_err_diff_1h'] %}
+        {% set xmit_err_diff =  in_value['eth_xmit_err_diff'] %}
         {% set rcv_err = in_value['eth_rcv_err'] %}
-        {% set rcv_err_diff_1h =  in_value['eth_rcv_err_diff_1h'] %}
+        {% set rcv_err_diff =  in_value['eth_rcv_err_diff'] %}
         {% set undersize =  in_value['eth_undersize'] %}
-        {% set undersize_diff_1h =  in_value['eth_undersize_diff_1h'] %}
+        {% set undersize_diff =  in_value['eth_undersize_diff'] %}
         {% set outdisc =  in_value['eth_outdisc'] %}
-        {% set outdisc_diff_1h =  in_value['eth_outdisc_diff_1h'] %}
+        {% set outdisc_diff =  in_value['eth_outdisc_diff'] %}
 
         <tr>
           <td> {{ iface }} </td>
           <td> {{ align_err }} </td>
-          <td> {{ align_err_diff_1h }} </td>
+          <td> {{ align_err_diff }} </td>
           <td> {{ fcs_err }} </td>
-          <td> {{ fcs_err_diff_1h }} </td>
+          <td> {{ fcs_err_diff }} </td>
           <td> {{ xmit_err }} </td>
-          <td> {{ xmit_err_diff_1h }} </td>
+          <td> {{ xmit_err_diff }} </td>
           <td> {{ rcv_err }} </td>
-          <td> {{ rcv_err_diff_1h }} </td>
+          <td> {{ rcv_err_diff }} </td>
           <td> {{ undersize }} </td>
-          <td> {{ undersize_diff_1h }} </td>
+          <td> {{ undersize_diff }} </td>
           <td> {{ outdisc }} </td>
-          <td> {{ outdisc_diff_1h }} </td>
+          <td> {{ outdisc_diff }} </td>
         <tr>
       {% endfor %}
       </tbody>
