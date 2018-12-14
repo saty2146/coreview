@@ -10,6 +10,7 @@ logger.setLevel(logging.INFO)
 import datetime, glob
 from boxes import *
 from elasticsearch import Elasticsearch
+import copy
 
 requests.packages.urllib3.disable_warnings()
 
@@ -47,6 +48,17 @@ def load_config():
         pppoe_gws = conf['pppoe_gws']
 
     return(conf, boxes,pairs,pppoe_gws)
+
+conf, boxes, pairs, pppoe_gws = load_config()
+
+def load_iff_errs():
+    resource_path = os.path.join(app.root_path)
+    os.chdir(resource_path)
+
+    with open('ifaces_core_errs.yml', 'r') as f:
+        ifaces = yaml.safe_load(f)
+
+    return ifaces
 
 conf, boxes, pairs, pppoe_gws = load_config()
 
@@ -759,3 +771,57 @@ def vlan(nxhosts):
     vlan, box_attr, created = get_vlan(nxhosts)
 
     return render_template('vlan.html', vlan=vlan, box_attr = box_attr, created = created, nxhosts = nxhosts, conf=conf )
+
+
+
+
+@app.route('/iferrs', methods=['POST','GET'])
+def iferrs():
+    ifaces_all = load_iff_errs()
+    ifaces = {}
+    ifaces_1h = {}
+    result = {}
+
+    resource_path = os.path.join(app.root_path, 'iface-err')
+
+    for box in ifaces_all:
+
+        if (os.path.isdir(resource_path)):
+            os.chdir(resource_path)
+
+            file_new = box + '-iface-err-cur.json'
+            file_cur = box + '-iface-err-new.json'
+            if (os.path.exists(file_new)) and (os.path.exists(file_cur)):
+                created_new = time.ctime(os.path.getmtime(file_new))
+                created_cur = time.ctime(os.path.getmtime(file_cur))
+
+                with open(file_new) as file:
+                    data = json.load(file)
+                    data = data['TABLE_interface']['ROW_interface']
+
+                for item in data:
+                    if item['interface'] in ifaces_all['n31'] and 'eth_fcs_err' in item:
+                        iface_key = item['interface']
+                        ifaces[iface_key] = item
+
+                dict2 = copy.deepcopy(ifaces)
+
+                with open(file_cur) as file:
+                    data_1h = json.load(file)
+                    data_1h = data_1h['TABLE_interface']['ROW_interface']
+
+                for _ in data_1h:
+                    if _['interface'] in ifaces_all['n31'] and 'eth_fcs_err' in _:
+                        iface_key = _['interface']
+                        ifaces_1h[iface_key] = _
+
+                for k, v in dict2.iteritems():
+                    for in_k, in_v in v.iteritems():
+                        if in_k != 'interface':
+                            k_diff_1h = str(in_k) + '_diff_1h'
+                            v_diff_1h = int(ifaces[k][in_k]) - int(ifaces_1h[k][in_k])
+                        ifaces[k][k_diff_1h] = v_diff_1h
+
+                result[box] = ifaces
+
+    return render_template('iface_core_errs.html', ifaces=result, created_new = created_new, created_cur = created_cur, conf=conf )

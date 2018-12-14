@@ -1,0 +1,115 @@
+---
+n931:
+  - Ethernet1/30/1
+  - Ethernet1/30/2
+  - Ethernet1/30/3
+  - Ethernet1/30/4
+  - Ethernet1/31
+  - Ethernet1/32
+  - Ethernet1/34
+  - Ethernet1/36
+n932:
+  - Ethernet1/30/1
+  - Ethernet1/30/2
+  - Ethernet1/30/3
+  - Ethernet1/30/4
+  - Ethernet1/31
+  - Ethernet1/32
+  - Ethernet1/34
+  - Ethernet1/36
+n9six1:
+  - Ethernet1/26
+  - Ethernet1/30
+  - Ethernet1/31
+  - Ethernet1/32
+  - Ethernet1/34
+  - Ethernet1/36
+n9six2:
+  - Ethernet1/26
+  - Ethernet1/30
+  - Ethernet1/31
+  - Ethernet1/32
+  - Ethernet1/34
+  - Ethernet1/36
+n9sit1:
+  - Ethernet1/28
+  - Ethernet1/30
+  - Ethernet1/31
+  - Ethernet1/32
+  - Ethernet1/34
+  - Ethernet1/36
+n9sit2:
+  - Ethernet1/30
+  - Ethernet1/31
+  - Ethernet1/32
+  - Ethernet1/34
+  - Ethernet1/36
+n941:
+  - Ethernet1/26
+  - Ethernet1/28
+  - Ethernet1/30/1
+  - Ethernet1/30/2
+  - Ethernet1/30/3
+  - Ethernet1/30/4
+  - Ethernet1/31
+  - Ethernet1/32
+  - Ethernet1/34
+  - Ethernet1/36
+n942:
+  - Ethernet1/26
+  - Ethernet1/30/1
+  - Ethernet1/30/2
+  - Ethernet1/30/3
+  - Ethernet1/30/4
+  - Ethernet1/31
+  - Ethernet1/32
+  - Ethernet1/34
+  - Ethernet1/36
+n41:
+  - Ethernet1/17
+  - Ethernet1/18
+  - Ethernet1/34
+  - Ethernet1/39
+  - Ethernet1/40
+  - Ethernet1/41
+  - Ethernet1/45
+  - Ethernet1/46
+  - Ethernet1/47
+  - Ethernet1/48
+  - Ethernet3/1
+  - Ethernet3/2
+n42:
+  - Ethernet1/17
+  - Ethernet1/18
+  - Ethernet1/34
+  - Ethernet1/35
+  - Ethernet1/36
+  - Ethernet1/39
+  - Ethernet1/45
+  - Ethernet1/46
+  - Ethernet1/47
+  - Ethernet1/48
+  - Ethernet3/1
+  - Ethernet3/2
+n31:
+  - Ethernet1/15
+  - Ethernet1/16
+  - Ethernet1/17
+  - Ethernet1/18
+  - Ethernet1/40
+  - Ethernet1/41
+  - Ethernet1/45
+  - Ethernet1/46
+  - Ethernet1/47
+  - Ethernet1/48
+n32:
+  - Ethernet1/15
+  - Ethernet1/16
+  - Ethernet1/17
+  - Ethernet1/18
+  - Ethernet1/39
+  - Ethernet1/40
+  - Ethernet1/45
+  - Ethernet1/46
+  - Ethernet1/47
+  - Ethernet1/48
