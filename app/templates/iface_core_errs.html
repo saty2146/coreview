@@ -14,8 +14,6 @@
   </div>
 </div>
 </div>
-      {% for key, value in ifaces.iteritems() %}
-      {{ key }} {{created_new}} - {{created_cur}}
     <table id=mytable class="table table-hover table-bordered table-responsive">
       <thead>
         <tr>
@@ -36,6 +34,9 @@
       </thead>
       <tbody class="searchable">
 
+      {% for key, value in ifaces.iteritems() %}
+      <tr><th colspan="13">{{ key }} {{created_new}} - {{created_cur}}</td></tr>
+
       {% for in_key, in_value in value.iteritems() %}
         {% set iface = in_key %}
         {% set align_err =  in_value['eth_align_err'] %}
@@ -54,21 +55,45 @@
         <tr>
           <td> {{ iface }} </td>
           <td> {{ align_err }} </td>
-          <td> {{ align_err_diff }} </td>
+          {% if align_err_diff > 0 %}
+          <td>{{ align_err_diff }} <span class="glyphicon glyphicon-remove-circle" style="color:red" aria-hidden="true" title="Errors"></span></td>
+          {% else %}
+          <td>{{ align_err_diff }}</td>
+          {% endif %}
           <td> {{ fcs_err }} </td>
-          <td> {{ fcs_err_diff }} </td>
+          {% if fcs_err_diff > 0 %}
+          <td>{{ fcs_err_diff }} <span class="glyphicon glyphicon-remove-circle" style="color:red" aria-hidden="true" title="Errors"></span></td>
+          {% else %}
+          <td>{{ fcs_err_diff }}</td>
+          {% endif %}
           <td> {{ xmit_err }} </td>
-          <td> {{ xmit_err_diff }} </td>
+          {% if xmit_err_diff > 0 %}
+          <td>{{ xmit_err_diff }} <span class="glyphicon glyphicon-remove-circle" style="color:red" aria-hidden="true" title="Errors"></span></td>
+          {% else %}
+          <td>{{ xmit_err_diff }}</td>
+          {% endif %}
           <td> {{ rcv_err }} </td>
-          <td> {{ rcv_err_diff }} </td>
+          {% if rcv_err_diff > 0 %}
+          <td>{{ rcv_err_diff }} <span class="glyphicon glyphicon-remove-circle" style="color:red" aria-hidden="true" title="Errors"></span></td>
+          {% else %}
+          <td>{{ rcv_err_diff }}</td>
+          {% endif %}
           <td> {{ undersize }} </td>
-          <td> {{ undersize_diff }} </td>
+          {% if undersize_diff > 0 %}
+          <td>{{ undersize_diff }} <span class="glyphicon glyphicon-remove-circle" style="color:red" aria-hidden="true" title="Errors"></span></td>
+          {% else %}
+          <td>{{ undersize_diff }}</td>
+          {% endif %}
           <td> {{ outdisc }} </td>
-          <td> {{ outdisc_diff }} </td>
+          {% if outdisc_diff > 0 %}
+          <td>{{ outdisc_diff }} <span class="glyphicon glyphicon-remove-circle" style="color:red" aria-hidden="true" title="Errors"></span></td>
+          {% else %}
+          <td>{{ outdisc_diff }}</td>
+          {% endif %}
         <tr>
       {% endfor %}
+  {% endfor %}
       </tbody>
     </table>
-  {% endfor %}
 
 {% endblock %}
