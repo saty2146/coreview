@@ -84,6 +84,46 @@ boxes:
     ip: 217.73.18.193
     location: jegeho
     group: n3k
+  six1: 
+    ip: 109.74.147.10
+    location: six
+    group: c6500
+  six2: 
+    ip: 109.74.147.11
+    location: six
+    group: c7600
+  sit1: 
+    ip: 109.74.147.191
+    location: sitel
+    group: c6500
+  sit2: 
+    ip: 109.74.150.18
+    location: sitel
+    group: c7600
+  shc3-tv: 
+    ip: 109.74.150.19
+    location: shc3
+    group: c6500
+  six-tv: 
+    ip: 217.73.18.77
+    location: six
+    group: cisco
+  asr-six:
+    ip: 185.176.72.127
+    location: six
+    group: asr9k
+  asr-sit:
+    ip: 185.176.72.126
+    location: sitel
+    group: asr9k
+  shc31:
+    ip: 109.74.150.13
+    location: shc3
+    group: c6500
+  shc32:
+    ip: 109.74.150.14
+    location: shc3
+    group: c6500
 
 pairs:
   tn2: 

@@ -8,7 +8,6 @@ from collections import OrderedDict
 from librouteros import login
 logger.setLevel(logging.INFO)
 import datetime, glob
-from boxes import *
 from elasticsearch import Elasticsearch
 import copy
 
@@ -47,7 +46,7 @@ def load_config():
         pairs = conf['pairs']
         pppoe_gws = conf['pppoe_gws']
 
-    return(conf, boxes,pairs,pppoe_gws)
+    return(conf, boxes, pairs, pppoe_gws)
 
 conf, boxes, pairs, pppoe_gws = load_config()
 
@@ -656,15 +655,17 @@ def iferr(host, iface):
 @app.route('/logs', methods=['POST','GET'])
 def logs():
     form = DateForm()
+    ids = [i for i in range(len(boxes))]
+    form.box.choices = list(zip(ids, boxes))
+
     if form.validate_on_submit():
         print("validated")
         dt = str(form.dt.data)
         date = dt.replace('-','')
         box_id = form.box.data
-        box = [f[1] for f in box_form_choice if f[0] == box_id]
+        box = [f[1] for f in form.box.choices if f[0] == box_id]
         severity_id = form.severity.data
-        severity = [f[1] for f in severity_form_choice if f[0] == severity_id]
-
+        severity = [f[1] for f in form.severity.choices if f[0] == severity_id]
         payload = { 'date':date, 'severity':severity, 'box':box }
         r = requests.get('http://217.73.28.16:5002/syslog', params=payload)
         print(r.url)

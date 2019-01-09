@@ -3,7 +3,6 @@ from wtforms import StringField, BooleanField, SubmitField, SelectField, RadioFi
 from wtforms import TextAreaField, TextField, IntegerField, ValidationError, DateField, validators
 from wtforms.validators import DataRequired, IPAddress, NumberRange, Optional
 import ipaddress,yaml
-from boxes import *
 
 def load_six_asr():
 
@@ -76,5 +75,5 @@ class ScrubbingForm(FlaskForm):
 
 class DateForm(FlaskForm):
     dt = DateField('dt', format="%d/%m/%Y")
-    box = SelectField('box', coerce=int, choices=box_form_choice)
-    severity = SelectField('severity', coerce=int, choices=severity_form_choice)
+    box = SelectField('box', coerce=int)
+    severity = SelectField('severity', coerce=int, choices=[(1, 'all'),(2, 'err'),(3, 'warning'),(4, 'notice')])

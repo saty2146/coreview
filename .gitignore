@@ -100,5 +100,6 @@ app/cookie/*
 .config.py
 .run.py
 app/vlan-db/*
+app/iface-err/*
 app/node_modules/*
 .idea/*
