@@ -3,10 +3,12 @@
 import logging
 import requests
 import os, json, pickle
+import mycreds
 from collections import OrderedDict
 requests.packages.urllib3.disable_warnings()
 logger = logging.getLogger("")
-logger.setLevel(logging.DEBUG)
+#logger.setLevel(logging.DEBUG)
+from string import Template
 #overwrite requests logger to warning only
 #logging.getLogger("requests").setLevel(logging.WARNING)
 
@@ -91,30 +93,36 @@ class NXAPIClient(object):
             return False
         
         return (response.status_code == 200)
+    
+    def payload_template(self,cmd,id):
+        template = {"jsonrpc": "2.0",
+                    "method": "cli",
+                    "params": {"cmd": cmd, 
+                    "version": 1}, "id": id}
 
-    def nxapi_payload(self,cmd="show hostname"):
+        return template
+
+    def nxapi_payload(self,cmd=["show ver"]):
         """
         prepare payload message with specific command for nxapi_call 
         """
+        payload = []
         
-        payload = [{"jsonrpc": "2.0",
-                    "method": "cli",
-                    "params": {"cmd": cmd, 
-                    "version": 1}, "id": 1}]
+        for i in range(len(cmd)):
+            payload.append(self.payload_template(cmd[i],i+1))
 
         return payload
 
-    def nxapi_call(self, cmd="show hostname"):
+    def nxapi_call(self, cmd=["show hostname"]):
         """
         common NX-API call
         """
-
+        print cmd
         payload = self.nxapi_payload(cmd)
         response = self._session.post(self.url, data=json.dumps(payload), headers=self.headers, cookies=self._cookie, verify=self.verify)
 
         if response.status_code != 200:
             logging.error("failed to create session")
-            return False
         
         return response.json()
 
@@ -190,10 +198,13 @@ class NXAPIClient(object):
     
         return po_list
 
-    def set_iface_po(self, response):
+    def set_cmd(self, response):
         
-        output = response['result']
-        
+        output = response
+        for item in response:
+            if 'error' in item:
+                return False
+                break
         return output
 
 if __name__ == "__main__":
@@ -204,6 +215,7 @@ if __name__ == "__main__":
     logging.getLogger("requests").setLevel(logging.WARNING)
 
 #Testing
-    nxapi = NXAPIClient(hostname="XXX", username="XXX", password="XXX")
-    test = nxapi.get_all_transceiver_details(nxapi.nxapi_call("show interface transceiver details"))
+    nxapi = NXAPIClient(hostname="192.168.35.40", username=mycreds.USERNAME, password=mycreds.PASSWORD)
+    #dummy_conf = ["interface Eth131/1/1", "non shutdown", "interface Eth131/1/2", "shutdown"]
+    test = nxapi.get_all_transceiver_details(nxapi.nxapi_call(["show interface transceiver details"]))
     print test

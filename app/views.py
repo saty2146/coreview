@@ -1,4 +1,4 @@
-from flask import render_template, request
+from flask import render_template, request, flash, redirect, url_for, jsonify
 from app import app
 from forms import PortchannelForm, PeeringForm, RtbhForm, ScrubbingForm, PppoeForm, VxlanForm, DateForm, DslForm, L2circuitForm
 from mycreds import *
@@ -80,15 +80,15 @@ def get_ifaces_pos(host):
         start = 401
         end = 500
 
-    box = NXAPIClient(hostname=ip_box, username = creds['user'], password = creds['passwd'])
-    po_list = box.get_po_list(box.nxapi_call("show port-channel summary"))
+    box = NXAPIClient(hostname=ip_box, username = USERNAME, password = PASSWORD)
+    po_list = box.get_po_list(box.nxapi_call(["show port-channel summary"]))
     po_list = map(int, po_list)
     po_list = sorted(x for x in po_list if x >= start and x <= end)
     po_list = set(range(start,end)) - set(po_list)
     po_list = sorted(list(po_list))
     print "before request running"
 
-    iface_status = box.get_iface_status(box.nxapi_call("show interface status"))
+    iface_status = box.get_iface_status(box.nxapi_call(["show interface status"]))
 
     for item in iface_status:
         key = item['interface']
@@ -199,10 +199,10 @@ def ajax_port(twins):
     ip_box2 = boxes[hosts[1]]['ip']
     location = boxes[hosts[0]]['location']
     title = str(location) + " " + str(hosts[0]) + str(hosts[1])
-    box1 = NXAPIClient(hostname = ip_box1, username = creds['user'], password = creds['passwd'])
-    iface_box1 = box1.get_iface_status(box1.nxapi_call("show interface status"))
-    box2 = NXAPIClient(hostname=ip_box2, username = creds['user'], password = creds['passwd'])
-    iface_box2 = box2.get_iface_status(box2.nxapi_call("show interface status"))
+    box1 = NXAPIClient(hostname = ip_box1, username = USERNAME, password = PASSWORD)
+    iface_box1 = box1.get_iface_status(box1.nxapi_call(["show interface status"]))
+    box2 = NXAPIClient(hostname=ip_box2, username = USERNAME, password = PASSWORD)
+    iface_box2 = box2.get_iface_status(box2.nxapi_call(["show interface status"]))
     
     iface_status = create_twin_dict(iface_box1, iface_box2)
 
@@ -218,8 +218,8 @@ def ajax_port_host(host):
     ip_box = boxes[host]['ip']
     location = boxes[host]['location']
     title = str(location) + " " + str(host)
-    box = NXAPIClient(hostname = ip_box, username = creds['user'], password = creds['passwd'])
-    iface_status = box.get_iface_status(box.nxapi_call("show interface status"))
+    box = NXAPIClient(hostname = ip_box, username = USERNAME, password = PASSWORD)
+    iface_status = box.get_iface_status(box.nxapi_call(["show interface status"]))
     
     return render_template('ajax_port_host.html', title=title, iface_status = iface_status, host = host, location = location)
 
@@ -244,9 +244,9 @@ def ajax_sfp_host(host):
     ip_box = boxes[host]['ip']
     location = boxes[host]['location']
     title = str(location) + " " + str(host)
-    box = NXAPIClient(hostname = ip_box, username = creds['user'], password = creds['passwd'])
-    sfp_details = box.get_all_transceiver_details(box.nxapi_call("show interface transceiver details"))
-    sfp_desc = box.get_iface_description(box.nxapi_call("show interface description"))
+    box = NXAPIClient(hostname = ip_box, username = USERNAME, password = PASSWORD)
+    sfp_details = box.get_all_transceiver_details(box.nxapi_call(["show interface transceiver details"]))
+    sfp_desc = box.get_iface_description(box.nxapi_call(["show interface description"]))
     sfp_status = merge_sfp_iface(sfp_desc, sfp_details, 'interface')
     
     return render_template('ajax_sfp.html', title=title, sfp_status = sfp_status, host = host, location = location, conf=conf)
@@ -261,8 +261,8 @@ def ajax_arp(host):
     location = boxes[host]['location']
     title = str(location) + " " + str(boxes[host])
     ip = boxes[host]['ip']
-    box = NXAPIClient(hostname=ip, username = creds['user'], password = creds['passwd'])
-    arp_list = box.get_arp_list(box.nxapi_call("show ip arp"))
+    box = NXAPIClient(hostname=ip, username = USERNAME, password = PASSWORD)
+    arp_list = box.get_arp_list(box.nxapi_call(["show ip arp"]))
     arp_list = convert_mac(arp_list, 'mac')
     
     return render_template('ajax_arp.html', title=title, arp_list = arp_list, location = location, host = host)
@@ -278,8 +278,8 @@ def ajax_mac(host):
     location = boxes[host]['location']
     title = str(location) + " " + str(boxes[host])
     ip = boxes[host]['ip']
-    box = NXAPIClient(hostname=ip, username = creds['user'], password = creds['passwd'])
-    mac_list = box.get_mac_list(box.nxapi_call("show mac address dynamic"))
+    box = NXAPIClient(hostname=ip, username = USERNAME, password = PASSWORD)
+    mac_list = box.get_mac_list(box.nxapi_call(["show mac address dynamic"]))
     mac_list = convert_mac(mac_list, 'disp_mac_addr')
     
     return render_template('ajax_mac.html', title=title, mac_list = mac_list, location = location, host = host)
@@ -589,9 +589,11 @@ def po(twins):
     
     if twins == 'tn3':
         ifaces, po_number = get_ifaces_pos("n31")
+        ifaces = ifaces[48:]    #remove parent ports from list (Ethernet1/1-48)
         location = 'SHC3'
     else: 
         ifaces, po_number = get_ifaces_pos("n41")
+        ifaces = ifaces[64:]    #remove parent ports from list (Ethernet1/1-48, Ethernet3/1-16,)
         location = 'DC4'
 
     first_request = True
@@ -608,25 +610,54 @@ def po(twins):
         print "validated"
         first_request = False
         print portchannel, porttype, location, iface1_id
-        portchannel = form.portchannel.data
-        porttype = form.porttype.data
-        iface1_id = form.iface1.data
-        iface2_id = form.iface2.data
-        clientid = form.clientid.data
-        company = form.company.data
-        vlans = form.vlans.data
+        #dummy_conf = ["interface Eth131/1/1", "non shutdown", "interface Eth131/1/2", "shutdown"]
 
-        iface1 = [f[1] for f in form.iface1.choices if f[0] == iface1_id]
-        iface2 = [f[1] for f in form.iface2.choices if f[0] == iface2_id]
-        iface1 = iface1[0]
-        iface2 = iface2[0]
-        
-        description = str(clientid) + "-" + company
-        
-        form.clientid.data = clientid
-        
-        return render_template('portchannel.html', title='Portchannel', form=form, po_number=po_number, description=description, location=location, portchannel=portchannel, iface1=iface1, iface2 = iface2, trunk = porttype, twins = twins, first_request = first_request, conf=conf)
-        
+        if request.form['action'] == 'Generate':
+            print "Generate"
+            portchannel = form.portchannel.data
+            porttype = form.porttype.data
+            iface1_id = form.iface1.data
+            iface2_id = form.iface2.data
+            clientid = form.clientid.data
+            company = form.company.data
+            vlans = form.vlans.data
+
+            iface1 = [f[1] for f in form.iface1.choices if f[0] == iface1_id]
+            iface2 = [f[1] for f in form.iface2.choices if f[0] == iface2_id]
+            iface1 = iface1[0]
+            iface2 = iface2[0]
+
+            description = str(clientid) + "-" + company
+
+            form.clientid.data = clientid
+
+            return render_template('portchannel.html', title='Portchannel', form=form, po_number=po_number, description=description, location=location, portchannel=portchannel, iface1=iface1, iface2 = iface2, trunk = porttype, vlans=vlans, twins = twins, first_request = first_request, conf=conf)
+        else:
+            print "Deploy"
+            # data cleaner, config list creation
+            po_conf = request.form['configuration.data']
+            po_conf = po_conf.replace('\r', '')     #delete '\r'
+            po_conf = po_conf.split('\n')           #split
+            po_conf = list(map(str, po_conf))       #delete whitespaces items
+            po_conf = list(map(str.strip, po_conf)) #stripping
+            po_conf = list(filter(str.strip, po_conf))
+            po_conf = [ elem for elem in po_conf  if elem != '!' and elem != 'end' and elem != 'configure terminal']
+
+            hosts = pairs[twins]['members']
+            ip_box1 = boxes[hosts[0]]['ip']
+            ip_box2 = boxes[hosts[1]]['ip']
+            box1 = NXAPIClient(hostname = ip_box1, username = USERNAME, password = PASSWORD)
+            result_box1 = box1.set_cmd(box1.nxapi_call(po_conf))
+            box2 = NXAPIClient(hostname=ip_box2, username = USERNAME, password = PASSWORD)
+            result_box2 = box2.set_cmd(box2.nxapi_call(po_conf))
+
+            if result_box1 and result_box2:
+                flash('Deployment has been successfull')
+            else:
+                flash('Something is wrong')
+
+            return redirect(url_for('po', twins = twins))
+
     else:
         clientid = 0
         print form.errors
@@ -637,8 +668,8 @@ def po(twins):
 def ifsw(host, iface):
 
     ip = boxes[host]['ip']
-    box = NXAPIClient(hostname=ip, username = creds['user'], password = creds['passwd'])
-    ifsw = box.get_iface_switchport(box.nxapi_call("show interface " + iface + " switchport" ))
+    box = NXAPIClient(hostname=ip, username = USERNAME, password = PASSWORD)
+    ifsw = box.get_iface_switchport(box.nxapi_call(["show interface " + iface + " switchport"]))
     
 
     return render_template('iface_switchport.html', title='Interface switchport configuration', iface=iface, host=host, ifsw=ifsw, conf=conf) 
@@ -647,10 +678,12 @@ def ifsw(host, iface):
 def iferr(host, iface):
 
     ip = boxes[host]['ip']
-    box = NXAPIClient(hostname=ip, username = creds['user'], password = creds['passwd'])
-    iferr = box.get_iface_errors(box.nxapi_call("show interface " + iface + " counters errors" ))
-
-    return render_template('iface_errors.html', title='Interface errors', iface=iface, host=host, iferr=iferr, conf=conf) 
+    box = NXAPIClient(hostname=ip, username = USERNAME, password = PASSWORD)
+    iferr = box.get_iface_errors(box.nxapi_call(["show interface " + iface + " counters errors"]))
+    iferr = json.dumps(iferr)
+    print iferr
+    return iferr
+    #return render_template('iface_errors.html', title='Interface errors', iface=iface, host=host, iferr=iferr, conf=conf)
 
 @app.route('/logs', methods=['POST','GET'])
 def logs():
@@ -772,9 +805,6 @@ def vlan(nxhosts):
     vlan, box_attr, created = get_vlan(nxhosts)
 
     return render_template('vlan.html', vlan=vlan, box_attr = box_attr, created = created, nxhosts = nxhosts, conf=conf )
-
-
-
 
 @app.route('/iferrs', methods=['POST','GET'])
 def iferrs():

@@ -23,11 +23,11 @@ interface {{ iface1 | replace(' Up','') | replace(' Down','')}}
  description {{ description }}
  {%- if trunk %}
  switchport mode trunk
- switchport trunk allowed vlan {{ form.vlans.data }}
+ switchport trunk allowed vlan {{ vlans }}
  spanning-tree port type edge trunk
  {%- else %}
  switchport mode access
- switchport access vlan {{ form.vlans.data }}
+ switchport access vlan {{ vlans }}
  spanning-tree port type edge
  {%- endif %}
  no snmp trap link-status
@@ -40,11 +40,11 @@ interface {{ iface2 | replace(' Up','') | replace(' Down','')}}
  description {{ description }}
  {%- if trunk %}
  switchport mode trunk
- switchport trunk allowed vlan {{ form.vlans.data }}
+ switchport trunk allowed vlan {{ vlans }}
  spanning-tree port type edge trunk
  {%- else %}
  switchport mode access
- switchport access vlan {{ form.vlans.data }}
+ switchport access vlan {{ vlans }}
  spanning-tree port type edge
  {%- endif %}
  no snmp trap link-status
