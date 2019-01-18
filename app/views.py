@@ -806,12 +806,24 @@ def vlan(nxhosts):
 
     return render_template('vlan.html', vlan=vlan, box_attr = box_attr, created = created, nxhosts = nxhosts, conf=conf )
 
+def create_iff_errs_diff(ifaces_new, ifaces_cur):
+
+    ifaces = copy.deepcopy(ifaces_new)
+
+    for k, v in ifaces_new.iteritems():
+        for in_k, in_v in v.iteritems():
+            if in_k != 'interface':
+                k_diff = str(in_k) + '_diff'
+                v_diff = int(ifaces_new[k][in_k]) - int(ifaces_cur[k][in_k])
+            ifaces[k][k_diff] = v_diff
+
+    return ifaces
+
 @app.route('/iferrs', methods=['POST','GET'])
 def iferrs():
     ifaces_all = load_iff_errs()
     ifaces_new = {}
     ifaces_cur = {}
-    ifaces = {}
     result = {}
 
     resource_path = os.path.join(app.root_path, 'iface-err')
@@ -833,28 +845,22 @@ def iferrs():
                     data = data['TABLE_interface']['ROW_interface']
 
                 for item in data:
-                    if item['interface'] in ifaces_all['n31'] and 'eth_fcs_err' in item:
+                    if item['interface'] in ifaces_all[box] and 'eth_fcs_err' in item:
                         iface_key = item['interface']
                         ifaces_new[iface_key] = item
-
-                ifaces = copy.deepcopy(ifaces_new)
 
                 with open(file_cur) as file:
                     data_cur = json.load(file)
                     data_cur = data_cur['TABLE_interface']['ROW_interface']
 
                 for item_cur in data_cur:
-                    if item_cur['interface'] in ifaces_all['n31'] and 'eth_fcs_err' in item_cur:
+                    if item_cur['interface'] in ifaces_all[box] and 'eth_fcs_err' in item_cur:
                         iface_key = item_cur['interface']
                         ifaces_cur[iface_key] = item_cur
 
-                for k, v in ifaces_new.iteritems():
-                    for in_k, in_v in v.iteritems():
-                        if in_k != 'interface':
-                            k_diff = str(in_k) + '_diff'
-                            v_diff = int(ifaces_new[k][in_k]) - int(ifaces_cur[k][in_k])
-                        ifaces[k][k_diff] = v_diff
+                result[box] = create_iff_errs_diff(ifaces_new, ifaces_cur)
 
-                result[box] = ifaces
+                ifaces_new.clear()
+                ifaces_cur.clear()
 
     return render_template('iface_core_errs.html', ifaces=result, created_new = created_new, created_cur = created_cur, conf=conf )
