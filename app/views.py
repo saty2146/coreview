@@ -232,8 +232,6 @@ def merge_sfp_iface(l1, l2, key):
             merged[item[key]] = item
     return [val for (_, val) in merged.items()]
 
-
-
 @app.route('/sfp/<host>', methods=['POST','GET'])
 def sfp(host):
     return render_template('sfp.html', host=host, conf=conf)
@@ -248,7 +246,7 @@ def ajax_sfp_host(host):
     sfp_details = box.get_all_transceiver_details(box.nxapi_call(["show interface transceiver details"]))
     sfp_desc = box.get_iface_description(box.nxapi_call(["show interface description"]))
     sfp_status = merge_sfp_iface(sfp_desc, sfp_details, 'interface')
-    
+
     return render_template('ajax_sfp.html', title=title, sfp_status = sfp_status, host = host, location = location, conf=conf)
 
 @app.route('/arp/<host>', methods=['POST','GET'])
@@ -670,9 +668,13 @@ def ifsw(host, iface):
     ip = boxes[host]['ip']
     box = NXAPIClient(hostname=ip, username = USERNAME, password = PASSWORD)
     ifsw = box.get_iface_switchport(box.nxapi_call(["show interface " + iface + " switchport"]))
+    ifsw = json.dumps(ifsw)
+    print ifsw
+
+    return ifsw
     
 
-    return render_template('iface_switchport.html', title='Interface switchport configuration', iface=iface, host=host, ifsw=ifsw, conf=conf) 
+    #return render_template('iface_switchport.html', title='Interface switchport configuration', iface=iface, host=host, ifsw=ifsw, conf=conf)
 
 @app.route('/iferr/<host>/<path:iface>', methods=['POST','GET'])
 def iferr(host, iface):
@@ -681,7 +683,7 @@ def iferr(host, iface):
     box = NXAPIClient(hostname=ip, username = USERNAME, password = PASSWORD)
     iferr = box.get_iface_errors(box.nxapi_call(["show interface " + iface + " counters errors"]))
     iferr = json.dumps(iferr)
-    print iferr
+
     return iferr
     #return render_template('iface_errors.html', title='Interface errors', iface=iface, host=host, iferr=iferr, conf=conf)
 

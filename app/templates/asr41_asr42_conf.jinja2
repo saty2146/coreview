@@ -13,7 +13,7 @@ neighbor 185.176.72.127 {{ vlan }}
 mtu 9188
 !
 l2vpn xconnect context vlan{{ vlan }}
-member Port-channel8 service-instance 702 
+member Port-channel8 service-instance {{ vlan }}
 member pseudowire{{ vlan }}
 !
 {%- else %}
@@ -31,7 +31,7 @@ mtu 9184
 exit
 !
 l2vpn xconnect context vlan{{ vlan }}
-member Port-channel8 service-instance 702 
+member Port-channel8 service-instance {{ vlan }}
 member pseudowire{{ vlan }}
 !
 {%- endif %}

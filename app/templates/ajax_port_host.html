@@ -9,21 +9,47 @@ $('#mytable').on('click','.openPopup', function(event){
   event.preventDefault();
   jQuery.noConflict();
   var dataURL = $(this).attr('data-href');
+  var iface = $(this).attr('data-iface');
+  var html = ''
    $.ajax({
    url: dataURL,
         method: "GET",
         dataType: "json",
         async: true,
         success: function (data) {
-        html = '<ul><li>interface: '+data.interface+'</li></ul>\
-                <ul><li>eth_rcv_err: '+data.eth_rcv_err+'</li></ul>\
-                <ul><li>eth_xmit_err: '+ data.eth_xmit_err +'</li></ul>\
-                <ul><li>eth_align_err: '+data.eth_align_err+'</li></ul>\
-                <ul><li>eth_outdisc: '+data.eth_outdisc+'</li></ul>\
-                <ul><li>eth_fcs_err: '+ data.eth_fcs_err +'</li></ul>\
-                <ul><li>eth_undersize: '+ data.eth_undersize +'</li></ul>\
-                ';
+            $.each(data, function (index, value) {
+                html+="<ul><li>" + index + ": " +  value + "</li></ul>"
+            });
         $(".modal-body").html(html);
+        $(".modal-title").html('Interface errors ' + iface);
+        $("#error-modal").modal('show');
+        //return false;
+        },
+  });
+});
+
+</script>
+
+<script type="text/javascript">
+// Open modal in AJAX callback
+
+$('#mytable').on('click','.confPopup', function(event){
+  event.preventDefault();
+  jQuery.noConflict();
+  var dataURL = $(this).attr('data-href');
+  var iface = $(this).attr('data-iface');
+  var html = ''
+   $.ajax({
+   url: dataURL,
+        method: "GET",
+        dataType: "json",
+        async: true,
+        success: function (data) {
+            $.each(data, function (index, value) {
+                html+="<ul><li>" + index + ": " +  value + "</li></ul>"
+            });
+        $(".modal-body").html(html);
+        $(".modal-title").html('Switchport configuration ' + iface);
         $("#error-modal").modal('show');
         //return false;
         },
@@ -83,11 +109,11 @@ $('#mytable').on('click','.openPopup', function(event){
           {% endif %}
            <td class="text-nowrap">
           {% if value['vlan1'] != 'routed' %}
-          <a href="{{ url_for('ifsw', iface=iface, host=host) }}"><button class="btn btn-black btn-xs" title="switchport">S</button></a>
+          <a href=javascript:void(0);" data-href="{{ url_for('ifsw', iface=iface, host=host) }}" data-iface="{{ iface }}" class="confPopup"><button class="btn btn-black btn-xs" title="switchport conf" data-toggle="modal" data-target="#error-modal" >S</button></a>
           {% else %}
           <button class="btn btn-black btn-xs" title="routed port">R</button>
           {% endif %}
-          <a href="javascript:void(0);" data-href="{{ url_for('iferr', iface=iface, host=host) }}" class="openPopup"><button class="complete btn btn-black btn-xs" title="errors" data-toggle="modal" data-target="#error-modal">Errors</button></a></td>
+          <a href="javascript:void(0);" data-href="{{ url_for('iferr', iface=iface, host=host) }}" data-iface="{{ iface }}" class="openPopup"><button class="btn btn-black btn-xs" title="port errors" data-toggle="modal" data-target="#error-modal">E</button></a></td>
           {% endfor %}
       </tbody>
     </table>
@@ -101,10 +127,9 @@ $('#mytable').on('click','.openPopup', function(event){
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Interface Errors</h4>
+                <h4 class="modal-title">Loading...</h4>
             </div>
             <div class="modal-body">
-                Loading...
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
