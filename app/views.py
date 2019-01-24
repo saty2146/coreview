@@ -814,7 +814,7 @@ def create_iff_errs_diff(ifaces_new, ifaces_cur):
 
     for k, v in ifaces_new.iteritems():
         for in_k, in_v in v.iteritems():
-            if in_k != 'interface':
+            if in_k != 'interface' and in_k != 'type' and in_k != 'speed' and in_k != 'desc':
                 k_diff = str(in_k) + '_diff'
                 v_diff = int(ifaces_new[k][in_k]) - int(ifaces_cur[k][in_k])
             ifaces[k][k_diff] = v_diff
@@ -829,6 +829,7 @@ def iferrs():
     result = {}
 
     resource_path = os.path.join(app.root_path, 'iface-err')
+    iface_desc_path = os.path.join(app.root_path, 'iface-desc')
 
     for box in ifaces_all:
 
@@ -837,14 +838,22 @@ def iferrs():
 
             file_new = box + '-iface-err-new.json'
             file_cur = box + '-iface-err-cur.json'
+            file_desc = box + '-iface-desc.json'
             
             if (os.path.exists(file_new)) and (os.path.exists(file_cur)):
                 created_new = time.ctime(os.path.getmtime(file_new))
                 created_cur = time.ctime(os.path.getmtime(file_cur))
 
-                with open(file_new) as file:
-                    data = json.load(file)
-                    data = data['TABLE_interface']['ROW_interface']
+                with open(file_new) as file_n:
+                    data_n = json.load(file_n)
+                    data_n = data_n['TABLE_interface']['ROW_interface']
+                    data_n = [item for item in data_n if 'eth_fcs_err' in item]
+
+                with open(iface_desc_path + '/' + file_desc) as file_d:
+                    data_d = json.load(file_d)
+                    data_d = data_d['TABLE_interface']['ROW_interface']
+
+                data = merge_sfp_iface(data_n, data_d, 'interface')
 
                 for item in data:
                     if item['interface'] in ifaces_all[box] and 'eth_fcs_err' in item:

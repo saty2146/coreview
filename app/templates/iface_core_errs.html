@@ -18,6 +18,7 @@
       <thead>
         <tr>
           <th>Interface</th>
+          <th>description</th>
           <th>align_err</th>
           <th>align_err_diff</th>
           <th>fcs_err</th>
@@ -39,6 +40,7 @@
 
       {% for in_key, in_value in value.iteritems() %}
         {% set iface = in_key %}
+        {% set description =  in_value['desc'] %}
         {% set align_err =  in_value['eth_align_err'] %}
         {% set align_err_diff =  in_value['eth_align_err_diff'] %}
         {% set fcs_err =  in_value['eth_fcs_err'] %}
@@ -54,6 +56,7 @@
 
         <tr>
           <td> {{ iface }} </td>
+          <td> {{ description }} </td>
           <td> {{ align_err }} </td>
           {% if align_err_diff > 0 %}
           <td>{{ align_err_diff }} <span class="glyphicon glyphicon-remove-circle" style="color:red" aria-hidden="true" title="Errors"></span></td>
