@@ -98,8 +98,10 @@ mycreds.py
 *.or
 app/cookie/*
 .config.py
+config.yml
 .run.py
 app/vlan-db/*
 app/iface-err/*
+app/iface-desc/*
 app/node_modules/*
 .idea/*

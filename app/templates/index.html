@@ -1,12 +1,92 @@
 {% extends "base.html" %}
 {% block content %}
-<h3>VNET</h3>
-<hr>
-<div class="container">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css"></script>
+<h3>VNET CORE NETWORK</h3>
 <h1></h1>
+
+<div class="container">
   <div class="text-center">
-  <img src="static/pictures/logo.png" class="rounded mx-auto d-block" alt="Vnet utils">
-<h1>CORE NETWORK</h1>
+<!--  <img src="static/pictures/logo.png" class="rounded mx-auto d-block" alt="Vnet utils">
+-->
+ <style type="text/css">
+        #mynetwork {
+            width: 800px;
+            height: 600px;
+        }
+    </style>
+      <div id="mynetwork" class="text-center">></div>
+<script type="text/javascript">
+    // create an array with nodes
+
+    var nodes = new vis.DataSet([
+        {id: 1, label: 'n9six1'},
+        {id: 2, label: 'n9six2'},
+        {id: 3, label: 'n931'},
+        {id: 4, label: 'n932'},
+        {id: 5, label: 'n31'},
+        {id: 6, label: 'n32'},
+        {id: 7, label: 'n9sit1'},
+        {id: 8, label: 'n9sit2'},
+        {id: 9, label: 'n941'},
+        {id: 10, label: 'n942'},
+        {id: 11, label: 'n41'},
+        {id: 12, label: 'n42'},
+        {id: 13, label: 'six.asr'},
+        {id: 14, label: 'sit.asr'}
+    ]);
+
+    // create an array with edges
+    var edges = new vis.DataSet([
+        {from: 1, to: 2},
+        {from: 1, to: 3},
+        {from: 1, to: 13},
+        {from: 2, to: 4},
+        {from: 2, to: 13},
+        {from: 3, to: 4},
+        {from: 1, to: 9},
+        {from: 2, to: 10},
+        {from: 3, to: 7},
+        {from: 4, to: 8},
+        {from: 4, to: 5},
+        {from: 4, to: 6},
+        {from: 3, to: 5},
+        {from: 3, to: 6},
+        {from: 7, to: 8},
+        {from: 7, to: 9},
+        {from: 7, to: 14},
+        {from: 8, to: 10},
+        {from: 8, to: 14},
+        {from: 9, to: 10},
+        {from: 9, to: 11},
+        {from: 9, to: 12},
+        {from: 10, to: 11},
+        {from: 10, to: 12},
+        {from: 11, to: 12},
+        {from: 5, to: 6}
+    ]);
+
+    // create a network
+    var container = document.getElementById('mynetwork');
+
+    // provide the data in the vis format
+    var data = {
+        nodes: nodes,
+        edges: edges
+    };
+//    var options = {};
+        var options = {
+  nodes:{
+    borderWidth: 1,
+    borderWidthSelected: 2
+    }
+    };
+
+    // initialize your network!
+    var network = new vis.Network(container, data, options);
+    network.setOptions(options);
+</script>
 </div>
 </div>
 {% endblock %}

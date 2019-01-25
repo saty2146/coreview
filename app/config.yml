@@ -24,19 +24,19 @@ boxes:
     ip: 10.4.1.142
     location: dc4
     group: n5k
-  n911:
+  n9six1:
     ip: 192.168.65.2
     location: six
     group: n9k
-  n912:
+  n9six2:
     ip: 192.168.65.3
     location: six
     group: n9k
-  n921:
+  n9sit1:
     ip: 192.168.65.10
     location: sitel
     group: n9k
-  n922:
+  n9sit2:
     ip: 192.168.65.11
     location: sitel
     group: n9k
@@ -146,14 +146,14 @@ pairs:
     group: n5k
   tn91: 
     members:
-      - n911
-      - n912
+      - n9six1
+      - n9six2
     location: six
     group: n9k
   tn92: 
     members:
-      - n921 
-      - n922
+      - n9sit1
+      - n9sit2
     location: sitel
     group: n9k
   tn93: 
