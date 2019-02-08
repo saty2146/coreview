@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+<script src="{{ url_for('static', filename='js/clipboard.js') }}"></script>
+
+<h3>VXLAN</h3>
+<form action="" method="post" name="vxlan">
+  <div class="row">
+  <div class="col-sm-5">
+    {{ form.hidden_tag() }}
+    <label>Vlan id</label>
+    {% for error in form.vlanid.errors %}
+      <span style="color: red;">[{{ error }}]</span>
+    {% endfor %}
+    {{ form.vlanid(class_="form-control form-group", placeholder="vlan id") }}
+    <label>Vlan name</label>
+    {% for error in form.vlanname.errors %}
+      <span style="color: red;">[{{ error }}]</span>
+    {% endfor %}
+    {{ form.vlanname(class_="form-control form-group", placeholder="vlan name") }}
+    <button type="submit" name="generate" class="btn btn-primary">Generate</button>
+  </div>
+</form>
+  <div class="col-sm-1"></div>
+  <div class="col-sm-4">
+  <label>Your Configuration</label>
+     <div class="form-group form-group">
+<textarea id="content" class="form-control custom-control copy-text" rows="23" name=configuration.data>{%- if not first_request %}
+  {%- include "vxlan.jinja2" %}
+{%- else %}
+{%- endif %}
+  </textarea>
+  </div>
+     <div class="form-group form-group">
+<button class="copy-text btn btn-primary" type="button" name="copy" data-clipboard-target="#content">Copy</button>
+  </div>
+  </div>
+  </div>
+
+{% endblock %}

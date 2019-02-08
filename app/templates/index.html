@@ -12,8 +12,8 @@
 -->
  <style type="text/css">
         #mynetwork {
-            width: 800px;
-            height: 600px;
+            width: 1000px;
+            height: 800px;
         }
     </style>
       <div id="mynetwork" class="text-center">></div>
@@ -21,20 +21,36 @@
     // create an array with nodes
 
     var nodes = new vis.DataSet([
-        {id: 1, label: 'n9six1'},
-        {id: 2, label: 'n9six2'},
-        {id: 3, label: 'n931'},
-        {id: 4, label: 'n932'},
-        {id: 5, label: 'n31'},
-        {id: 6, label: 'n32'},
-        {id: 7, label: 'n9sit1'},
-        {id: 8, label: 'n9sit2'},
-        {id: 9, label: 'n941'},
-        {id: 10, label: 'n942'},
-        {id: 11, label: 'n41'},
-        {id: 12, label: 'n42'},
-        {id: 13, label: 'six.asr'},
-        {id: 14, label: 'sit.asr'}
+
+          {id: 1, label: 'n9six1', group: 0},
+         {id: 2, label: 'n9six2', group: 0},
+        {id: 3, label: 'n931', group: 0},
+       {id: 4, label: 'n932', group: 0},
+        {id: 5, label: 'n31', group: 2},
+        {id: 6, label: 'n32', group: 2},
+        {id: 7, label: 'n9sit1', group: 0},
+        {id: 8, label: 'n9sit2', group: 0},
+        {id: 9, label: 'n941', group: 0},
+        {id: 10, label: 'n942', group: 0},
+        {id: 11, label: 'n41', group: 2},
+        {id: 12, label: 'n42', group: 2},
+        {id: 13, label: 'six.asr', group: 1},
+        {id: 14, label: 'sit.asr', group: 1}
+
+      //  {id: 1, label: 'n9six1'},
+      //  {id: 2, label: 'n9six2'},
+      //  {id: 3, label: 'n931'},
+      //  {id: 4, label: 'n932'},
+      //  {id: 5, label: 'n31'},
+      //  {id: 6, label: 'n32'},
+      //  {id: 7, label: 'n9sit1'},
+      //  {id: 8, label: 'n9sit2'},
+      //  {id: 9, label: 'n941'},
+      //  {id: 10, label: 'n942'},
+      //  {id: 11, label: 'n41'},
+      //  {id: 12, label: 'n42'},
+      //  {id: 13, label: 'six.asr'},
+      //  {id: 14, label: 'sit.asr'}
     ]);
 
     // create an array with edges
@@ -51,6 +67,7 @@
         {from: 4, to: 8},
         {from: 4, to: 5},
         {from: 4, to: 6},
+        {from: 5, to: 6},
         {from: 3, to: 5},
         {from: 3, to: 6},
         {from: 7, to: 8},
@@ -64,7 +81,7 @@
         {from: 10, to: 11},
         {from: 10, to: 12},
         {from: 11, to: 12},
-        {from: 5, to: 6}
+//        {from: 13, to: 14}
     ]);
 
     // create a network
@@ -76,11 +93,28 @@
         edges: edges
     };
 //    var options = {};
-        var options = {
-  nodes:{
-    borderWidth: 1,
-    borderWidthSelected: 2
-    }
+    var options = {
+        height: '100%',
+        width: '100%',
+        locale: 'en',
+
+        nodes:{
+            shape: 'circle',
+            size: 25,
+            value: 1,
+            borderWidth: 1,
+            borderWidthSelected: 2,
+            scaling: {
+                min: 40,
+                max: 50,
+            }
+            },
+
+        edges:{
+
+            color: 'red',
+            font: '12px arial #ff0000'
+            }
     };
 
     // initialize your network!
