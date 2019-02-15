@@ -170,10 +170,10 @@ pairs:
     group: n9k
 
 pppoe_gws: 
-  optikagw1: 109.74.155.34
-  optikagw2: 109.74.155.246
-  optikagw3: 93.184.71.50
+  optikagw3-1: 109.74.155.34
+  optikagw3-2: 109.74.155.246
   optikagw3-3: 81.89.57.22
+  optikagw3: 93.184.71.50
   optikagw4: 109.74.158.90
   axton: 81.89.57.3
   gaudi: 93.184.65.6

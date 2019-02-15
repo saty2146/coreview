@@ -1,6 +1,6 @@
 from flask import render_template, request, flash, redirect, url_for, jsonify
 from app import app
-from forms import PortchannelForm, PeeringForm, RtbhForm, ScrubbingForm, PppoeForm, VxlanForm, DateForm, DslForm, L2circuitForm
+from forms import PortchannelForm, PeeringForm, RtbhForm, ScrubbingForm, PppoeForm, VxlanForm, DateForm, DslForm, L2circuitForm, RouteForm
 from mycreds import *
 from nxapi_light import *
 import json, requests, re, threading, socket, sys, ssl, time, os.path, yaml
@@ -515,6 +515,25 @@ def dsl():
 
     return render_template('dsl.html', title='Dsl', form=form, first_request = first_request, conf=conf)
 
+@app.route('/route', methods=['POST','GET'])
+def route():
+    form = RouteForm()
+    first_request = True
+    host = 'n31'
+
+    if form.validate_on_submit():
+        print "validated"
+        first_request = False
+        route = form.route.data
+        ip_box = boxes[host]['ip']
+        box = NXAPIClient(hostname=ip_box, username=USERNAME, password=PASSWORD)
+        result = box.get_ip_route(box.nxapi_call(["show ip route " + route]))
+        print result
+
+        return render_template('route.html', title='Route', form=form, result=result, first_request = first_request, conf=conf)
+
+    return render_template('route.html', title='Route', form=form, first_request = first_request, conf=conf)
+
 @app.route('/pppoejq', methods=['POST','GET'])
 def pppoejq():
     form = PppoeForm()
@@ -621,7 +640,6 @@ def po(twins):
             vlans = form.vlans.data
 
             iface1 = [f[1] for f in form.iface1.choices if f[0] == iface1_id]
-            iface2 = [f[1] for f in form.iface2.choices if f[0] == iface2_id]
             iface1 = iface1[0]
             iface2 = iface2[0]
 

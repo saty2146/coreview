@@ -65,6 +65,9 @@ class PppoeForm(FlaskForm):
 class DslForm(FlaskForm):
     dsl = StringField('dsl account', [validators.DataRequired(), validators.Regexp('\S+@\S+', message="Invalid format")])
 
+class RouteForm(FlaskForm):
+    route = StringField('route', [validators.DataRequired(),IPAddress(ipv4=True, ipv6=False, message=None)])
+
 class RtbhForm(FlaskForm):
     ipv4 = StringField('ipv4', validators=[DataRequired(),IPAddress(ipv4=True, ipv6=False, message=None),vnet_ipv4])
     action = SelectField('action', coerce=int, choices=[(1,'announce'),(0,'withdraw')])

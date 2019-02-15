@@ -186,6 +186,12 @@ class NXAPIClient(object):
             output = {}
             return output
 
+    def get_ip_route(self, response):
+
+        output = response['result']['body']['TABLE_vrf']['ROW_vrf']['TABLE_addrf']['ROW_addrf']['TABLE_prefix']['ROW_prefix']
+
+        return output
+
     def get_po_list(self, response):
         
         po_list = []
@@ -217,5 +223,6 @@ if __name__ == "__main__":
 #Testing
     nxapi = NXAPIClient(hostname="192.168.35.40", username=mycreds.USERNAME, password=mycreds.PASSWORD)
     #dummy_conf = ["interface Eth131/1/1", "non shutdown", "interface Eth131/1/2", "shutdown"]
-    test = nxapi.get_all_transceiver_details(nxapi.nxapi_call(["show interface transceiver details"]))
+    #test = nxapi.get_all_transceiver_details(nxapi.nxapi_call(["show interface transceiver details"]))
+    test = nxapi.get_ip_route(nxapi.nxapi_call(["show ip route 192.168.8.120"]))
     print test

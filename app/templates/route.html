@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3>ROUTE</h3>
+<form action="" method="post" name="route">
+  <div class="form-group row">
+      <div class="col-sm-5">
+        {{ form.hidden_tag() }}
+        <label>show ip route</label>
+        {% for error in form.route.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+        {{ form.route(class_="form-control form-group", placeholder="192.168.8.120") }}
+        <button type="submit" name="search" class="btn btn-primary">Search</button>
+      </div>
+</form>
+<div class="col-sm-1"></div>
+<div class="col-sm-4">
+  <label>Result</label>
+     <ul class="list-group">
+         {%- if not first_request %}
+            {% set data = result['TABLE_path']['ROW_path'] %}
+                {% if result %}
+                    <li class="list-group-item"><small>route: </small>{{ result['ipprefix'] }}</li>
+                    {% for value in data %}
+                    <li class="list-group-item"><small>{{value}}: </small>{{ data[value] }}</li>
+                    {% endfor %}
+                    {% else %}
+                {% endif %}
+             {% else %}
+         {% endif %}
+      </ul>
+</div>
+
+{% endblock %}
