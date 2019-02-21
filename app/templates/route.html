@@ -16,14 +16,16 @@
 </form>
 <div class="col-sm-1"></div>
 <div class="col-sm-4">
-  <label>Result</label>
-     <ul class="list-group">
-         {%- if not first_request %}
+  {%- if not first_request %}
+    <label>Result from {{ host }}</label>
+        <ul class="list-group">
             {% set data = result['TABLE_path']['ROW_path'] %}
                 {% if result %}
                     <li class="list-group-item"><small>route: </small>{{ result['ipprefix'] }}</li>
-                    {% for value in data %}
-                    <li class="list-group-item"><small>{{value}}: </small>{{ data[value] }}</li>
+                    {% for i in data %}
+                        {% for value in i %}
+                            <li class="list-group-item"><small>{{value}}: </small>{{ i[value] }}</li>
+                        {% endfor %}
                     {% endfor %}
                     {% else %}
                 {% endif %}

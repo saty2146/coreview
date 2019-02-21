@@ -204,6 +204,12 @@ class NXAPIClient(object):
     
         return po_list
 
+    def get_po_summary(self, response):
+
+        output = response['result']['body']['TABLE_channel']['ROW_channel']
+
+        return output
+
     def set_cmd(self, response):
         
         output = response
@@ -224,5 +230,6 @@ if __name__ == "__main__":
     nxapi = NXAPIClient(hostname="192.168.35.40", username=mycreds.USERNAME, password=mycreds.PASSWORD)
     #dummy_conf = ["interface Eth131/1/1", "non shutdown", "interface Eth131/1/2", "shutdown"]
     #test = nxapi.get_all_transceiver_details(nxapi.nxapi_call(["show interface transceiver details"]))
-    test = nxapi.get_ip_route(nxapi.nxapi_call(["show ip route 192.168.8.120"]))
+    #test = nxapi.get_ip_route(nxapi.nxapi_call(["show ip route 192.168.8.120"]))
+    test = nxapi.get_po_summary(nxapi.nxapi_call(["show port-channel summary"]))
     print test

@@ -4,16 +4,25 @@
 <h3>PPPoE</h3>
 <form action="" method="post" name="rtbh">
     <div class="form-group row">
-        <div class="col-sm-5">
+        <div class="col-sm-4">
             {{ form.hidden_tag() }}
             <label>Login</label>
             {% for error in form.pppoe.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
             {{ form.pppoe(class_="form-control form-group", placeholder="contract@ftth.vnet.sk") }}
-            <button type="submit" name="find" class="btn btn-primary">Find</button>
+            <button type="submit" class="btn btn-primary" name="action" value="search">Search</button>
         </div>
-        <div class="col-sm-2"></div>
+        <div class="col-sm-3 text-danger" style="font-size:20px">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    {{ message }}
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+  </div>
+
         <div class="col-sm-2">
             <label>PPPoE</label>
             <ul class="list-group">
@@ -21,19 +30,23 @@
                     <li class="list-group-item">
                     {% if status %}
                         <span class="glyphicon glyphicon-ok-circle" style="color:green" title="established" aria-hidden="true"></span><small> Connected</small>
-                </li>
-                <li class="list-group-item"><small>gw: </small>{{ gw }}</li>
-                <li class="list-group-item"><small>user: </small>{{ status['name'] }}</li>
-                <li class="list-group-item"><small>ip: </small>{{ status['address'] }}</li>
-                <li class="list-group-item"><small>mac: </small>{{ status['caller-id'] }}</li>
-                <li class="list-group-item"><small>vendor: </small>{{ vendor }}</li>
-                <li class="list-group-item"><small>uptime: </small>{{ status['uptime'] }}</li>
-                <li class="list-group-item"><small>shape: </small>{{ status['shape'] }}</li>
+                    </li>
+                    <li class="list-group-item"><small>id: </small>{{ status['.id'] }}</li>
+                    <li class="list-group-item"><small>gw: </small>{{ gw }}</li>
+                    <li class="list-group-item"><small>user: </small>{{ status['name'] }}</li>
+                    <li class="list-group-item"><small>ip: </small>{{ status['address'] }}</li>
+                    <li class="list-group-item"><small>mac: </small>{{ status['caller-id'] }}</li>
+                    <li class="list-group-item"><small>vendor: </small>{{ vendor }}</li>
+                    <li class="list-group-item"><small>uptime: </small>{{ status['uptime'] }}</li>
+                    <li class="list-group-item"><small>shape: </small>{{ status['shape'] }}</li>
+            </ul>
+                    <button type="submit" class="btn btn-primary" name="action" value="terminate">Terminate</button>
+                    <input type="hidden" name="id" value={{ status['.id'] }}>
+                    <input type="hidden" name="gw" value={{ gw }}>
                 {% else %}
                 <span class="glyphicon glyphicon-remove-circle" style="color:red" title="down" aria-hidden="true"></span><small> account not found</small>
                 {% endif %}
                 {% else %}
-            </ul>
             {% endif %}
 
       </div>

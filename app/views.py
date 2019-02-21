@@ -377,13 +377,13 @@ def pppoe_status(pppoe):
             continue
         
         try:
-            params = {'.proplist':('name,address,caller-id,uptime,service')}
+            params = {'.proplist':('.id,name,address,caller-id,uptime,service')}
             result = api(cmd='/ppp/active/print', **params)
+           # result = api(cmd='/ip/firewall/service-port/print')
         except:
             gw_status[gw] = 'API error'
             print "API error"
             continue
-       
 
         gw_status[gw] = 'OK'
 
@@ -408,6 +408,32 @@ def pppoe_status(pppoe):
         sock.close()
 
     return (status, gw, gw_status)
+
+def terminate_pppoe(gw, id_rule):
+    result = False
+    for k, v in pppoe_gws.iteritems():
+        if k == gw:
+            ip = v
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_address = (ip, 8728)
+    sock.settimeout(5.0)
+
+    try:
+        sock.connect(server_address)
+        api = login(username='api', password='apina', sock=sock)
+
+    except socket.error, exc:
+        print "Socket error: %s" % exc
+
+    try:
+        if api is not None:
+            params = {'.id': id_rule}
+            result = api(cmd='/ppp/active/remove', **params)
+            print result
+    except:
+        print "API error"
+
+    return result
 
 def pppoe_get_vendor(mac):
     MAC_URL = 'http://macvendors.co/api/%s'
@@ -478,21 +504,33 @@ def ftth():
     if form.validate_on_submit():
         print "validated"
         first_request = False
-        pppoe = form.pppoe.data
-        id_pppoe, realm = pppoe.split("@")
-        status, gw, gw_status = pppoe_status(pppoe)
+        if request.form['action'] == 'search':
+            print "Search"
+            pppoe = form.pppoe.data
+            id_pppoe, realm = pppoe.split("@")
+            status, gw, gw_status = pppoe_status(pppoe)
 
-        if status:
-            mac_address = status['caller-id']
-            vendor = pppoe_get_vendor(mac_address)
-            query_log = create_query_log(pppoe)
-            log = pppoe_get_log(pppoe, query_log)
+            if status:
+                mac_address = status['caller-id']
+                vendor = pppoe_get_vendor(mac_address)
+                query_log = create_query_log(pppoe)
+                log = pppoe_get_log(pppoe, query_log)
+            else:
+                # get log even if account is not found (aka auth failure:)
+                query_log = create_query_log(pppoe)
+                log = pppoe_get_log(pppoe, query_log)
+
+            return render_template('ftth.html', title='Ftth', form=form, status=status, gw=gw, gw_status = gw_status, vendor=vendor, log = log, first_request = first_request,conf=conf)
         else:
-            # get log even if account is not found (aka auth failure:)
-            query_log = create_query_log(pppoe)
-            log = pppoe_get_log(pppoe, query_log)
+             print "Terminating ..."
+             id_rule = request.form['id']
+             gw = request.form['gw']
+             pppoe = request.form['pppoe']
+             result = terminate_pppoe(gw, id_rule)
+             #if result_box1 and result_box2:
+             flash(pppoe + ' has been terminated')
+             return redirect(url_for('ftth'))
 
-        return render_template('ftth.html', title='Ftth', form=form, status=status, gw=gw, gw_status = gw_status, vendor=vendor, log = log, first_request = first_request,conf=conf)
 
     return render_template('ftth.html', title='Ftth', form=form, first_request = first_request, conf=conf)
 
@@ -519,7 +557,7 @@ def dsl():
 def route():
     form = RouteForm()
     first_request = True
-    host = 'n31'
+    host = 'n931'
 
     if form.validate_on_submit():
         print "validated"
@@ -530,7 +568,7 @@ def route():
         result = box.get_ip_route(box.nxapi_call(["show ip route " + route]))
         print result
 
-        return render_template('route.html', title='Route', form=form, result=result, first_request = first_request, conf=conf)
+        return render_template('route.html', title='Route', form=form, result=result, host=host, first_request = first_request, conf=conf)
 
     return render_template('route.html', title='Route', form=form, first_request = first_request, conf=conf)
 
