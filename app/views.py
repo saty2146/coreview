@@ -678,6 +678,7 @@ def po(twins):
             vlans = form.vlans.data
 
             iface1 = [f[1] for f in form.iface1.choices if f[0] == iface1_id]
+            iface2 = [f[1] for f in form.iface2.choices if f[0] == iface2_id]
             iface1 = iface1[0]
             iface2 = iface2[0]
 
