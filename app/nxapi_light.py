@@ -123,13 +123,14 @@ class NXAPIClient(object):
 
         if response.status_code != 200:
             logging.error("failed to create session")
-        
+        print response.json()
+
         return response.json()
 
     def get_iface_status(self, response):
 
         output = response['result']['body']['TABLE_interface']['ROW_interface']
-        
+        print output
         return output
 
     def get_iface_description(self, response):
@@ -191,6 +192,18 @@ class NXAPIClient(object):
         output = response['result']['body']['TABLE_vrf']['ROW_vrf']['TABLE_addrf']['ROW_addrf']['TABLE_prefix']['ROW_prefix']
 
         return output
+
+    def get_vlan_id(self, response):
+
+        if response['result']:
+
+            output = response['result']['body']
+
+            return output
+        else:
+
+            output = {}
+            return output
 
     def get_po_list(self, response):
         

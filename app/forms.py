@@ -68,6 +68,9 @@ class DslForm(FlaskForm):
 class RouteForm(FlaskForm):
     route = StringField('route', [validators.DataRequired(),IPAddress(ipv4=True, ipv6=False, message=None)])
 
+class VlanForm(FlaskForm):
+    vlanid = IntegerField('vlanid', validators=[DataRequired(), NumberRange(min=1, max=3967, message='1-3967')])
+
 class RtbhForm(FlaskForm):
     ipv4 = StringField('ipv4', validators=[DataRequired(),IPAddress(ipv4=True, ipv6=False, message=None),vnet_ipv4])
     action = SelectField('action', coerce=int, choices=[(1,'announce'),(0,'withdraw')])

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3>VLAN</h3>
+<form action="" method="post" name="vlanid">
+  <div class="form-group row">
+      <div class="col-sm-5">
+        {{ form.hidden_tag() }}
+        <label>show vlan id</label>
+        {% for error in form.vlanid.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+        {{ form.vlanid(class_="form-control form-group", placeholder="vlanid") }}
+        <button type="submit" name="search" class="btn btn-primary">Search</button>
+      </div>
+</form>
+<div class="col-sm-1"></div>
+<div class="col-sm-4">
+  {%- if not first_request %}
+    <label>Result from {{ host }}</label>
+        <ul class="list-group">
+            {% if result %}
+                {% set data = result['TABLE_vlanbriefid']['ROW_vlanbriefid'] %}
+                {% set basic_data = result['TABLE_mtuinfoid']['ROW_mtuinfoid'] %}
+                    <li class="list-group-item"><small>Vlan: </small>{{ basic_data['vlanshowinfo-vlanid'] }}</li>
+                    <li class="list-group-item"><small>vlan-mode: </small>{{ basic_data['vlanshowinfo-vlanmode'] }}</li>
+                    <li class="list-group-item"><small>vlan-type: </small>{{ basic_data['vlanshowinfo-media-type'] }}</li>
+                        {% for value in data %}
+                            <li class="list-group-item"><small>{{value}}: </small>{{ data[value] }}</li>
+                    {% endfor %}
+            {% else %}
+                <li class="list-group-item"><small>Vlan: </small>Not Found</li>
+
+
+                {% endif %}
+             {% else %}
+         {% endif %}
+      </ul>
+</div>
+
+{% endblock %}

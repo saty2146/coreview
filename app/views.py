@@ -1,6 +1,6 @@
 from flask import render_template, request, flash, redirect, url_for, jsonify
 from app import app
-from forms import PortchannelForm, PeeringForm, RtbhForm, ScrubbingForm, PppoeForm, VxlanForm, DateForm, DslForm, L2circuitForm, RouteForm
+from forms import PortchannelForm, PeeringForm, RtbhForm, ScrubbingForm, PppoeForm, VxlanForm, DateForm, DslForm, L2circuitForm, RouteForm, VlanForm
 from mycreds import *
 from nxapi_light import *
 import json, requests, re, threading, socket, sys, ssl, time, os.path, yaml
@@ -571,6 +571,25 @@ def route():
         return render_template('route.html', title='Route', form=form, result=result, host=host, first_request = first_request, conf=conf)
 
     return render_template('route.html', title='Route', form=form, first_request = first_request, conf=conf)
+
+@app.route('/vlanid', methods=['POST','GET'])
+def vlanid():
+    form = VlanForm()
+    first_request = True
+    host = 'n31'
+
+    if form.validate_on_submit():
+        print "validated"
+        first_request = False
+        vlanid = form.vlanid.data
+        ip_box = boxes[host]['ip']
+        box = NXAPIClient(hostname=ip_box, username=USERNAME, password=PASSWORD)
+        result = box.get_vlan_id(box.nxapi_call(["show vlan id " + str(vlanid)]))
+        print result
+
+        return render_template('vlanid.html', title='Vlan', form=form, result=result, host=host, first_request = first_request, conf=conf)
+
+    return render_template('vlanid.html', title='Vlan', form=form, first_request = first_request, conf=conf)
 
 @app.route('/pppoejq', methods=['POST','GET'])
 def pppoejq():
