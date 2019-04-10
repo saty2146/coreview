@@ -1,6 +1,6 @@
 from flask import render_template, request, flash, redirect, url_for, jsonify
 from app import app
-from forms import PortchannelForm, PeeringForm, RtbhForm, ScrubbingForm, PppoeForm, VxlanForm, DateForm, DslForm, L2circuitForm, RouteForm, VlanForm
+from forms import PortchannelForm, PeeringForm, RtbhForm, ScrubbingForm, PppoeForm, VxlanForm, DateForm, DslForm, L2circuitForm, RouteForm, VlanForm, FPVlanForm
 from mycreds import *
 from nxapi_light import *
 import json, requests, re, threading, socket, sys, ssl, time, os.path, yaml
@@ -163,6 +163,15 @@ def last_log():
     r = requests.post('http://192.168.8.3:5001/show_full_log', data=data)
     log  = json.loads(r.text)
     return log
+
+def conf_cleaner(raw_conf):
+    clean_conf = raw_conf.replace('\r', '')  # delete '\r'
+    clean_conf = clean_conf.split('\n')  # split
+    clean_conf = list(map(str, clean_conf))  # delete whitespaces items
+    clean_conf = list(map(str.strip, clean_conf))  # stripping
+    clean_conf = list(filter(str.strip, clean_conf))
+    clean_conf = [elem for elem in clean_conf if elem != '!' and elem != 'end' and elem != 'configure terminal']
+    return clean_conf
 
 @app.route('/',methods=['POST','GET'])
 @app.route('/index', methods=['POST','GET'])
@@ -590,6 +599,53 @@ def vlanid():
         return render_template('vlanid.html', title='Vlan', form=form, result=result, host=host, first_request = first_request, conf=conf)
 
     return render_template('vlanid.html', title='Vlan', form=form, first_request = first_request, conf=conf)
+
+@app.route('/fpvlan', methods=['POST','GET'])
+def fpvlan():
+    form = FPVlanForm()
+    first_request = True
+    hosts = ['n31','n32','n41','n42']
+
+    if form.validate_on_submit():
+        print "validated"
+        first_request = False
+
+        if request.form['action'] == 'Generate':
+            print "Generate"
+            vlanid = form.vlanid.data
+            vlanname = form.vlanname.data
+            for host in hosts:
+                ip_box = boxes[host]['ip']
+                box = NXAPIClient(hostname=ip_box, username=USERNAME, password=PASSWORD)
+                result = box.get_vlan_id(box.nxapi_call(["show vlan id " + str(vlanid)]))
+                if result:
+                    flash('Vlan already exists')
+                    break
+                print result
+
+            return render_template('fpvlan.html', title='FPVlan', form=form, result=result, vlanid=vlanid, vlanname=vlanname, host=host, first_request = first_request, conf=conf)
+
+        else:
+            print "Deploy"
+            fp_conf = request.form['configuration.data']
+            # data cleaner, config list creation
+            fp_conf = conf_cleaner(request.form['configuration.data'])
+            print fp_conf
+            for host in hosts:
+                ip_box = boxes[host]['ip']
+                box = NXAPIClient(hostname=ip_box, username=USERNAME, password=PASSWORD)
+                result = box.set_cmd(box.nxapi_call(fp_conf))
+                if result:
+                    flash_ok = True
+
+            if flash_ok:
+                flash('Deployment has been successfull')
+            else:
+                flash('Something is wrong')
+
+            return redirect(url_for('fpvlan'))
+
+    return render_template('fpvlan.html', title='FPVlan', form=form, first_request = first_request, conf=conf)
 
 @app.route('/pppoejq', methods=['POST','GET'])
 def pppoejq():

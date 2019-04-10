@@ -1,41 +1,63 @@
 {% extends "base.html" %}
 {% block content %}
 
-
 <script src="{{ url_for('static', filename='js/clipboard.js') }}"></script>
 
-<h3>VXLAN</h3>
-<form action="" method="post" name="vxlan">
-  <div class="row">
+<div class="form-group row">
+  <div class="col-md-6" style="font-size:25px">
+    FPVLAN
+  </div>
+  <div class="col-md-5 text-danger" style="font-size:20px">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    {{ message }}
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+  </div>
+</div>
+</div>
+
+<form action="" method="post">
   <div class="col-sm-5">
     {{ form.hidden_tag() }}
-    <label>Vlan id</label>
+    <label>Vlanid</label>
     {% for error in form.vlanid.errors %}
       <span style="color: red;">[{{ error }}]</span>
     {% endfor %}
-    {{ form.vlanid(class_="form-control form-group", placeholder="vlan id") }}
+    {{ form.vlanid(class_="form-control form-group", placeholder="vlanid") }}
     <label>Vlan name</label>
     {% for error in form.vlanname.errors %}
       <span style="color: red;">[{{ error }}]</span>
     {% endfor %}
-    {{ form.vlanname(class_="form-control form-group", placeholder="vlan name") }}
-    <button type="submit" name="generate" class="btn btn-primary">Generate</button>
+    {{ form.vlanname(class_="form-control form-group", placeholder="vlanname") }}
+     <div class="form-group form-group">
+    <button type="submit" class="btn btn-primary" name="action" value="Generate">Generate</button>
   </div>
-</form>
+  </div>
   <div class="col-sm-1"></div>
   <div class="col-sm-4">
   <label>Your Configuration</label>
-     <div class="form-group form-group">
-<textarea id="content" class="form-control custom-control copy-text" rows="23" name=configuration.data>{%- if not first_request %}
-  {%- include "vxlan.jinja2" %}
-{%- else %}
-{%- endif %}
+  <div class="form-group form-group">
+  <textarea readonly id="content" class="form-control custom-control" rows="23" name=configuration.data>
+  {%- if not first_request %}
+    {%- if result %}
+    {%- else %}
+      {%- include "fpvlan.jinja2" %}
+    {%- endif %}
+  {%- endif %}
   </textarea>
   </div>
-     <div class="form-group form-group">
-<button class="copy-text btn btn-primary" type="button" name="copy" data-clipboard-target="#content">Copy</button>
+  <div class="form-group form-group">
+    <button type="submit" class="btn btn-primary" name="action" value="Deploy">Deploy</button>
+    <!--
+    <button class="copy-text btn btn-primary" type="button" name="copy" data-clipboard-target="#content">Copy</button>
+    -->
   </div>
   </div>
+
   </div>
+</form>
 
 {% endblock %}
