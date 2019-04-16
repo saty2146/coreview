@@ -4,7 +4,7 @@
 <h3>PPPoE</h3>
 <form action="" method="post" name="rtbh">
     <div class="form-group row">
-        <div class="col-sm-3">
+        <div class="col-sm-2">
             {{ form.hidden_tag() }}
             <label>Login</label>
             {% for error in form.pppoe.errors %}
@@ -23,7 +23,7 @@
     {% endwith %}
   </div>
 
-        <div class="col-sm-2">
+        <div class="col-sm-3">
             <label>PPPoE</label>
             <ul class="list-group">
                 {%- if not first_request %}
@@ -65,10 +65,10 @@
 
         {% endfor %}
           </ul>
-            {% endif %}
-
           <label>Daily graph</label>
           <li class="list-group-item"><img src={{ graph }} class="img-rounded" alt=graph></li>
+            {% endif %}
+
       </div>
     </div>
 </form>
