@@ -416,7 +416,7 @@ def pppoe_status(pppoe):
 
         sock.close()
 
-    return (status, gw, gw_status)
+    return (status, gw, gw_status, ip)
 
 def terminate_pppoe(gw, id_rule):
     result = False
@@ -517,7 +517,7 @@ def ftth():
             print "Search"
             pppoe = form.pppoe.data
             id_pppoe, realm = pppoe.split("@")
-            status, gw, gw_status = pppoe_status(pppoe)
+            status, gw, gw_status,gw_ip = pppoe_status(pppoe)
 
             if status:
                 mac_address = status['caller-id']
@@ -529,7 +529,7 @@ def ftth():
                 query_log = create_query_log(pppoe)
                 log = pppoe_get_log(pppoe, query_log)
 
-            return render_template('ftth.html', title='Ftth', form=form, status=status, gw=gw, gw_status = gw_status, vendor=vendor, log = log, first_request = first_request,conf=conf)
+            return render_template('ftth.html', title='Ftth', form=form, status=status, gw=gw, gw_ip=gw_ip, gw_status = gw_status, vendor=vendor, log = log, first_request = first_request,conf=conf)
         else:
              print "Terminating ..."
              id_rule = request.form['id']

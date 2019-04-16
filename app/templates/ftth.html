@@ -4,7 +4,7 @@
 <h3>PPPoE</h3>
 <form action="" method="post" name="rtbh">
     <div class="form-group row">
-        <div class="col-sm-4">
+        <div class="col-sm-3">
             {{ form.hidden_tag() }}
             <label>Login</label>
             {% for error in form.pppoe.errors %}
@@ -29,6 +29,7 @@
                 {%- if not first_request %}
                     <li class="list-group-item">
                     {% if status %}
+                        {% set graph = 'http://' + gw_ip + '/graphs/queue/<pppoe-' + status['name'] + '>/daily.gif' %}
                         <span class="glyphicon glyphicon-ok-circle" style="color:green" title="established" aria-hidden="true"></span><small> Connected</small>
                     </li>
                     <li class="list-group-item"><small>id: </small>{{ status['.id'] }}</li>
@@ -50,7 +51,7 @@
             {% endif %}
 
       </div>
-      <div class="col-sm-2">
+      <div class="col-sm-3">
         <label>Gateways</label>
         {% if gw_status %}
         {% for gw in  gw_status %}
@@ -66,6 +67,8 @@
           </ul>
             {% endif %}
 
+          <label>Daily graph</label>
+          <li class="list-group-item"><img src={{ graph }} class="img-rounded" alt=graph></li>
       </div>
     </div>
 </form>
