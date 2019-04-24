@@ -604,7 +604,7 @@ def vlanid():
 def fpvlan():
     form = FPVlanForm()
     first_request = True
-    hosts = ['n31','n32','n41','n42']
+    hosts = ['n31','n32']
 
     if form.validate_on_submit():
         print "validated"
