@@ -9,7 +9,7 @@ service instance {{ vlan }} ethernet
 interface pseudowire{{ vlan }}
 encapsulation mpls
 signaling protocol ldp
-neighbor 185.176.72.127 {{ vlan }}
+neighbor {{ neighbor_ip }} {{ vlan }}
 mtu 9188
 !
 l2vpn xconnect context vlan{{ vlan }}
@@ -26,7 +26,7 @@ service instance {{ vlan }} ethernet
 interface pseudowire{{ vlan }}
 encapsulation mpls
 signaling protocol ldp
-neighbor 185.176.72.127 {{ vlan }}
+neighbor {{ neighbor_ip }} {{ vlan }}
 mtu 9184
 exit
 !

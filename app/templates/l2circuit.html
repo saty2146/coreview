@@ -3,14 +3,16 @@
 
 <script src="{{ url_for('static', filename='js/clipboard.js') }}"></script>
 
-<h3>L2_CIRCUIT</h3>
+{% set asr_label = asr|upper %}
+
+<h3>L2_CIRCUIT {{ asr_label }}</h3>
 <form action="" method="post">
   <div class="row">
   <div class="col-sm-5">
     {{ form.hidden_tag() }}
     <label>Circuit type</label>
     {{ form.circuit_type(class_="form-control form-group") }}
-    <label>ASR SIX Interface</label>
+    <label>{{ asr_label }} Interface</label>
     {{ form.iface(class_="form-control form-group") }}
     <label>Vlan</label>
     {% for error in form.vlan.errors %}
@@ -33,11 +35,13 @@
   </div>
   <div class="col-sm-1"></div>
   <div class="col-sm-4">
-  <label>SIX_ASR</label>
+  <label>{% filter upper %}
+    {{ asr_label }}
+  {% endfilter %}</label>
   <div class="form-group form-group">
   <textarea id="content" class="form-control custom-control" rows="20" name=six_asr_conf.data>
   {%- if not first_request -%}
-    {%- include "six_asr_conf.jinja2" %}
+    {%- include "six_sit_asr_conf.jinja2" %}
   {%- endif -%}
   </textarea>
   <label>ASR41_ASR42</label>

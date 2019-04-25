@@ -668,9 +668,22 @@ def peering():
 
     return render_template('peering.html', title='Peering', form=form, first_request = first_request, conf=conf)
 
-@app.route('/l2circuit', methods=['POST','GET'])
-def l2circuit():
+def load_asr_ifaces(from_to):
+
+    with open('app/' + from_to + '.yml', 'r') as f:
+        asr = yaml.safe_load(f)
+        ifaces = asr['ifaces']
+
+    ids = [i for i in range(len(ifaces))]
+    id_ifaces = list(zip(ids, ifaces))
+
+    return id_ifaces
+
+@app.route('/l2circuit_<asr>', methods=['POST','GET'])
+def l2circuit(asr):
     form = L2circuitForm()
+    form.iface.choices = load_asr_ifaces(asr)
+
     first_request = True
 
     if form.validate_on_submit():
@@ -684,9 +697,14 @@ def l2circuit():
         description = str(clientid) + "-" + company
         iface = [f[1] for f in form.iface.choices if f[0] == iface_id]
         iface = iface[0]
-        return render_template('l2circuit.html', title='L2circuit', form=form, circuit_type=circuit_type, iface=iface, vlan=vlan, description=description, first_request = first_request, conf=conf)
+        if asr == 'six_asr':
+            neighbor_ip = '185.176.72.127'
+        else:
+            neighbor_ip = '185.176.72.126'
 
-    return render_template('l2circuit.html', title='L2circuit', form=form, first_request = first_request, conf=conf)
+        return render_template('l2circuit.html', title='L2circuit', form=form, asr=asr, neighbor_ip=neighbor_ip, circuit_type=circuit_type, iface=iface, vlan=vlan, description=description, first_request = first_request, conf=conf)
+
+    return render_template('l2circuit.html', title='L2circuit', form=form, asr=asr, first_request = first_request, conf=conf)
 
 def get_vxlan_data(vlanid):
     vlanidhex = bin(vlanid)[2:].zfill(16)

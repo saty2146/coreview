@@ -4,16 +4,16 @@ from wtforms import TextAreaField, TextField, IntegerField, ValidationError, Dat
 from wtforms.validators import DataRequired, IPAddress, NumberRange, Optional
 import ipaddress,yaml
 
-def load_six_asr():
-
-    with open('app/six_asr.yml', 'r') as f:
-        six_asr = yaml.safe_load(f)
-        ifaces = six_asr['ifaces']
-    
-    ids = [i for i in range(len(ifaces))]
-    id_ifaces = list(zip(ids, ifaces))
-
-    return id_ifaces
+#def load_six_asr():
+#
+#    with open('app/six_asr.yml', 'r') as f:
+#        six_asr = yaml.safe_load(f)
+#        ifaces = six_asr['ifaces']
+#
+#    ids = [i for i in range(len(ifaces))]
+#    id_ifaces = list(zip(ids, ifaces))
+##
+#    return id_ifaces
 
 def vnet_ipv4(form, field):
     if (
@@ -47,7 +47,7 @@ class PeeringForm(FlaskForm):
 
 class L2circuitForm(FlaskForm):
     circuit_type = SelectField('circuit_type', coerce=int, choices = [(0, 'Port based - QinQ delivered on port without S-tag'), (1, 'Vlan based - QinQ delivered on NNI with S-tag')])
-    iface = SelectField('iface', coerce=int, choices = load_six_asr())
+    iface = SelectField('iface', coerce=int)
     clientid = IntegerField('clientid', validators=[Optional()])
     company = StringField('company', validators=[DataRequired()])
     vlan = IntegerField('vlan', validators=[DataRequired()])
