@@ -16,8 +16,9 @@ idna==2.6
 ipaddress==1.0.18
 itsdangerous==0.24
 Jinja2==2.9.6
-librouteros==2.0.0
+librouteros==2.2.0
 MarkupSafe==1.0
+netaddr==0.7.19
 pyaml==17.12.1
 PyYAML==3.13
 requests==2.18.4
