@@ -6,11 +6,11 @@
   <div class="form-group row">
       <div class="col-sm-5">
         {{ form.hidden_tag() }}
-        <label>show ip route</label>
+        <label>show ip | ipv6 route</label>
         {% for error in form.route.errors %}
         <span style="color: red;">[{{ error }}]</span>
         {% endfor %}
-        {{ form.route(class_="form-control form-group", placeholder="192.168.8.120") }}
+        {{ form.route(class_="form-control form-group", placeholder="192.168.8.120 | 2a01:390::2222:22") }}
         <button type="submit" name="search" class="btn btn-primary">Search</button>
       </div>
 </form>

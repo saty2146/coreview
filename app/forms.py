@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, BooleanField, SubmitField, SelectField, RadioField
 from wtforms import TextAreaField, TextField, IntegerField, ValidationError, DateField, validators
 from wtforms.validators import DataRequired, IPAddress, NumberRange, Optional
-import ipaddress,yaml
+import ipaddress
 
 #def load_six_asr():
 #
@@ -25,6 +25,11 @@ def vnet_ipv4(form, field):
             ipaddress.ip_address(field.data) not in ipaddress.ip_network(u'185.176.72.0/22')
             ):
         raise ValidationError('This is not VNET IP address')
+
+def ipv4_ipv6_validator(form, field):
+    if not ipaddress.ip_address(field.data):
+        raise ValidationError('This is not IP address')
+
 
 class PortchannelForm(FlaskForm):
     portchannel = SelectField('portchannel', coerce=int, choices=[(1,'Yes'),(0,'No')])
@@ -66,7 +71,7 @@ class DslForm(FlaskForm):
     dsl = StringField('dsl account', [validators.DataRequired(), validators.Regexp('\S+@\S+', message="Invalid format")])
 
 class RouteForm(FlaskForm):
-    route = StringField('route', [validators.DataRequired(),IPAddress(ipv4=True, ipv6=False, message=None)])
+    route = StringField('route', validators=[DataRequired(), ipv4_ipv6_validator])
 
 class VlanForm(FlaskForm):
     vlanid = IntegerField('vlanid', validators=[DataRequired(), NumberRange(min=1, max=3967, message='1-3967')])

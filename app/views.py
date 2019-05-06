@@ -9,7 +9,7 @@ from librouteros import login
 logger.setLevel(logging.INFO)
 import datetime, glob
 from elasticsearch import Elasticsearch
-import copy
+import copy, netaddr
 
 requests.packages.urllib3.disable_warnings()
 
@@ -574,7 +574,11 @@ def route():
         route = form.route.data
         ip_box = boxes[host]['ip']
         box = NXAPIClient(hostname=ip_box, username=USERNAME, password=PASSWORD)
-        result = box.get_ip_route(box.nxapi_call(["show ip route " + route]))
+        if netaddr.valid_ipv4(route) is True:
+            result = box.get_ip_route(box.nxapi_call(["show ip route " + route]))
+        else:
+            result = box.get_ip_route(box.nxapi_call(["show ipv6 route " + route]))
+
         print result
 
         return render_template('route.html', title='Route', form=form, result=result, host=host, first_request = first_request, conf=conf)
