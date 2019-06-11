@@ -69,6 +69,7 @@ $('body').on('hidden.bs.modal', '.modal', function () {
            <td class="text-nowrap">
           {% if value['vlan1'] != 'routed' %}
              <a href=javascript:void(0);" data-href="{{ url_for('ifsw', iface=iface, host=hosts[0]) }}" data-iface="{{ iface }}" data-mtittle="Switchport configuration" class="openPopup"><button class="btn btn-black btn-xs" title="switchport conf" data-toggle="modal" data-target="#error-modal" >S</button></a>
+             <a href=javascript:void(0);" data-href="{{ url_for('maclist', iface=iface, host=hosts[0]) }}" data-iface="{{ iface }}" data-mtittle="MAC address table" class="openPopup"><button class="btn btn-black btn-xs" title="mac list" data-toggle="modal" data-target="#error-modal" >M</button></a>
           {% else %}
           <button class="btn btn-black btn-xs" title="routed port">R</button>
           {% endif %}
@@ -101,6 +102,7 @@ $('body').on('hidden.bs.modal', '.modal', function () {
            <td class="text-nowrap">
           {% if value['vlan2'] != 'routed' %}
             <a href=javascript:void(0);" data-href="{{ url_for('ifsw', iface=iface, host=hosts[1]) }}" data-iface="{{ iface }}" data-mtittle="Switchport configuration" class="openPopup"><button class="btn btn-black btn-xs" title="switchport conf" data-toggle="modal" data-target="#error-modal" >S</button></a>
+            <a href=javascript:void(0);" data-href="{{ url_for('maclist', iface=iface, host=hosts[1]) }}" data-iface="{{ iface }}" data-mtittle="MAC address table" class="openPopup"><button class="btn btn-black btn-xs" title="mac list" data-toggle="modal" data-target="#error-modal" >M</button></a>
           {% else %}
             <button class="btn btn-black btn-xs" title="routed port">R</button>
           {% endif %}

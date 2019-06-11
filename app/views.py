@@ -515,6 +515,7 @@ def ftth():
         first_request = False
         if request.form['action'] == 'search':
             print "Search"
+            print request
             pppoe = form.pppoe.data
             id_pppoe, realm = pppoe.split("@")
             status, gw, gw_status,gw_ip = pppoe_status(pppoe)
@@ -608,7 +609,8 @@ def vlanid():
 def fpvlan():
     form = FPVlanForm()
     first_request = True
-    hosts = ['n31','n32']
+    hosts = ['n31','n32','n41','n42']
+    check_hosts = ['n31','n32']
 
     if form.validate_on_submit():
         print "validated"
@@ -618,7 +620,7 @@ def fpvlan():
             print "Generate"
             vlanid = form.vlanid.data
             vlanname = form.vlanname.data
-            for host in hosts:
+            for host in check_hosts:
                 ip_box = boxes[host]['ip']
                 box = NXAPIClient(hostname=ip_box, username=USERNAME, password=PASSWORD)
                 result = box.get_vlan_id(box.nxapi_call(["show vlan id " + str(vlanid)]))
@@ -840,6 +842,17 @@ def iferr(host, iface):
 
     return iferr
     #return render_template('iface_errors.html', title='Interface errors', iface=iface, host=host, iferr=iferr, conf=conf)
+
+@app.route('/maclist/<host>/<path:iface>', methods=['POST','GET'])
+def maclist(host, iface):
+
+    ip = boxes[host]['ip']
+    box = NXAPIClient(hostname=ip, username = USERNAME, password = PASSWORD)
+    maclist = box.get_mac_list(box.nxapi_call(["show mac address-table interface " + iface]))
+    maclist = json.dumps(maclist)
+
+    print maclist
+    return maclist
 
 @app.route('/logs', methods=['POST','GET'])
 def logs():

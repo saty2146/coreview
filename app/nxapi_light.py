@@ -176,15 +176,15 @@ class NXAPIClient(object):
         return output
 
     def get_mac_list(self, response):
-        
-        if 'TABLE_mac_address' in response['result']['body']:
+
+        if response['result'] and not 'error' in response and 'TABLE_mac_address' in response['result']['body']:
+
 
             output = response['result']['body']['TABLE_mac_address']['ROW_mac_address']
-        
+
             return output
         else:
-
-            output = {}
+            output = {'disp_mac_addr': 'empty'}
             return output
 
     def get_ip_route(self, response):
@@ -202,7 +202,6 @@ class NXAPIClient(object):
             return output
         else:
 
-            output = {}
             return output
 
     def get_po_list(self, response):
@@ -244,5 +243,5 @@ if __name__ == "__main__":
     #dummy_conf = ["interface Eth131/1/1", "non shutdown", "interface Eth131/1/2", "shutdown"]
     #test = nxapi.get_all_transceiver_details(nxapi.nxapi_call(["show interface transceiver details"]))
     #test = nxapi.get_ip_route(nxapi.nxapi_call(["show ip route 192.168.8.120"]))
-    test = nxapi.get_po_summary(nxapi.nxapi_call(["show port-channel summary"]))
+    test = nxapi.get_mac_list(nxapi.nxapi_call(["sh mac address-table interface Eth106/1/13 "]))
     print test
