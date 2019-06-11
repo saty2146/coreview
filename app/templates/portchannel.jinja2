@@ -30,6 +30,7 @@ interface {{ iface1 | replace(' Up','') | replace(' Down','')}}
  switchport access vlan {{ vlans }}
  spanning-tree port type edge
  {%- endif %}
+ no lldp transmit
  no snmp trap link-status
  storm-control broadcast level 3.00
  storm-control multicast level 3.00
@@ -47,6 +48,7 @@ interface {{ iface2 | replace(' Up','') | replace(' Down','')}}
  switchport access vlan {{ vlans }}
  spanning-tree port type edge
  {%- endif %}
+ no lldp transmit
  no snmp trap link-status
  storm-control broadcast level 3.00
  storm-control multicast level 3.00
