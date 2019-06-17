@@ -201,7 +201,7 @@ class NXAPIClient(object):
 
             return output
         else:
-
+            output = {}
             return output
 
     def get_po_list(self, response):
