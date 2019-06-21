@@ -676,7 +676,9 @@ def peering():
 
 def load_asr_ifaces(from_to):
 
-    with open('app/' + from_to + '.yml', 'r') as f:
+    filename = os.path.join(app.root_path, from_to + '.yml')
+
+    with open(filename, 'r') as f:
         asr = yaml.safe_load(f)
         ifaces = asr['ifaces']
 
