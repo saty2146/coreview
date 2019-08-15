@@ -6,6 +6,7 @@ from nxapi_light import *
 import json, requests, re, threading, socket, sys, ssl, time, os.path, yaml
 from collections import OrderedDict
 from librouteros import login
+from librouteros import TrapError, FatalError, ConnectionError, MultiTrapError
 logger.setLevel(logging.INFO)
 import datetime, glob
 from elasticsearch import Elasticsearch
@@ -384,14 +385,20 @@ def pppoe_status(pppoe):
             print "Socket error: %s" % exc
             gw_status[gw] = 'Socket error'
             continue
-        
+
+        except (ConnectionError, TrapError, FatalError, MultiTrapError), exc:
+            print exc
+            gw_status[gw] = exc
+            continue
+
         try:
             params = {'.proplist':('.id,name,address,caller-id,uptime,service')}
             result = api(cmd='/ppp/active/print', **params)
            # result = api(cmd='/ip/firewall/service-port/print')
-        except:
-            gw_status[gw] = 'API error'
-            print "API error"
+
+        except (ConnectionError, TrapError, FatalError, MultiTrapError), exc:
+            print exc
+            gw_status[gw] = exc
             continue
 
         gw_status[gw] = 'OK'
@@ -720,6 +727,16 @@ def get_vxlan_data(vlanid):
     octet2 = int(vlanidhex[8:], 2)
     return (octet1, octet2)
 
+
+@app.route('/po_summary/<host>', methods=['POST','GET'])
+def po_summary(host):
+    ip = boxes[host]['ip']
+    box = NXAPIClient(hostname=ip, username = USERNAME, password = PASSWORD)
+    po_summary = box.get_po_summary(box.nxapi_call(["show port-channel summary"]))
+    print po_summary
+
+    return render_template('po_summary.html', title='Po_summary', po_summary=po_summary, host=host, conf=conf)
+
 @app.route('/vxlan', methods=['POST','GET'])
 def vxlan():
     form = VxlanForm()
@@ -765,7 +782,7 @@ def po(twins):
     if form.validate_on_submit():
         print "validated"
         first_request = False
-        print portchannel, porttype, location, iface1_id
+        #print portchannel, porttype, location, iface1_id
         #dummy_conf = ["interface Eth131/1/1", "non shutdown", "interface Eth131/1/2", "shutdown"]
 
         if request.form['action'] == 'Generate':
@@ -827,7 +844,6 @@ def ifsw(host, iface):
     box = NXAPIClient(hostname=ip, username = USERNAME, password = PASSWORD)
     ifsw = box.get_iface_switchport(box.nxapi_call(["show interface " + iface + " switchport"]))
     ifsw = json.dumps(ifsw)
-    print ifsw
 
     return ifsw
     
@@ -918,24 +934,23 @@ def get_vlan(nxhosts):
     vlan_attr = ['N', 'S', 'M']
 
     resource_path = os.path.join(app.root_path, 'vlan-db' + '/' + nxhosts)
-    os.chdir(resource_path)
 
     if nxhosts == 'n5k':
-        created = time.ctime(os.path.getctime('n31-vlan-db.json'))
+        created = time.ctime(os.path.getctime(resource_path + '/n31-vlan-db.json'))
     elif nxhosts == 'n9k':
-        created = time.ctime(os.path.getctime('n911-vlan-db.json'))
+        created = time.ctime(os.path.getctime(resource_path + '/n911-vlan-db.json'))
     else:
         pass
 
-    for filename in glob.glob("*.json"):
-        box = filename.split("-")
+    for filename in glob.glob(resource_path + '/*.json'):
+        box = os.path.basename(filename).split("-")
         box = box[0]
         boxes.append(box)
 
     box_attr = [str(_box) + '_' + str(_attr) for _attr in vlan_attr for _box in boxes]
 
-    for filename in glob.glob("*.json"):
-        box = filename.split("-")
+    for filename in glob.glob(resource_path + '/*.json'):
+        box = os.path.basename(filename).split("-")
         box = box[0]
         with open(filename) as file:
             data = json.load(file)
