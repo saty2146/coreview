@@ -1,0 +1,36 @@
+configure terminal
+!
+{%- if circuit1_type %}
+interface {{ iface1 }}
+ mtu 9198
+!
+interface {{ iface1 }}.{{ vlan }} l2transport
+ description {{ description }}
+ encapsulation dot1q {{ vlan }}
+!
+ l2vpn
+ xconnect group vlan{{vlan}}
+  p2p vlan{{vlan}}
+   interface {{ iface1 }}.{{ vlan }}
+   neighbor ipv4 {{ asr2_ip }} pw-id {{ vlan }}
+   !
+   description {{ description }}
+!
+{%- else  %}
+interface {{ iface1 }}
+ description {{ description }}
+ mtu 9198
+ negotiation auto
+ transceiver permit pid all
+ l2transport
+!
+ l2vpn
+ xconnect group vlan{{vlan}}
+  p2p vlan{{vlan}}
+   interface {{ iface1 }}
+   neighbor ipv4 {{ asr2_ip }} pw-id {{ vlan }}
+   !
+   description {{ description }}
+!
+{%- endif  %}
+end

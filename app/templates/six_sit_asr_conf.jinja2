@@ -7,6 +7,8 @@ interface {{ iface }}
 interface {{ iface }}.{{ vlan }} l2transport
  description {{ description }}
  encapsulation dot1q {{ vlan }}
+ ethernet-services access-group stpblk ingress
+ ethernet-services access-group stpblk egress
 !
  l2vpn
  xconnect group vlan{{vlan}}
@@ -26,6 +28,9 @@ interface {{ iface }}
  transceiver permit pid all
  l2transport
 !
+ ethernet-services access-group stpblk ingress
+ ethernet-services access-group stpblk egress
+ !
  l2vpn
  xconnect group vlan{{vlan}}
   p2p vlan{{vlan}}

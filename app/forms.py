@@ -60,6 +60,17 @@ class L2circuitForm(FlaskForm):
     asr41_asr42_conf = TextAreaField('asr41_asr42_conf', default="Empty")
     n41_n42_conf = TextAreaField('n41_n42_conf', default="Empty")
 
+class L2vpnForm(FlaskForm):
+    circuit1_type = SelectField('circuit1_type', coerce=int, choices = [(0, 'Port based - QinQ delivered on port without S-tag'), (1, 'Vlan based - QinQ delivered on NNI with S-tag')])
+    iface1 = SelectField('iface1', coerce=int)
+    circuit2_type = SelectField('circuit2_type', coerce=int, choices = [(0, 'Port based - QinQ delivered on port without S-tag'), (1, 'Vlan based - QinQ delivered on NNI with S-tag')])
+    iface2 = SelectField('iface2', coerce=int)
+    clientid = IntegerField('clientid', validators=[Optional()])
+    company = StringField('company', validators=[DataRequired()])
+    vlan = IntegerField('vlan', validators=[DataRequired()])
+    six_asr_conf = TextAreaField('six_asr_conf', default="Empty")
+    sit_asr_conf = TextAreaField('sit_asr_conf', default="Empty")
+
 class VxlanForm(FlaskForm):
     vlanid = IntegerField('vlan', validators=[DataRequired(), NumberRange(min=1, max=9999, message='1-9999')])
     vlanname = StringField('vlanname', validators=[DataRequired()])

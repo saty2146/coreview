@@ -1,6 +1,6 @@
 from flask import render_template, request, flash, redirect, url_for, jsonify
 from app import app
-from forms import PortchannelForm, PeeringForm, RtbhForm, ScrubbingForm, PppoeForm, VxlanForm, DateForm, DslForm, L2circuitForm, RouteForm, VlanForm, FPVlanForm
+from forms import PortchannelForm, PeeringForm, RtbhForm, ScrubbingForm, PppoeForm, VxlanForm, DateForm, DslForm, L2circuitForm, L2vpnForm, RouteForm, VlanForm, FPVlanForm
 from mycreds import *
 from nxapi_light import *
 import json, requests, re, threading, socket, sys, ssl, time, os.path, yaml
@@ -681,9 +681,9 @@ def peering():
 
     return render_template('peering.html', title='Peering', form=form, first_request = first_request, conf=conf)
 
-def load_asr_ifaces(from_to):
+def load_asr_ifaces(asr):
 
-    filename = os.path.join(app.root_path, from_to + '.yml')
+    filename = os.path.join(app.root_path, asr + '_ifaces.yml')
 
     with open(filename, 'r') as f:
         asr = yaml.safe_load(f)
@@ -694,8 +694,10 @@ def load_asr_ifaces(from_to):
 
     return id_ifaces
 
-@app.route('/l2circuit_<asr>', methods=['POST','GET'])
-def l2circuit(asr):
+@app.route('/l2circuit_<from_to>', methods=['POST','GET'])
+def l2circuit(from_to):
+
+    asr = from_to.split('_')[0]
     form = L2circuitForm()
     form.iface.choices = load_asr_ifaces(asr)
 
@@ -712,14 +714,46 @@ def l2circuit(asr):
         description = str(clientid) + "-" + company
         iface = [f[1] for f in form.iface.choices if f[0] == iface_id]
         iface = iface[0]
-        if asr == 'six_asr':
+        if asr == 'six':
             neighbor_ip = '185.176.72.127'
         else:
             neighbor_ip = '185.176.72.126'
 
-        return render_template('l2circuit.html', title='L2circuit', form=form, asr=asr, neighbor_ip=neighbor_ip, circuit_type=circuit_type, iface=iface, vlan=vlan, description=description, first_request = first_request, conf=conf)
+        return render_template('l2circuit.html', title='L2circuit', form=form, asr=asr, from_to=from_to, neighbor_ip=neighbor_ip, circuit_type=circuit_type, iface=iface, vlan=vlan, description=description, first_request = first_request, conf=conf)
 
-    return render_template('l2circuit.html', title='L2circuit', form=form, asr=asr, first_request = first_request, conf=conf)
+    return render_template('l2circuit.html', title='L2circuit', form=form, asr=asr, from_to=from_to, first_request = first_request, conf=conf)
+
+@app.route('/l2vpn_<from_to>', methods=['POST','GET'])
+def l2vpn(from_to):
+
+    asr1,asr2 = from_to.split('_')
+    form = L2vpnForm()
+    form.iface1.choices = load_asr_ifaces(asr1)
+    form.iface2.choices = load_asr_ifaces(asr2)
+
+    first_request = True
+
+    if form.validate_on_submit():
+        print "validated"
+        first_request = False
+        iface1_id = form.iface1.data
+        iface2_id = form.iface2.data
+        vlan = form.vlan.data
+        clientid = form.clientid.data
+        company = form.company.data
+        circuit1_type = form.circuit1_type.data
+        circuit2_type = form.circuit2_type.data
+        description = str(clientid) + "-" + company
+        iface1 = [f[1] for f in form.iface1.choices if f[0] == iface1_id]
+        iface1 = iface1[0]
+        iface2 = [f[1] for f in form.iface2.choices if f[0] == iface2_id]
+        iface2 = iface2[0]
+        neighbors = {'six': '185.176.72.127', 'sit': '185.176.72.126'}
+        asr1_ip, asr2_ip = neighbors[asr1], neighbors[asr2]
+
+        return render_template('l2vpn.html', title='L2vpn', form=form, asr1=asr1, asr2=asr2, from_to=from_to, asr1_ip=asr1_ip, asr2_ip=asr2_ip, circuit1_type=circuit1_type, iface1=iface1,circuit2_type=circuit2_type, iface2=iface2, vlan=vlan, description=description, first_request = first_request, conf=conf)
+
+    return render_template('l2vpn.html', title='L2vpn', form=form, asr1=asr1, asr2=asr2, from_to=from_to, first_request = first_request, conf=conf)
 
 def get_vxlan_data(vlanid):
     vlanidhex = bin(vlanid)[2:].zfill(16)
