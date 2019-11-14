@@ -12,7 +12,7 @@ elasticsearch==6.2.0
 enum34==1.1.6
 features==0.5.8
 fileconfig==0.5.6
-Flask==0.12.2
+Flask==1.0
 Flask-Bootstrap==3.3.7.1
 Flask-WTF==0.14.2
 future==0.18.1
