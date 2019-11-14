@@ -39,6 +39,12 @@ def login(username, password, sock, **kwargs):
         token = sentence[0]['ret']
         encoded = encode_password(token, password)
         api('/login', name=username, response=encoded)
+    except:
+        pass
+    try:
+        sentence = api('/login')
+        api('/login', name=username, password=password)
+
     except (ConnectionError, TrapError, FatalError, MultiTrapError):
         transport.close()
         raise

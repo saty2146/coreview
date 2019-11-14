@@ -1,180 +1,193 @@
----
 ifaces:
-  - Bundle-Ether30
-  - Bundle-Ether55
-  - Bundle-Ether65
-  - Bundle-Ether75
-  - TenGigE0/0/0/0
-  - TenGigE0/0/0/1
-  - TenGigE0/0/0/2
-  - TenGigE0/0/0/3
-  - TenGigE0/0/0/4
-  - TenGigE0/0/0/5
-  - TenGigE0/0/0/6
-  - TenGigE0/0/0/7
-  - FortyGigE0/0/1/0
-  - FortyGigE0/0/1/1
-  - GigabitEthernet0/1/0/0
-  - GigabitEthernet0/1/0/1
-  - GigabitEthernet0/1/0/2
-  - GigabitEthernet0/1/0/3
-  - GigabitEthernet0/1/0/4
-  - GigabitEthernet0/1/0/5
-  - GigabitEthernet0/1/0/6
-  - GigabitEthernet0/1/0/7
-  - GigabitEthernet0/1/0/8
-  - GigabitEthernet0/1/0/9
-  - GigabitEthernet0/1/0/10
-  - GigabitEthernet0/1/0/11
-  - GigabitEthernet0/1/0/12
-  - GigabitEthernet0/1/0/13
-  - GigabitEthernet0/1/0/14
-  - GigabitEthernet0/1/0/15
-  - TenGigE0/1/0/16
-  - TenGigE0/1/0/17
-  - TenGigE0/1/0/18
-  - TenGigE0/1/0/19
-  - GigabitEthernet0/3/0/0
-  - GigabitEthernet0/3/0/1
-  - GigabitEthernet0/3/0/2
-  - GigabitEthernet0/3/0/3
-  - GigabitEthernet0/3/0/4
-  - GigabitEthernet0/3/0/5
-  - GigabitEthernet0/3/0/6
-  - GigabitEthernet0/3/0/7
-  - GigabitEthernet0/3/0/8
-  - GigabitEthernet0/3/0/9
-  - GigabitEthernet0/3/0/10
-  - GigabitEthernet0/3/0/11
-  - GigabitEthernet0/3/0/12
-  - GigabitEthernet0/3/0/13
-  - GigabitEthernet0/3/0/14
-  - GigabitEthernet0/3/0/15
-  - GigabitEthernet0/3/0/16
-  - GigabitEthernet0/3/0/17
-  - GigabitEthernet0/3/0/18
-  - GigabitEthernet0/3/0/19
-  - GigabitEthernet0/3/0/20
-  - GigabitEthernet0/3/0/21
-  - GigabitEthernet0/3/0/22
-  - GigabitEthernet0/3/0/23
-  - GigabitEthernet0/3/0/24
-  - GigabitEthernet0/3/0/25
-  - GigabitEthernet0/3/0/26
-  - GigabitEthernet0/3/0/27
-  - GigabitEthernet0/3/0/28
-  - GigabitEthernet0/3/0/29
-  - GigabitEthernet0/3/0/30
-  - GigabitEthernet0/3/0/31
-  - GigabitEthernet0/3/0/32
-  - GigabitEthernet0/3/0/33
-  - GigabitEthernet0/3/0/34
-  - GigabitEthernet0/3/0/35
-  - GigabitEthernet0/3/0/36
-  - GigabitEthernet0/3/0/37
-  - GigabitEthernet0/3/0/38
-  - GigabitEthernet0/3/0/39
-  - GigabitEthernet0/4/0/0
-  - GigabitEthernet0/4/0/1
-  - GigabitEthernet0/4/0/2
-  - GigabitEthernet0/4/0/3
-  - GigabitEthernet0/4/0/4
-  - GigabitEthernet0/4/0/5
-  - GigabitEthernet0/4/0/6
-  - GigabitEthernet0/4/0/7
-  - GigabitEthernet0/4/0/8
-  - GigabitEthernet0/4/0/9
-  - GigabitEthernet0/4/0/10
-  - GigabitEthernet0/4/0/11
-  - GigabitEthernet0/4/0/12
-  - GigabitEthernet0/4/0/13
-  - GigabitEthernet0/4/0/14
-  - GigabitEthernet0/4/0/15
-  - GigabitEthernet0/4/0/16
-  - GigabitEthernet0/4/0/17
-  - GigabitEthernet0/4/0/18
-  - GigabitEthernet0/4/0/19
-  - GigabitEthernet0/4/0/20
-  - GigabitEthernet0/4/0/21
-  - GigabitEthernet0/4/0/22
-  - GigabitEthernet0/4/0/23
-  - GigabitEthernet0/4/0/24
-  - GigabitEthernet0/4/0/25
-  - GigabitEthernet0/4/0/26
-  - GigabitEthernet0/4/0/27
-  - GigabitEthernet0/4/0/28
-  - GigabitEthernet0/4/0/29
-  - GigabitEthernet0/4/0/30
-  - GigabitEthernet0/4/0/31
-  - GigabitEthernet0/4/0/32
-  - GigabitEthernet0/4/0/33
-  - GigabitEthernet0/4/0/34
-  - GigabitEthernet0/4/0/35
-  - GigabitEthernet0/4/0/36
-  - GigabitEthernet0/4/0/37
-  - GigabitEthernet0/4/0/38
-  - GigabitEthernet0/4/0/39
-  - GigabitEthernet0/6/0/0
-  - GigabitEthernet0/6/0/1
-  - GigabitEthernet0/6/0/2
-  - GigabitEthernet0/6/0/3
-  - GigabitEthernet0/6/0/4
-  - GigabitEthernet0/6/0/5
-  - GigabitEthernet0/6/0/6
-  - GigabitEthernet0/6/0/7
-  - GigabitEthernet0/6/0/8
-  - GigabitEthernet0/6/0/9
-  - GigabitEthernet0/6/0/10
-  - GigabitEthernet0/6/0/11
-  - GigabitEthernet0/6/0/12
-  - GigabitEthernet0/6/0/13
-  - GigabitEthernet0/6/0/14
-  - GigabitEthernet0/6/0/15
-  - Te0/5/0/0
-  - Te0/5/0/1
-  - Te0/5/0/2
-  - Te0/5/0/3
-  - Te0/5/0/4
-  - Te0/5/0/5
-  - Te0/5/0/6
-  - Te0/5/0/7
-  - Te0/5/0/8
-  - Te0/5/0/9
-  - Te0/5/0/10
-  - Te0/5/0/11
-  - Te0/5/0/12
-  - Te0/5/0/13
-  - Te0/5/0/14
-  - Te0/5/0/15
-  - Te0/5/0/16
-  - Te0/5/0/17
-  - Te0/5/0/18
-  - Te0/5/0/19
-  - Te0/5/0/20
-  - Te0/5/0/21
-  - Te0/5/0/22
-  - Te0/5/0/23
-  - Te0/5/0/24
-  - Te0/5/0/25
-  - Te0/5/0/26
-  - Te0/5/0/27
-  - Te0/5/0/28
-  - Te0/5/0/29
-  - Te0/5/0/30
-  - Te0/5/0/31
-  - Te0/5/0/32
-  - Te0/5/0/33
-  - Te0/5/0/34
-  - Te0/5/0/35
-  - TenGigE0/6/0/16
-  - TenGigE0/6/0/17
-  - TenGigE0/6/0/18
-  - TenGigE0/6/0/19
-  - TenGigE0/7/0/0
-  - TenGigE0/7/0/1
-  - TenGigE0/7/0/2
-  - TenGigE0/7/0/3
-  - TenGigE0/7/0/4
-  - TenGigE0/7/0/5
-  - TenGigE0/7/0/6
-  - TenGigE0/7/0/7
+- BV96
+- BV295
+- BV296
+- BV340
+- BE30
+- BE31
+- BE55
+- BE65
+- BE75
+- BE104
+- Mg0/RSP0/CPU0/0
+- Mg0/RSP0/CPU0/1
+- PT0/RSP0/CPU0/0
+- Mg0/RSP1/CPU0/0
+- Mg0/RSP1/CPU0/1
+- PT0/RSP1/CPU0/0
+- Te0/0/0/0
+- Te0/0/0/1
+- Te0/0/0/2
+- Te0/0/0/3
+- Te0/0/0/4
+- Te0/0/0/5
+- Te0/0/0/6
+- Te0/0/0/7
+- Fo0/0/1/0
+- Fo0/0/1/1
+- Gi0/1/0/0
+- Gi0/1/0/1
+- Gi0/1/0/2
+- Gi0/1/0/3
+- Gi0/1/0/4
+- Gi0/1/0/5
+- Gi0/1/0/6
+- Gi0/1/0/7
+- Gi0/1/0/8
+- Gi0/1/0/9
+- Gi0/1/0/10
+- Gi0/1/0/11
+- Gi0/1/0/12
+- Gi0/1/0/13
+- Gi0/1/0/14
+- Gi0/1/0/15
+- Te0/1/0/16
+- Te0/1/0/17
+- Te0/1/0/18
+- Te0/1/0/19
+- Gi0/3/0/0
+- Gi0/3/0/1
+- Gi0/3/0/2
+- Gi0/3/0/3
+- Gi0/3/0/4
+- Gi0/3/0/5
+- Gi0/3/0/6
+- Gi0/3/0/7
+- Gi0/3/0/8
+- Gi0/3/0/9
+- Gi0/3/0/10
+- Gi0/3/0/11
+- Gi0/3/0/12
+- Gi0/3/0/13
+- Gi0/3/0/14
+- Gi0/3/0/15
+- Gi0/3/0/16
+- Gi0/3/0/17
+- Gi0/3/0/18
+- Gi0/3/0/19
+- Gi0/3/0/20
+- Gi0/3/0/21
+- Gi0/3/0/22
+- Gi0/3/0/23
+- Gi0/3/0/24
+- Gi0/3/0/25
+- Gi0/3/0/26
+- Gi0/3/0/27
+- Gi0/3/0/28
+- Gi0/3/0/29
+- Gi0/3/0/30
+- Gi0/3/0/31
+- Gi0/3/0/32
+- Gi0/3/0/33
+- Gi0/3/0/34
+- Gi0/3/0/35
+- Gi0/3/0/36
+- Gi0/3/0/37
+- Gi0/3/0/38
+- Gi0/3/0/39
+- Gi0/4/0/0
+- Gi0/4/0/1
+- Gi0/4/0/2
+- Gi0/4/0/3
+- Gi0/4/0/4
+- Gi0/4/0/5
+- Gi0/4/0/6
+- Gi0/4/0/7
+- Gi0/4/0/8
+- Gi0/4/0/9
+- Gi0/4/0/10
+- Gi0/4/0/11
+- Gi0/4/0/12
+- Gi0/4/0/13
+- Gi0/4/0/14
+- Gi0/4/0/15
+- Gi0/4/0/16
+- Gi0/4/0/17
+- Gi0/4/0/18
+- Gi0/4/0/19
+- Gi0/4/0/20
+- Gi0/4/0/21
+- Gi0/4/0/22
+- Gi0/4/0/23
+- Gi0/4/0/24
+- Gi0/4/0/25
+- Gi0/4/0/26
+- Gi0/4/0/27
+- Gi0/4/0/28
+- Gi0/4/0/29
+- Gi0/4/0/30
+- Gi0/4/0/31
+- Gi0/4/0/32
+- Gi0/4/0/33
+- Gi0/4/0/34
+- Gi0/4/0/35
+- Gi0/4/0/36
+- Gi0/4/0/37
+- Gi0/4/0/38
+- Gi0/4/0/39
+- Te0/5/0/0
+- Te0/5/0/1
+- Te0/5/0/2
+- Te0/5/0/3
+- Te0/5/0/4
+- Te0/5/0/5
+- Te0/5/0/6
+- Te0/5/0/7
+- Te0/5/0/8
+- Te0/5/0/9
+- Te0/5/0/10
+- Te0/5/0/11
+- Te0/5/0/12
+- Te0/5/0/13
+- Te0/5/0/14
+- Te0/5/0/15
+- Te0/5/0/16
+- Te0/5/0/17
+- Te0/5/0/18
+- Te0/5/0/19
+- Te0/5/0/20
+- Te0/5/0/21
+- Te0/5/0/22
+- Te0/5/0/23
+- Te0/5/0/24
+- Te0/5/0/25
+- Te0/5/0/26
+- Te0/5/0/27
+- Te0/5/0/28
+- Te0/5/0/29
+- Te0/5/0/30
+- Te0/5/0/31
+- Te0/5/0/32
+- Te0/5/0/33
+- Te0/5/0/34
+- Te0/5/0/35
+- Gi0/6/0/0
+- Gi0/6/0/1
+- Gi0/6/0/2
+- Gi0/6/0/3
+- Gi0/6/0/4
+- Gi0/6/0/5
+- Gi0/6/0/6
+- Gi0/6/0/7
+- Gi0/6/0/8
+- Gi0/6/0/9
+- Gi0/6/0/10
+- Gi0/6/0/11
+- Gi0/6/0/12
+- Gi0/6/0/13
+- Gi0/6/0/14
+- Gi0/6/0/15
+- Te0/6/0/16
+- Te0/6/0/17
+- Te0/6/0/18
+- Te0/6/0/19
+- Te0/7/0/0
+- Te0/7/0/1
+- Te0/7/0/2
+- Te0/7/0/3
+- Te0/7/0/4
+- Te0/7/0/5
+- Te0/7/0/6
+- Te0/7/0/7
+- Fo0/7/1/0
+- Fo0/7/1/1

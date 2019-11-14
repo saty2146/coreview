@@ -3,35 +3,60 @@
 
 <script src="{{ url_for('static', filename='js/clipboard.js') }}"></script>
 
-{% set asr = asr|upper %}
-{% set from_to = from_to|upper %}
+{% set asr = asr %}
+{% set from_to = from_to %}
+{% set update = 1|int %}
 
 <h3>L2_CIRCUIT {{ from_to }}</h3>
-<form action="" method="post">
+<form action="{{ url_for('l2circuit', from_to=from_to, update=0) }}" method="post">
   <div class="row">
   <div class="col-sm-5">
     {{ form.hidden_tag() }}
     <label>Circuit type</label>
+    <div class="form-group row">
+      <div class="col-sm-10">
     {{ form.circuit_type(class_="form-control form-group") }}
+      </div>
+    </div>
     <label>{{ asr }} Interface</label>
-    {{ form.iface(class_="form-control form-group") }}
+    <div class="form-group row">
+      <div class="col-sm-10">
+        {{ form.iface(class_="form-control form-group") }}
+      </div>
+      <div class="col-sm-1">
+        <a href="{{ url_for('l2circuit', from_to=from_to, update=1) }}"<button class="btn btn-primary" align="right" type="submit"><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate" aria-hidden="true"></span></button></a>
+      </div>
+    </div>
     <label>Vlan</label>
+    <div class="form-group row">
+      <div class="col-sm-10">
     {% for error in form.vlan.errors %}
       <span style="color: red;">[{{ error }}]</span>
     {% endfor %}
     {{ form.vlan(class_="form-control form-group", placeholder="vlan") }}
+      </div>
+    </div>
     <label>Client id</label>
+        <div class="form-group row">
+          <div class="col-sm-10">
     {% for error in form.clientid.errors %}
       <span style="color: red;">[{{ error }}]</span>
     {% endfor %}
     {{ form.clientid(class_="form-control form-group", placeholder="client id") }}
+          </div>
+        </div>
     <label>Company name</label>
+            <div class="form-group row">
+              <div class="col-sm-10">
     {% for error in form.company.errors %}
       <span style="color: red;">[{{ error }}]</span>
     {% endfor %}
     {{ form.company(class_="form-control form-group", placeholder="company name") }}
+              </div>
+            </div>
      <div class="form-group form-group">
-    <button type="submit" class="btn btn-primary">Generate</button>
+    <button type="submit" class="btn btn-primary" name="action" value="Generate">Generate</button>
+</form>
   </div>
   </div>
   <div class="col-sm-1"></div>
@@ -65,6 +90,5 @@
   </div>
   </div>
   </div>
-</form>
 
 {% endblock %}

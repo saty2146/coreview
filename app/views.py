@@ -10,7 +10,7 @@ from librouteros import TrapError, FatalError, ConnectionError, MultiTrapError
 logger.setLevel(logging.INFO)
 import datetime, glob
 from elasticsearch import Elasticsearch
-import copy, netaddr
+import copy, netaddr, StringIO
 
 requests.packages.urllib3.disable_warnings()
 
@@ -694,10 +694,43 @@ def load_asr_ifaces(asr):
 
     return id_ifaces
 
+def update_asr_ifaces(asr):
+    host = asr + '-asr'
+    ip = boxes[host]['ip']
+    ifaces = {'ifaces':[]}
+
+    from pyIOSXR import IOSXR
+    box = IOSXR(hostname=ip, username=IOSXRUSERNAME, password=IOSXRPASSWORD, port=22, timeout=120)
+    box.open()
+    output = box.show_interfaces_brief()
+    buf = StringIO.StringIO(output)
+    box.close()
+
+    lines = buf.read().split("\n")
+    arpa_regex = re.compile(r".*({}).*".format('ARPA'))
+
+    for line in lines[3:]:
+        mo_arpa = arpa_regex.search(line)
+        if mo_arpa:
+            row = mo_arpa.group().split()
+            ifaces['ifaces'].append(row[0])
+
+    filename = os.path.join(app.root_path, asr + '_ifaces.yml')
+
+    with open(filename, 'w') as f:
+        yaml.dump(ifaces, f, default_flow_style=False)
+
 @app.route('/l2circuit_<from_to>', methods=['POST','GET'])
-def l2circuit(from_to):
+@app.route('/l2circuit_<from_to>/<int:update>', methods=['POST','GET'])
+def l2circuit(from_to, update=0):
+
+    print from_to, update
 
     asr = from_to.split('_')[0]
+
+    if update == 1:
+        update_asr_ifaces(asr)
+
     form = L2circuitForm()
     form.iface.choices = load_asr_ifaces(asr)
 
@@ -706,20 +739,22 @@ def l2circuit(from_to):
     if form.validate_on_submit():
         print "validated"
         first_request = False
-        iface_id = form.iface.data
-        vlan = form.vlan.data
-        clientid = form.clientid.data
-        company = form.company.data
-        circuit_type = form.circuit_type.data
-        description = str(clientid) + "-" + company
-        iface = [f[1] for f in form.iface.choices if f[0] == iface_id]
-        iface = iface[0]
-        if asr == 'six':
-            neighbor_ip = '185.176.72.127'
-        else:
-            neighbor_ip = '185.176.72.126'
+        if request.form['action'] == 'Generate':
+            print "Generate"
+            iface_id = form.iface.data
+            vlan = form.vlan.data
+            clientid = form.clientid.data
+            company = form.company.data
+            circuit_type = form.circuit_type.data
+            description = str(clientid) + "-" + company
+            iface = [f[1] for f in form.iface.choices if f[0] == iface_id]
+            iface = iface[0]
+            if asr == 'six':
+                neighbor_ip = '185.176.72.127'
+            else:
+                neighbor_ip = '185.176.72.126'
 
-        return render_template('l2circuit.html', title='L2circuit', form=form, asr=asr, from_to=from_to, neighbor_ip=neighbor_ip, circuit_type=circuit_type, iface=iface, vlan=vlan, description=description, first_request = first_request, conf=conf)
+            return render_template('l2circuit.html', title='L2circuit', form=form, asr=asr, from_to=from_to, neighbor_ip=neighbor_ip, circuit_type=circuit_type, iface=iface, vlan=vlan, description=description, first_request = first_request, conf=conf)
 
     return render_template('l2circuit.html', title='L2circuit', form=form, asr=asr, from_to=from_to, first_request = first_request, conf=conf)
 

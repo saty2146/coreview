@@ -1,44 +1,50 @@
----
 ifaces:
-  - Bundle-Ether22
-  - Bundle-Ether55
-  - Bundle-Ether65
-  - Bundle-Ether75
-  - TenGigE0/0/0/0
-  - TenGigE0/0/0/1
-  - TenGigE0/0/0/2
-  - TenGigE0/0/0/3
-  - TenGigE0/0/0/4
-  - TenGigE0/0/0/5
-  - TenGigE0/0/0/6
-  - TenGigE0/0/0/7
-  - FortyGigE0/0/1/0
-  - FortyGigE0/0/1/1
-  - GigabitEthernet0/3/0/0
-  - GigabitEthernet0/3/0/1
-  - GigabitEthernet0/3/0/2
-  - GigabitEthernet0/3/0/3
-  - GigabitEthernet0/3/0/4
-  - GigabitEthernet0/3/0/5
-  - GigabitEthernet0/3/0/6
-  - GigabitEthernet0/3/0/7
-  - GigabitEthernet0/3/0/8
-  - GigabitEthernet0/3/0/9
-  - GigabitEthernet0/3/0/10
-  - GigabitEthernet0/3/0/11
-  - GigabitEthernet0/3/0/12
-  - GigabitEthernet0/3/0/13
-  - GigabitEthernet0/3/0/14
-  - GigabitEthernet0/3/0/15
-  - TenGigE0/3/0/16
-  - TenGigE0/3/0/17
-  - TenGigE0/3/0/18
-  - TenGigE0/3/0/19
-  - TenGigE0/7/0/0
-  - TenGigE0/7/0/1
-  - TenGigE0/7/0/2
-  - TenGigE0/7/0/3
-  - TenGigE0/7/0/4
-  - TenGigE0/7/0/5
-  - TenGigE0/7/0/6
-  - TenGigE0/7/0/7
+- BE55
+- BE65
+- BE75
+- Mg0/RSP0/CPU0/0
+- Mg0/RSP0/CPU0/1
+- PT0/RSP0/CPU0/0
+- Mg0/RSP1/CPU0/0
+- Mg0/RSP1/CPU0/1
+- PT0/RSP1/CPU0/0
+- Te0/0/0/0
+- Te0/0/0/1
+- Te0/0/0/2
+- Te0/0/0/3
+- Te0/0/0/4
+- Te0/0/0/5
+- Te0/0/0/6
+- Te0/0/0/7
+- Fo0/0/1/0
+- Fo0/0/1/1
+- Gi0/3/0/0
+- Gi0/3/0/1
+- Gi0/3/0/2
+- Gi0/3/0/3
+- Gi0/3/0/4
+- Gi0/3/0/5
+- Gi0/3/0/6
+- Gi0/3/0/7
+- Gi0/3/0/8
+- Gi0/3/0/9
+- Gi0/3/0/10
+- Gi0/3/0/11
+- Gi0/3/0/12
+- Gi0/3/0/13
+- Gi0/3/0/14
+- Gi0/3/0/15
+- Te0/3/0/16
+- Te0/3/0/17
+- Te0/3/0/18
+- Te0/3/0/19
+- Te0/7/0/0
+- Te0/7/0/1
+- Te0/7/0/2
+- Te0/7/0/3
+- Te0/7/0/4
+- Te0/7/0/5
+- Te0/7/0/6
+- Te0/7/0/7
+- Fo0/7/1/0
+- Fo0/7/1/1
