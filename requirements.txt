@@ -20,7 +20,7 @@ graphviz==0.8.2
 idna==2.6
 ipaddress==1.0.18
 itsdangerous==0.24
-Jinja2==2.9.6
+Jinja2==2.11.3
 librouteros==2.2.0
 lxml==4.4.1
 MarkupSafe==1.0
