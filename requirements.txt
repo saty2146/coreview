@@ -1,6 +1,6 @@
 bcrypt==3.1.7
 bitsets==0.7.12
-certifi==2017.7.27.1
+certifi==2022.12.7
 cffi==1.13.1
 chainmap==1.0.2
 chardet==3.0.4
